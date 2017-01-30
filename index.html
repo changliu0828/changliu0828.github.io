@@ -328,10 +328,17 @@
       
         
           
-            <p>之前放在blogger上的有墙的限制，总感觉很#@%^。这次又回归了github pages，并采用hexo+next搭建，风格很清爽，一些常用的插件也都支持，总体还是很满意的:)</p>
-<p>另外，今天是三十，新年找到了自己的新方向，加油！</p>
+          之前放在blogger上的有墙的限制，总感觉很#@%^。这次又回归了github pages，并采用hexo+next搭建，风格很清爽，一些常用的插件也都支持，总体还是很满意的:)
+另外，今天是三十，新年找到了自己的新方向，加油！
 
           
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/01/26/Hello_Again/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -458,36 +465,16 @@
       
         
           
-            <h1 id="What-is-Shuffle"><a href="#What-is-Shuffle" class="headerlink" title="What is Shuffle"></a>What is Shuffle</h1><p>排序算法(Sort Algorithm)给出了将无序的序列变为有序的方法。然而在很多情况下，我们反而需要产生混乱无序的状态。Shuffle算法的作用就是产生这种“无序”。</p>
-<p>Shuffle为洗牌的意思。顾名思义，扑克游戏中“洗牌”就是Shuffle算法的一种应用。对于扑克54张牌，洗出的牌有$A^{54}_{54}=54!$种可能。为了保证游戏的公平性，我们期望洗出每种牌序的可能性都是相等的，即每种牌序出现的概率都为$\frac{1}{54!}$。Shuffle算法所关注的，正是如何高效无偏（unbiased）的产生某一种排列。现代优秀的shuffle算法在线性时间$O(n)$和常数空间$O(1)$复杂度下完成unbiased的Shuffle。</p>
-<h1 id="Naivete-Solution"><a href="#Naivete-Solution" class="headerlink" title="Naïveté Solution"></a>Naïveté Solution</h1><p>初次面对Shuffle问题，我们可能会很快想到一些非常直接的方法，程序的运行结果看上去也正确，然而这些方法却存在着一些问题。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">输入：数组A[1,...,n] </div><div class="line">输出：Shuffle后的数组A[1,...,n]  </div><div class="line">for i = 1 to n do</div><div class="line">  j = random(1, n)   //random(a,b)产生随机数x，x∈[a,b] </div><div class="line">  swap(A[i], A[j])</div></pre></td></tr></table></figure>
-<p>比如说上面这个方法，随机找一个元素与当前元素交换，这不就Shuffle了吗？然而，我们以序列(1,2,3)为例，进行了100万次Naïveté Shuffle测试，所得各种排列分布如下，</p>
-<center><img src="./naive_shuffle_test.png" width="65%"></center>
-
-<p>好像和我们想象的不太一样！不难算出，上面的Naïveté Shuffle总共产生了$n^n$种排列，显然其并不能被排列数$n!$整除。这就说明产生的结果中有重复项。如果想了解更多请看<a href="https://blog.codinghorror.com/the-danger-of-naivete/" target="_blank" rel="external">这里</a>。</p>
-<h1 id="Knuth-Shuffle"><a href="#Knuth-Shuffle" class="headerlink" title="Knuth-Shuffle"></a>Knuth-Shuffle</h1><p>Knuth-Shuffle是现代最众所周知和广为使用的Shuffle算法。在常见的库函数，例如C++的std::random_shuffle()，Java的java.util.collections.shuffle()，python的random.shuffle()所使用的Shuffle算法全部为Knuth-Shuffle。虽然挂着Donald Knuth的大名，但是这个算法其实是Richard Durstenfeld于1964年提出的，Donald Knuth通过他的<strong><em>The Art of Computer Programming</em></strong>让人们广泛了解和使用了Knuth-Shuffle。</p>
-<p>Knuth-Shuffle非常简单，一个指针顺序扫下去，每一次跟未被扫到的部分中随机的某一元素交换。代码也不过几行，</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">输入：数组A[1,...,n] </div><div class="line">输出：Shuffle后的数组A[1,...,n]  </div><div class="line">for i = 1 to n do</div><div class="line">  j = random(i, n)   //random(a,b)产生随机数x，x∈[a,b] </div><div class="line">  swap(A[i], A[j])</div></pre></td></tr></table></figure>
-<p>Knuth-Shuffle以$O(n)$的时间复杂度和$O(1)$的空间复杂度完成Shuffle操作，那么产生各种序列的概率是否相同呢？</p>
-<p>以序列(1,2,3)为例，进行了100万次Knuth-Shuffle测试，所得各种排列分布如下，</p>
-<center><img src="./knuth_shuffle_test.png" width="65%"></center>
-
-<p>可以看到，Knuth-Shuffle的确保证了等概率，严格的数学证明请移步香港中文大学陶宇飞教授的一篇<a href="https://dotblogs.com.tw/litfal/2015/01/02/knuth_shuffle_proof" target="_blank" rel="external">Lecture Notes</a>[4]。</p>
-<h1 id="Inside-out-Shuffle"><a href="#Inside-out-Shuffle" class="headerlink" title="Inside-out Shuffle"></a>Inside-out Shuffle</h1><p>Knuth-Shuffle在空间上高效的原地进行了Shuffle操作，然而在某些情况下，我们同时需要原始序列和Shuffled序列。Inside-out Shuffle可以在对新序列初始化的同时完成Shuffle操作。Inside-out Shuffle的思路是，顺序扫描并初始化新序列，将原始序列当前所指元素，填入新序列已初始化的某个位置，并将该位置的元素放入新序列的当前位置。代码同样很短。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">输入：数组A[1,...,n] </div><div class="line">输出：Shuffle后的数组B[1,...,n]  </div><div class="line">for i = 1 to n do</div><div class="line">  j = random(1, i)   //random(a,b)产生随机数x，x∈[a,b] </div><div class="line">  if (j != i)</div><div class="line">    B[i] = B[j]</div><div class="line">  B[j] = A[i]</div></pre></td></tr></table></figure>
-<p>Inside-out Shuffle以$O(n)$的时间复杂度和$O(n)$的空间复杂度完成Shuffle操作，同时保留了原始序列。</p>
-<h1 id="Perfect-Shuffle"><a href="#Perfect-Shuffle" class="headerlink" title="Perfect Shuffle"></a>Perfect Shuffle</h1><p>Perfect Shuffle与我们熟悉的扑克洗牌方式很像。对于一叠牌，我们首先将其分成相等的两部分，然后使得这两部分的牌交错洗出（第一叠牌优先出称为Out Shuffle，第二叠牌优先出称为In Shuffle）。举例来讲，对于一个序列(1,2,3,4,5,6)，Out-Shuffle会产生(1,4,2,5,3,6)，而In-Shuffle会产生(4,1,5,2,6,3)。</p>
-<p>如何实现In-Shuffle呢？非常直接地，使用两个指针轮流出牌，我们就可以得到如下的方案，</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">输入：数组A[1,...,2n] </div><div class="line">输出：数组B[1,...,2n]</div><div class="line">i = 1, j = n + 1  </div><div class="line">for k = 1 to n by 2</div><div class="line">  B[k] = A[i], B[k+1] = A[j]</div><div class="line">  i++, j++</div></pre></td></tr></table></figure>
-<p>通过上述很直观的方法，我们就可以在$O(n)$的时间和$O(n)$的空间来完成一次洗牌。那么有没有更高效的方法呢？    </p>
-<p>不难发现，以$2n$张牌为例，In-Shuffle产生排列的规则如下：</p>
-<p>$$ i \rightarrow  2i \ mod \ (2n+1) $$</p>
-<p>In-Shuffle在实现上可以做到时间$O(n)$和空间$O(1)$的复杂度。本文介绍由Peiyush Jain提出的一种实现。</p>
-<p>在已知当前序列的情况下，In-Shuffle每次产生的新序列都是确定的而非随机的，并不属于Fisher–Yates Shuffle。</p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p>[1] <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle" target="_blank" rel="external">Wikipedia, Fisher–Yates shuffle</a><br>[2] <a href="http://jwilson.coe.uga.edu/emt725/Shuffle/Shuffle.html" target="_blank" rel="external">Mathematics Education , The University of Georgia </a><br>[3] <a href="http://arxiv.org/pdf/0805.1598v1.pdf" target="_blank" rel="external">Jain P. A simple in-place algorithm for in-shuffle[J]. arXiv preprint arXiv:0805.1598, 2008.</a><br>[4] <a href="http://www.cse.cuhk.edu.hk/~taoyf/course/wst501/notes/lec9.pdf" target="_blank" rel="external">Yufei Tao, Lecture Notes: Random shuffling and sampling</a><br>[5] <a href="https://blog.codinghorror.com/the-danger-of-naivete/" target="_blank" rel="external">Codinghorror, The Danger of Naïveté,</a></p>
-
-          
+          What is Shuffle排序算法(Sort Algorithm)给出了将无序的序列变为有序的方法。然而在很多情况下，我们反而需要产生混乱无序的状态。Shuffle算法的作用就是产生这种“无序”。
+Shuffle为洗牌的意思。顾名思义，扑克游戏中“洗牌”就是Shuffle算法的一种应用。对于扑克
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/08/15/Fisher–Yates_Shuffle/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
