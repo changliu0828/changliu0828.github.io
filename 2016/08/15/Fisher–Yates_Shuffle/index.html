@@ -94,7 +94,7 @@ Shuffle为洗牌的意思。顾名思义，扑克游戏中“洗牌”就是Shuf
 Shuffle为洗牌的意思。顾名思义，扑克游戏中“洗牌”就是Shuffle算法的一种应用。对于扑克54张牌，洗出的牌有$A^{54}_{54}=54!$种可能。为了保证游戏的公平性，我们期望洗出每种">
 <meta property="og:image" content="http://changliu.me/2016/08/15/Fisher–Yates_Shuffle/./naive_shuffle_test.png">
 <meta property="og:image" content="http://changliu.me/2016/08/15/Fisher–Yates_Shuffle/./knuth_shuffle_test.png">
-<meta property="og:updated_time" content="2017-01-30T09:09:29.000Z">
+<meta property="og:updated_time" content="2017-01-31T15:32:48.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Fisher–Yates Shuffle(洗牌算法)">
 <meta name="twitter:description" content="What is Shuffle排序算法(Sort Algorithm)给出了将无序的序列变为有序的方法。然而在很多情况下，我们反而需要产生混乱无序的状态。Shuffle算法的作用就是产生这种“无序”。
@@ -350,14 +350,6 @@ Shuffle为洗牌的意思。顾名思义，扑克游戏中“洗牌”就是Shuf
 <h1 id="Inside-out-Shuffle"><a href="#Inside-out-Shuffle" class="headerlink" title="Inside-out Shuffle"></a>Inside-out Shuffle</h1><p>Knuth-Shuffle在空间上高效的原地进行了Shuffle操作，然而在某些情况下，我们同时需要原始序列和Shuffled序列。Inside-out Shuffle可以在对新序列初始化的同时完成Shuffle操作。Inside-out Shuffle的思路是，顺序扫描并初始化新序列，将原始序列当前所指元素，填入新序列已初始化的某个位置，并将该位置的元素放入新序列的当前位置。代码同样很短。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">输入：数组A[<span class="number">1</span>,...,n] </div><div class="line">输出：Shuffle后的数组B[<span class="number">1</span>,...,n]  </div><div class="line"><span class="keyword">for</span> i = <span class="number">1</span> to n</div><div class="line">  j = random(<span class="number">1</span>, i)   //random(a,b)产生随机数x，x∈[a,b] </div><div class="line">  <span class="keyword">if</span> (j != i)</div><div class="line">    B[i] = B[j]</div><div class="line">  B[j] = A[i]</div></pre></td></tr></table></figure>
 <p>Inside-out Shuffle以$O(n)$的时间复杂度和$O(n)$的空间复杂度完成Shuffle操作，同时保留了原始序列。</p>
-<h1 id="Perfect-Shuffle"><a href="#Perfect-Shuffle" class="headerlink" title="Perfect Shuffle"></a>Perfect Shuffle</h1><p>Perfect Shuffle与我们熟悉的扑克洗牌方式很像。对于一叠牌，我们首先将其分成相等的两部分，然后使得这两部分的牌交错洗出（第一叠牌优先出称为Out Shuffle，第二叠牌优先出称为In Shuffle）。举例来讲，对于一个序列(1,2,3,4,5,6)，Out-Shuffle会产生(1,4,2,5,3,6)，而In-Shuffle会产生(4,1,5,2,6,3)。</p>
-<p>如何实现In-Shuffle呢？非常直接地，使用两个指针轮流出牌，我们就可以得到如下的方案，</p>
-<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">输入：数组A[<span class="number">1</span>,...,<span class="number">2</span>n] </div><div class="line">输出：数组B[<span class="number">1</span>,...,<span class="number">2</span>n]</div><div class="line">i = <span class="number">1</span>, j = n + <span class="number">1</span>  </div><div class="line">for k = <span class="number">1</span> to n by <span class="number">2</span></div><div class="line">  B[k] = A[i], B[k+<span class="number">1</span>] = A[j]</div><div class="line">  i++, j++</div></pre></td></tr></table></figure>
-<p>通过上述很直观的方法，我们就可以在$O(n)$的时间和$O(n)$的空间来完成一次洗牌。那么有没有更高效的方法呢？    </p>
-<p>不难发现，以$2n$张牌为例，In-Shuffle产生排列的规则如下：</p>
-<p>$$ i \rightarrow  2i \ mod \ (2n+1) $$</p>
-<p>In-Shuffle在实现上可以做到时间$O(n)$和空间$O(1)$的复杂度。本文介绍由Peiyush Jain提出的一种实现。</p>
-<p>在已知当前序列的情况下，In-Shuffle每次产生的新序列都是确定的而非随机的，并不属于Fisher–Yates Shuffle。</p>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p>[1] <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle" target="_blank" rel="external">Wikipedia, Fisher–Yates shuffle</a><br>[2] <a href="http://jwilson.coe.uga.edu/emt725/Shuffle/Shuffle.html" target="_blank" rel="external">Mathematics Education , The University of Georgia </a><br>[3] <a href="http://arxiv.org/pdf/0805.1598v1.pdf" target="_blank" rel="external">Jain P. A simple in-place algorithm for in-shuffle[J]. arXiv preprint arXiv:0805.1598, 2008.</a><br>[4] <a href="http://www.cse.cuhk.edu.hk/~taoyf/course/wst501/notes/lec9.pdf" target="_blank" rel="external">Yufei Tao, Lecture Notes: Random shuffling and sampling</a><br>[5] <a href="https://blog.codinghorror.com/the-danger-of-naivete/" target="_blank" rel="external">Codinghorror, The Danger of Naïveté,</a></p>
 
       
@@ -539,7 +531,7 @@ Shuffle为洗牌的意思。顾名思义，扑克游戏中“洗牌”就是Shuf
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#What-is-Shuffle"><span class="nav-number">1.</span> <span class="nav-text">What is Shuffle</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Naivete-Solution"><span class="nav-number">2.</span> <span class="nav-text">Naïveté Solution</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Knuth-Shuffle"><span class="nav-number">3.</span> <span class="nav-text">Knuth-Shuffle</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Inside-out-Shuffle"><span class="nav-number">4.</span> <span class="nav-text">Inside-out Shuffle</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Perfect-Shuffle"><span class="nav-number">5.</span> <span class="nav-text">Perfect Shuffle</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#What-is-Shuffle"><span class="nav-number">1.</span> <span class="nav-text">What is Shuffle</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Naivete-Solution"><span class="nav-number">2.</span> <span class="nav-text">Naïveté Solution</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Knuth-Shuffle"><span class="nav-number">3.</span> <span class="nav-text">Knuth-Shuffle</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Inside-out-Shuffle"><span class="nav-number">4.</span> <span class="nav-text">Inside-out Shuffle</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
