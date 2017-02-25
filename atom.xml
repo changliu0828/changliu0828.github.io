@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Chang Liu&#39;s Blog</title>
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://changliu.me/"/>
+  <updated>2017-01-31T15:30:51.000Z</updated>
+  <id>http://changliu.me/</id>
+  
+  <author>
+    <name>Chang Liu</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>博客重新搭起来啦</title>
+    <link href="http://changliu.me/2017/01/26/Hello_Again/"/>
+    <id>http://changliu.me/2017/01/26/Hello_Again/</id>
+    <published>2017-01-26T06:31:04.000Z</published>
+    <updated>2017-01-31T15:30:51.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;之前放在blogger上的有墙的限制，总感觉很#@%^。这次又回归了github pages，并采用hexo+next搭建，风格很清爽，一些常用的插件也都支持，总体还是很满意的:)&lt;/p&gt;
+&lt;p&gt;另外，今天是三十，新年快乐！&lt;/p&gt;
+
+    
+    </summary>
+    
+    
+      <category term="Others" scheme="http://changliu.me/tags/Others/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Fisher–Yates Shuffle(洗牌算法)</title>
+    <link href="http://changliu.me/2016/08/15/Fisher%E2%80%93Yates_Shuffle/"/>
+    <id>http://changliu.me/2016/08/15/Fisher–Yates_Shuffle/</id>
+    <published>2016-08-14T16:00:00.000Z</published>
+    <updated>2017-01-31T15:32:48.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;What-is-Shuffle&quot;&gt;&lt;a href=&quot;#What-is-Shuffle&quot; class=&quot;headerlink&quot; title=&quot;What is Shuffle&quot;&gt;&lt;/a&gt;What is Shuffle&lt;/h1&gt;&lt;p&gt;排序算法(Sort Algorith
+    
+    </summary>
+    
+    
+      <category term="Algorithm" scheme="http://changliu.me/tags/Algorithm/"/>
+    
+  </entry>
+  
+</feed>
