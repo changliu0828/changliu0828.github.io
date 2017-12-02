@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://changliu.me/"/>
-  <updated>2017-01-31T15:30:51.000Z</updated>
+  <updated>2017-12-02T08:40:18.060Z</updated>
   <id>http://changliu.me/</id>
   
   <author>
@@ -16,15 +16,16 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>博客重新搭起来啦</title>
+    <title>Hello Again</title>
     <link href="http://changliu.me/2017/01/26/Hello_Again/"/>
     <id>http://changliu.me/2017/01/26/Hello_Again/</id>
     <published>2017-01-26T06:31:04.000Z</published>
-    <updated>2017-01-31T15:30:51.000Z</updated>
+    <updated>2017-12-02T08:40:18.060Z</updated>
     
     <summary type="html">
     
-      &lt;p&gt;之前放在blogger上的有墙的限制，总感觉很#@%^。这次又回归了github pages，并采用hexo+next搭建，风格很清爽，一些常用的插件也都支持，总体还是很满意的:)&lt;/p&gt;
+      &lt;p&gt;Hello Again.&lt;/p&gt;
+&lt;p&gt;把荒废许久的博客重新搭起来了。本次采用hexo+next搭建，部署于github pages，风格很清爽，一些常用的插件也都支持。今后将在这里做一些学习记录。&lt;/p&gt;
 &lt;p&gt;另外，今天是三十，新年快乐！&lt;/p&gt;
 
     
