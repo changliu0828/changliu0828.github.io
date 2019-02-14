@@ -1,38 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Chang Liu&#39;s Blog</title>
+  <title>刘畅的博客</title>
   
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://changliu.me/"/>
-  <updated>2017-12-02T08:40:18.060Z</updated>
+  <updated>2019-02-14T07:57:36.274Z</updated>
   <id>http://changliu.me/</id>
   
   <author>
-    <name>Chang Liu</name>
+    <name>刘畅</name>
     
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Hello Again</title>
-    <link href="http://changliu.me/2017/01/26/Hello_Again/"/>
-    <id>http://changliu.me/2017/01/26/Hello_Again/</id>
-    <published>2017-01-26T06:31:04.000Z</published>
-    <updated>2017-12-02T08:40:18.060Z</updated>
+    <title>一起打副本</title>
+    <link href="http://changliu.me/2019/02/14/FriendRecommend/"/>
+    <id>http://changliu.me/2019/02/14/FriendRecommend/</id>
+    <published>2019-02-14T06:45:57.000Z</published>
+    <updated>2019-02-14T07:57:36.274Z</updated>
     
     <summary type="html">
     
-      &lt;p&gt;Hello Again.&lt;/p&gt;
-&lt;p&gt;把荒废许久的博客重新搭起来了。本次采用hexo+next搭建，部署于github pages，风格很清爽，一些常用的插件也都支持。今后将在这里做一些学习记录。&lt;/p&gt;
-&lt;p&gt;另外，今天是三十，新年快乐！&lt;/p&gt;
-
+      &lt;h1 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;去年公司某RPG游戏上线，各个老板们都去组团体验，作为小弟的我们也跟风练号刷副本。没过几天，老大抛给我一个问题，说自己加了很多好友，但是想刷
     
     </summary>
     
     
-      <category term="Others" scheme="http://changliu.me/tags/Others/"/>
+      <category term="算法" scheme="http://changliu.me/tags/%E7%AE%97%E6%B3%95/"/>
     
   </entry>
   
@@ -41,7 +38,7 @@
     <link href="http://changliu.me/2016/08/15/Fisher-Yates_Shuffle/"/>
     <id>http://changliu.me/2016/08/15/Fisher-Yates_Shuffle/</id>
     <published>2016-08-14T16:00:00.000Z</published>
-    <updated>2017-12-02T09:33:58.654Z</updated>
+    <updated>2019-02-14T03:46:54.489Z</updated>
     
     <summary type="html">
     

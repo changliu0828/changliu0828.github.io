@@ -96,21 +96,18 @@
 
 
 
-  <meta name="description" content="What is Shuffle排序算法(Sort Algorithm)给出了将无序的序列变为有序的方法。然而在很多情况下，我们反而需要产生混乱无序的状态。Shuffle算法的作用就是产生这种“无序”。 Shuffle为洗牌的意思。顾名思义，扑克游戏中“洗牌”就是Shuffle算法的一种应用。对于扑克54张牌，洗出的牌有$A^{54}_{54}=54!$种可能。为了保证游戏的公平性，我们期望洗出每种">
-<meta name="keywords" content="Algorithm">
+  <meta name="description" content="前言去年公司某RPG游戏上线，各个老板们都去组团体验，作为小弟的我们也跟风练号刷副本。没过几天，老大抛给我一个问题，说自己加了很多好友，但是想刷副本的时候，基本上没几个人在线。能不能根据玩家在线的时间段推荐相似的好友？ 这个场景在游戏中其实很常见，比副本更常见的一种情况是“国战”。以前做的一款卡牌游戏，战队之间对战要求至少3人在线参与，功能上线半年了，战队赛基本就没打成过。当然这个问题最后通过增加">
+<meta name="keywords" content="算法">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Fisher–Yates Shuffle(洗牌算法)">
-<meta property="og:url" content="http://changliu.me/2016/08/15/Fisher-Yates_Shuffle/index.html">
+<meta property="og:title" content="一起打副本">
+<meta property="og:url" content="http://changliu.me/2019/02/14/FriendRecommend/index.html">
 <meta property="og:site_name" content="刘畅的博客">
-<meta property="og:description" content="What is Shuffle排序算法(Sort Algorithm)给出了将无序的序列变为有序的方法。然而在很多情况下，我们反而需要产生混乱无序的状态。Shuffle算法的作用就是产生这种“无序”。 Shuffle为洗牌的意思。顾名思义，扑克游戏中“洗牌”就是Shuffle算法的一种应用。对于扑克54张牌，洗出的牌有$A^{54}_{54}=54!$种可能。为了保证游戏的公平性，我们期望洗出每种">
+<meta property="og:description" content="前言去年公司某RPG游戏上线，各个老板们都去组团体验，作为小弟的我们也跟风练号刷副本。没过几天，老大抛给我一个问题，说自己加了很多好友，但是想刷副本的时候，基本上没几个人在线。能不能根据玩家在线的时间段推荐相似的好友？ 这个场景在游戏中其实很常见，比副本更常见的一种情况是“国战”。以前做的一款卡牌游戏，战队之间对战要求至少3人在线参与，功能上线半年了，战队赛基本就没打成过。当然这个问题最后通过增加">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://changliu.me/2016/08/15/Fisher-Yates_Shuffle/naive_shuffle_test.png">
-<meta property="og:image" content="http://changliu.me/2016/08/15/Fisher-Yates_Shuffle/knuth_shuffle_test.png">
-<meta property="og:updated_time" content="2019-02-14T03:46:54.489Z">
+<meta property="og:updated_time" content="2019-02-14T07:57:36.274Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Fisher–Yates Shuffle(洗牌算法)">
-<meta name="twitter:description" content="What is Shuffle排序算法(Sort Algorithm)给出了将无序的序列变为有序的方法。然而在很多情况下，我们反而需要产生混乱无序的状态。Shuffle算法的作用就是产生这种“无序”。 Shuffle为洗牌的意思。顾名思义，扑克游戏中“洗牌”就是Shuffle算法的一种应用。对于扑克54张牌，洗出的牌有$A^{54}_{54}=54!$种可能。为了保证游戏的公平性，我们期望洗出每种">
-<meta name="twitter:image" content="http://changliu.me/2016/08/15/Fisher-Yates_Shuffle/naive_shuffle_test.png">
+<meta name="twitter:title" content="一起打副本">
+<meta name="twitter:description" content="前言去年公司某RPG游戏上线，各个老板们都去组团体验，作为小弟的我们也跟风练号刷副本。没过几天，老大抛给我一个问题，说自己加了很多好友，但是想刷副本的时候，基本上没几个人在线。能不能根据玩家在线的时间段推荐相似的好友？ 这个场景在游戏中其实很常见，比副本更常见的一种情况是“国战”。以前做的一款卡牌游戏，战队之间对战要求至少3人在线参与，功能上线半年了，战队赛基本就没打成过。当然这个问题最后通过增加">
 
 
 
@@ -119,7 +116,7 @@
 
 
 
-  <link rel="canonical" href="http://changliu.me/2016/08/15/Fisher-Yates_Shuffle/">
+  <link rel="canonical" href="http://changliu.me/2019/02/14/FriendRecommend/">
 
 
 
@@ -129,7 +126,7 @@
   };
 </script>
 
-  <title>Fisher–Yates Shuffle(洗牌算法) | 刘畅的博客</title>
+  <title>一起打副本 | 刘畅的博客</title>
   
 
 
@@ -311,7 +308,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://changliu.me/2016/08/15/Fisher-Yates_Shuffle/">
+    <link itemprop="mainEntityOfPage" href="http://changliu.me/2019/02/14/FriendRecommend/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="刘畅">
@@ -328,7 +325,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Fisher–Yates Shuffle(洗牌算法)
+          <h1 class="post-title" itemprop="name headline">一起打副本
 
               
             
@@ -354,24 +351,12 @@
                 
               
 
-              <time title="创建时间：2016-08-15 00:00:00" itemprop="dateCreated datePublished" datetime="2016-08-15T00:00:00+08:00">2016-08-15</time>
+              <time title="创建时间：2019-02-14 14:45:57 / 修改时间：15:57:36" itemprop="dateCreated datePublished" datetime="2019-02-14T14:45:57+08:00">2019-02-14</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-02-14 11:46:54" itemprop="dateModified" datetime="2019-02-14T11:46:54+08:00">2019-02-14</time>
               
             
           </span>
@@ -405,27 +390,18 @@
       
 
       
-        <h1 id="What-is-Shuffle"><a href="#What-is-Shuffle" class="headerlink" title="What is Shuffle"></a>What is Shuffle</h1><p>排序算法(Sort Algorithm)给出了将无序的序列变为有序的方法。然而在很多情况下，我们反而需要产生混乱无序的状态。Shuffle算法的作用就是产生这种“无序”。</p>
-<p>Shuffle为洗牌的意思。顾名思义，扑克游戏中“洗牌”就是Shuffle算法的一种应用。对于扑克54张牌，洗出的牌有$A^{54}_{54}=54!$种可能。为了保证游戏的公平性，我们期望洗出每种牌序的可能性都是相等的，即每种牌序出现的概率都为$\frac{1}{54!}$。Shuffle算法所关注的，正是如何高效无偏（unbiased）的产生某一种排列。现代优秀的shuffle算法在线性时间$O(n)$和常数空间$O(1)$复杂度下完成unbiased的Shuffle。</p>
-<h1 id="Naivete-Solution"><a href="#Naivete-Solution" class="headerlink" title="Naïveté Solution"></a>Naïveté Solution</h1><p>初次面对Shuffle问题，我们可能会很快想到一些非常直接的方法，程序的运行结果看上去也正确，然而这些方法却存在着一些问题。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">输入：数组A[<span class="number">1</span>,...,n] </span><br><span class="line">输出：Shuffle后的数组A[<span class="number">1</span>,...,n]  </span><br><span class="line"><span class="keyword">for</span> i = <span class="number">1</span> to n</span><br><span class="line">  j = random(<span class="number">1</span>, n)   //random(a,b)产生随机数x，x∈[a,b] </span><br><span class="line">  swap(A[i], A[j])</span><br></pre></td></tr></table></figure>
-<p>比如说上面这个方法，随机找一个元素与当前元素交换，这不就Shuffle了吗？然而，我们以序列(1,2,3)为例，进行了100万次Naïveté Shuffle测试，所得各种排列分布如下，</p>
-<center><img src="/2016/08/15/Fisher-Yates_Shuffle/./naive_shuffle_test.png" width="65%"></center>
-
-<p>好像和我们想象的不太一样！不难算出，上面的Naïveté Shuffle总共产生了$n^n$种排列，显然其并不能被排列数$n!$整除。这就说明产生的结果中有重复项。如果想了解更多请看<a href="https://blog.codinghorror.com/the-danger-of-naivete/" target="_blank" rel="noopener">这里</a>。</p>
-<h1 id="Knuth-Shuffle"><a href="#Knuth-Shuffle" class="headerlink" title="Knuth-Shuffle"></a>Knuth-Shuffle</h1><p>Knuth-Shuffle是现代最众所周知和广为使用的Shuffle算法。在常见的库函数，例如C++的std::random_shuffle()，Java的java.util.collections.shuffle()，python的random.shuffle()所使用的Shuffle算法全部为Knuth-Shuffle。虽然挂着Donald Knuth的大名，但是这个算法其实是Richard Durstenfeld于1964年提出的，Donald Knuth通过他的<strong><em>The Art of Computer Programming</em></strong>让人们广泛了解和使用了Knuth-Shuffle。</p>
-<p>Knuth-Shuffle非常简单，一个指针顺序扫下去，每一次跟未被扫到的部分中随机的某一元素交换。代码也不过几行，</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">输入：数组A[<span class="number">1</span>,...,n] </span><br><span class="line">输出：Shuffle后的数组A[<span class="number">1</span>,...,n]  </span><br><span class="line"><span class="keyword">for</span> i = <span class="number">1</span> to n</span><br><span class="line">  j = random(i, n)   //random(a,b)产生随机数x，x∈[a,b] </span><br><span class="line">  swap(A[i], A[j])</span><br></pre></td></tr></table></figure>
-<p>Knuth-Shuffle以$O(n)$的时间复杂度和$O(1)$的空间复杂度完成Shuffle操作，那么产生各种序列的概率是否相同呢？</p>
-<p>以序列(1,2,3)为例，进行了100万次Knuth-Shuffle测试，所得各种排列分布如下，</p>
-<center><img src="/2016/08/15/Fisher-Yates_Shuffle/./knuth_shuffle_test.png" width="65%"></center>
-
-<p>可以看到，Knuth-Shuffle的确保证了等概率，严格的数学证明请移步香港中文大学陶宇飞教授的一篇<a href="https://dotblogs.com.tw/litfal/2015/01/02/knuth_shuffle_proof" target="_blank" rel="noopener">Lecture Notes</a>[4]。</p>
-<h1 id="Inside-out-Shuffle"><a href="#Inside-out-Shuffle" class="headerlink" title="Inside-out Shuffle"></a>Inside-out Shuffle</h1><p>Knuth-Shuffle在空间上高效的原地进行了Shuffle操作，然而在某些情况下，我们同时需要原始序列和Shuffled序列。Inside-out Shuffle可以在对新序列初始化的同时完成Shuffle操作。Inside-out Shuffle的思路是，顺序扫描并初始化新序列，将原始序列当前所指元素，填入新序列已初始化的某个位置，并将该位置的元素放入新序列的当前位置。代码同样很短。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">输入：数组A[<span class="number">1</span>,...,n] </span><br><span class="line">输出：Shuffle后的数组B[<span class="number">1</span>,...,n]  </span><br><span class="line"><span class="keyword">for</span> i = <span class="number">1</span> to n</span><br><span class="line">  j = random(<span class="number">1</span>, i)   //random(a,b)产生随机数x，x∈[a,b] </span><br><span class="line">  <span class="keyword">if</span> (j != i)</span><br><span class="line">    B[i] = B[j]</span><br><span class="line">  B[j] = A[i]</span><br></pre></td></tr></table></figure>
-<p>Inside-out Shuffle以$O(n)$的时间复杂度和$O(n)$的空间复杂度完成Shuffle操作，同时保留了原始序列。</p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p>[1] <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle" target="_blank" rel="noopener">Wikipedia, Fisher–Yates shuffle</a><br>[2] <a href="http://jwilson.coe.uga.edu/emt725/Shuffle/Shuffle.html" target="_blank" rel="noopener">Mathematics Education , The University of Georgia </a><br>[3] <a href="http://arxiv.org/pdf/0805.1598v1.pdf" target="_blank" rel="noopener">Jain P. A simple in-place algorithm for in-shuffle[J]. arXiv preprint arXiv:0805.1598, 2008.</a><br>[4] <a href="http://www.cse.cuhk.edu.hk/~taoyf/course/wst501/notes/lec9.pdf" target="_blank" rel="noopener">Yufei Tao, Lecture Notes: Random shuffling and sampling</a><br>[5] <a href="https://blog.codinghorror.com/the-danger-of-naivete/" target="_blank" rel="noopener">Codinghorror, The Danger of Naïveté,</a><br>​    </p>
-
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>去年公司某RPG游戏上线，各个老板们都去组团体验，作为小弟的我们也跟风练号刷副本。没过几天，老大抛给我一个问题，说自己加了很多好友，但是想刷副本的时候，基本上没几个人在线。能不能根据玩家在线的时间段推荐相似的好友？</p>
+<p>这个场景在游戏中其实很常见，比副本更常见的一种情况是“国战”。以前做的一款卡牌游戏，战队之间对战要求至少3人在线参与，功能上线半年了，战队赛基本就没打成过。当然这个问题最后通过增加战队最大人数解决了，但是人数增加势必会降低每个玩家在战队中的参与度，如果加的太多，就会导致大量队员”潜水“。如果当时能在战队推荐中加入”在线习惯“，应该会比改人数效果好一些。</p>
+<h1 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h1><p>推荐的本质是排序。给用户推荐用户，就是要找到一个相似度评估函数<strong>E</strong>来衡量两个用户的”上线习惯“是否相似。然后把目标玩家与所有玩家的相似度一一计算，并按序推荐。</p>
+<p>说概念简单，做事情难，下面是我遇到的一些问题：</p>
+<ol>
+<li>如何表示每个玩家的在线习惯，新玩家怎么办？</li>
+<li>如何设计相似度评估函数？ </li>
+<li>系统如何支持千万以上量级的玩家？</li>
+</ol>
+<p>建议在此处思考一下，如果是你，如何解决上面的问题。欢迎在评论区留言：）</p>
+<h1 id="我的做法"><a href="#我的做法" class="headerlink" title="我的做法"></a>我的做法</h1><p>使用一个24维向量描述用户24个小时的在线习惯，每一维表示玩家在此时刻内在线的概率。</p>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1>
       
     </div>
 
@@ -448,7 +424,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Algorithm/" rel="tag"># Algorithm</a>
+            <a href="/tags/算法/" rel="tag"># 算法</a>
           
         </div>
       
@@ -461,15 +437,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2016/08/15/Fisher-Yates_Shuffle/" rel="next" title="Fisher–Yates Shuffle(洗牌算法)">
+                <i class="fa fa-chevron-left"></i> Fisher–Yates Shuffle(洗牌算法)
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/02/14/FriendRecommend/" rel="prev" title="一起打副本">
-                一起打副本 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -601,7 +577,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#What-is-Shuffle"><span class="nav-number">1.</span> <span class="nav-text">What is Shuffle</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Naivete-Solution"><span class="nav-number">2.</span> <span class="nav-text">Naïveté Solution</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Knuth-Shuffle"><span class="nav-number">3.</span> <span class="nav-text">Knuth-Shuffle</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Inside-out-Shuffle"><span class="nav-number">4.</span> <span class="nav-text">Inside-out Shuffle</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#思考"><span class="nav-number">2.</span> <span class="nav-text">思考</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#我的做法"><span class="nav-number">3.</span> <span class="nav-text">我的做法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最后"><span class="nav-number">4.</span> <span class="nav-text">最后</span></a></li></ol></div>
             
 
           </div>
