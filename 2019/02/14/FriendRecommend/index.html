@@ -96,18 +96,18 @@
 
 
 
-  <meta name="description" content="前言去年公司某RPG游戏上线，各个老板们都去组团体验，作为小弟的我们也跟风练号刷副本。没过几天，老大抛给我一个问题，说自己加了很多好友，但是想刷副本的时候，基本上没几个人在线。能不能根据玩家在线的时间段推荐相似的好友？ 这个场景在游戏中其实很常见，比副本更常见的一种情况是“国战”。以前做的一款卡牌游戏，战队之间对战要求至少3人在线参与，功能上线半年了，战队赛基本就没打成过。当然这个问题最后通过增加">
+  <meta name="description" content="去年公司某RPG游戏上线，各个老板们都去组团体验，作为小弟的我们也跟风练号刷副本。没过几天，老大抛给我一个问题，说自己加了很多好友，但是想刷副本的时候，基本上没几个人在线。能不能根据玩家在线的时间段推荐相似的好友？">
 <meta name="keywords" content="算法">
 <meta property="og:type" content="article">
 <meta property="og:title" content="一起打副本">
 <meta property="og:url" content="http://changliu.me/2019/02/14/FriendRecommend/index.html">
 <meta property="og:site_name" content="刘畅的博客">
-<meta property="og:description" content="前言去年公司某RPG游戏上线，各个老板们都去组团体验，作为小弟的我们也跟风练号刷副本。没过几天，老大抛给我一个问题，说自己加了很多好友，但是想刷副本的时候，基本上没几个人在线。能不能根据玩家在线的时间段推荐相似的好友？ 这个场景在游戏中其实很常见，比副本更常见的一种情况是“国战”。以前做的一款卡牌游戏，战队之间对战要求至少3人在线参与，功能上线半年了，战队赛基本就没打成过。当然这个问题最后通过增加">
+<meta property="og:description" content="去年公司某RPG游戏上线，各个老板们都去组团体验，作为小弟的我们也跟风练号刷副本。没过几天，老大抛给我一个问题，说自己加了很多好友，但是想刷副本的时候，基本上没几个人在线。能不能根据玩家在线的时间段推荐相似的好友？">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-02-14T07:57:36.274Z">
+<meta property="og:updated_time" content="2019-02-14T08:05:55.912Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="一起打副本">
-<meta name="twitter:description" content="前言去年公司某RPG游戏上线，各个老板们都去组团体验，作为小弟的我们也跟风练号刷副本。没过几天，老大抛给我一个问题，说自己加了很多好友，但是想刷副本的时候，基本上没几个人在线。能不能根据玩家在线的时间段推荐相似的好友？ 这个场景在游戏中其实很常见，比副本更常见的一种情况是“国战”。以前做的一款卡牌游戏，战队之间对战要求至少3人在线参与，功能上线半年了，战队赛基本就没打成过。当然这个问题最后通过增加">
+<meta name="twitter:description" content="去年公司某RPG游戏上线，各个老板们都去组团体验，作为小弟的我们也跟风练号刷副本。没过几天，老大抛给我一个问题，说自己加了很多好友，但是想刷副本的时候，基本上没几个人在线。能不能根据玩家在线的时间段推荐相似的好友？">
 
 
 
@@ -351,7 +351,7 @@
                 
               
 
-              <time title="创建时间：2019-02-14 14:45:57 / 修改时间：15:57:36" itemprop="dateCreated datePublished" datetime="2019-02-14T14:45:57+08:00">2019-02-14</time>
+              <time title="创建时间：2019-02-14 14:45:57 / 修改时间：16:05:55" itemprop="dateCreated datePublished" datetime="2019-02-14T14:45:57+08:00">2019-02-14</time>
             
 
             
@@ -390,7 +390,8 @@
       
 
       
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>去年公司某RPG游戏上线，各个老板们都去组团体验，作为小弟的我们也跟风练号刷副本。没过几天，老大抛给我一个问题，说自己加了很多好友，但是想刷副本的时候，基本上没几个人在线。能不能根据玩家在线的时间段推荐相似的好友？</p>
+        <p>去年公司某RPG游戏上线，各个老板们都去组团体验，作为小弟的我们也跟风练号刷副本。没过几天，老大抛给我一个问题，说自己加了很多好友，但是想刷副本的时候，基本上没几个人在线。能不能根据玩家在线的时间段推荐相似的好友？</p>
+<a id="more"></a>
 <p>这个场景在游戏中其实很常见，比副本更常见的一种情况是“国战”。以前做的一款卡牌游戏，战队之间对战要求至少3人在线参与，功能上线半年了，战队赛基本就没打成过。当然这个问题最后通过增加战队最大人数解决了，但是人数增加势必会降低每个玩家在战队中的参与度，如果加的太多，就会导致大量队员”潜水“。如果当时能在战队推荐中加入”在线习惯“，应该会比改人数效果好一些。</p>
 <h1 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h1><p>推荐的本质是排序。给用户推荐用户，就是要找到一个相似度评估函数<strong>E</strong>来衡量两个用户的”上线习惯“是否相似。然后把目标玩家与所有玩家的相似度一一计算，并按序推荐。</p>
 <p>说概念简单，做事情难，下面是我遇到的一些问题：</p>
@@ -577,7 +578,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#思考"><span class="nav-number">2.</span> <span class="nav-text">思考</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#我的做法"><span class="nav-number">3.</span> <span class="nav-text">我的做法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最后"><span class="nav-number">4.</span> <span class="nav-text">最后</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#思考"><span class="nav-number">1.</span> <span class="nav-text">思考</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#我的做法"><span class="nav-number">2.</span> <span class="nav-text">我的做法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最后"><span class="nav-number">3.</span> <span class="nav-text">最后</span></a></li></ol></div>
             
 
           </div>

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://changliu.me/"/>
-  <updated>2019-02-14T07:57:36.274Z</updated>
+  <updated>2019-02-14T08:05:55.912Z</updated>
   <id>http://changliu.me/</id>
   
   <author>
@@ -20,11 +20,11 @@
     <link href="http://changliu.me/2019/02/14/FriendRecommend/"/>
     <id>http://changliu.me/2019/02/14/FriendRecommend/</id>
     <published>2019-02-14T06:45:57.000Z</published>
-    <updated>2019-02-14T07:57:36.274Z</updated>
+    <updated>2019-02-14T08:05:55.912Z</updated>
     
     <summary type="html">
     
-      &lt;h1 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;去年公司某RPG游戏上线，各个老板们都去组团体验，作为小弟的我们也跟风练号刷副本。没过几天，老大抛给我一个问题，说自己加了很多好友，但是想刷
+      &lt;p&gt;去年公司某RPG游戏上线，各个老板们都去组团体验，作为小弟的我们也跟风练号刷副本。没过几天，老大抛给我一个问题，说自己加了很多好友，但是想刷副本的时候，基本上没几个人在线。能不能根据玩家在线的时间段推荐相似的好友？&lt;/p&gt;
     
     </summary>
     
@@ -38,11 +38,11 @@
     <link href="http://changliu.me/2016/08/15/Fisher-Yates_Shuffle/"/>
     <id>http://changliu.me/2016/08/15/Fisher-Yates_Shuffle/</id>
     <published>2016-08-14T16:00:00.000Z</published>
-    <updated>2019-02-14T03:46:54.489Z</updated>
+    <updated>2019-02-14T08:06:40.546Z</updated>
     
     <summary type="html">
     
-      &lt;h1 id=&quot;What-is-Shuffle&quot;&gt;&lt;a href=&quot;#What-is-Shuffle&quot; class=&quot;headerlink&quot; title=&quot;What is Shuffle&quot;&gt;&lt;/a&gt;What is Shuffle&lt;/h1&gt;&lt;p&gt;排序算法(Sort Algorith
+      &lt;p&gt;排序算法(Sort Algorithm)给出了将无序的序列变为有序的方法。然而在很多情况下，我们反而需要产生混乱无序的状态。Shuffle算法的作用就是产生这种“无序”。&lt;/p&gt;
     
     </summary>
     
