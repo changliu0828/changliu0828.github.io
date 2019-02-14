@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://changliu.me/"/>
-  <updated>2019-02-14T08:05:55.912Z</updated>
+  <updated>2019-02-14T08:44:38.021Z</updated>
   <id>http://changliu.me/</id>
   
   <author>
@@ -17,10 +17,10 @@
   
   <entry>
     <title>一起打副本</title>
-    <link href="http://changliu.me/2019/02/14/FriendRecommend/"/>
-    <id>http://changliu.me/2019/02/14/FriendRecommend/</id>
+    <link href="http://changliu.me/2019/02/14/%E4%B8%80%E8%B5%B7%E5%88%B7%E5%89%AF%E6%9C%AC/"/>
+    <id>http://changliu.me/2019/02/14/一起刷副本/</id>
     <published>2019-02-14T06:45:57.000Z</published>
-    <updated>2019-02-14T08:05:55.912Z</updated>
+    <updated>2019-02-14T08:44:38.021Z</updated>
     
     <summary type="html">
     
@@ -34,11 +34,11 @@
   </entry>
   
   <entry>
-    <title>Fisher–Yates Shuffle(洗牌算法)</title>
-    <link href="http://changliu.me/2016/08/15/Fisher-Yates_Shuffle/"/>
-    <id>http://changliu.me/2016/08/15/Fisher-Yates_Shuffle/</id>
+    <title>洗牌算法</title>
+    <link href="http://changliu.me/2016/08/15/%E6%B4%97%E7%89%8C%E7%AE%97%E6%B3%95/"/>
+    <id>http://changliu.me/2016/08/15/洗牌算法/</id>
     <published>2016-08-14T16:00:00.000Z</published>
-    <updated>2019-02-14T08:06:40.546Z</updated>
+    <updated>2019-02-14T09:14:42.836Z</updated>
     
     <summary type="html">
     
@@ -47,7 +47,7 @@
     </summary>
     
     
-      <category term="Algorithm" scheme="http://changliu.me/tags/Algorithm/"/>
+      <category term="算法" scheme="http://changliu.me/tags/%E7%AE%97%E6%B3%95/"/>
     
   </entry>
   
