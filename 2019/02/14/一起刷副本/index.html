@@ -104,7 +104,7 @@
 <meta property="og:site_name" content="刘畅的博客">
 <meta property="og:description" content="去年公司某RPG游戏上线，各个老板们都去组团体验，作为小弟的我们也跟风练号刷副本。没过几天，老大抛给我一个问题，说自己加了很多好友，但是想刷副本的时候，基本上没几个人在线。能不能根据玩家在线的时间段推荐相似的好友？">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-02-14T08:44:38.021Z">
+<meta property="og:updated_time" content="2019-02-15T03:10:47.226Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="一起打副本">
 <meta name="twitter:description" content="去年公司某RPG游戏上线，各个老板们都去组团体验，作为小弟的我们也跟风练号刷副本。没过几天，老大抛给我一个问题，说自己加了很多好友，但是想刷副本的时候，基本上没几个人在线。能不能根据玩家在线的时间段推荐相似的好友？">
@@ -349,12 +349,24 @@
                 
               
 
-              <time title="创建时间：2019-02-14 14:45:57 / 修改时间：16:44:38" itemprop="dateCreated datePublished" datetime="2019-02-14T14:45:57+08:00">2019-02-14</time>
+              <time title="创建时间：2019-02-14 14:45:57" itemprop="dateCreated datePublished" datetime="2019-02-14T14:45:57+08:00">2019-02-14</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-02-15 11:10:47" itemprop="dateModified" datetime="2019-02-15T11:10:47+08:00">2019-02-15</time>
               
             
           </span>
@@ -410,9 +422,23 @@
 <li>系统如何支持千万以上量级的玩家？</li>
 </ol>
 <p>建议在此处思考一下，如果是你，如何解决上面的问题。欢迎在评论区留言：）</p>
-<h1 id="我的做法"><a href="#我的做法" class="headerlink" title="我的做法"></a>我的做法</h1><p>使用一个24维向量描述用户24个小时的在线习惯，每一维表示玩家在此时刻内在线的概率。</p>
-<p>例如，一个用户在10天内，有2天登录了游戏。第一天，</p>
-<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1>
+<h1 id="我的做法"><a href="#我的做法" class="headerlink" title="我的做法"></a>我的做法</h1><h2 id="在线向量"><a href="#在线向量" class="headerlink" title="在线向量"></a>在线向量</h2><p>使用一个24维向量描述用户24个小时的在线习惯，<strong>每一维表示玩家在此时刻内在线的概率</strong>，我们称为“在线向量”。</p>
+<p>举例来说，一个用户第一天注册，并且在0点到1点之间有在线记录。那么通过今天的统计，该玩家在0点到1点之间的在线概率为1，其余时刻的在线概率为0。他的在线向量在第0位记为1，其余位记为0，即</p>
+<p>$$ V_1 = (1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ​$$</p>
+<p>如果放到长时间的统计，例如一个用户在10天内，有两天登录了游戏，</p>
+<ul>
+<li>第一次的在线时间，0点-1点，22点-23点</li>
+<li>第二次的在线时间，0点-1点，23点-0点</li>
+</ul>
+<p>那么他的在线向量为，</p>
+<p>$$ V_2 = (\frac{1+1}{10}, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \frac{1}{10}, \frac{1}{10}) ​$$</p>
+<p>使用在线向量，我们可以粗略刻画玩家在某个时间点在线的期望。此外，在线向量也在一定程度上刻画了用户的活跃情况，对于频繁上线的用户，其在线向量的norm会大于不常上线的玩家。</p>
+<h2 id="在线相似度"><a href="#在线相似度" class="headerlink" title="在线相似度"></a>在线相似度</h2><p>对于两个玩家之间的在线相似度，我们使用两人的在线向量的內积表示，上面两人的在线相似度为，</p>
+<p>$$ S_{12} = V_1 \cdot V_2 = 0.2 ​$$</p>
+<p>假设我们有用户3，其的在线向量为，</p>
+<p>$$ V_3 = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.8, 0.8) ​$$</p>
+<p>则用户2和用户3的相似度为$ S_{23} = V_2 \cdot V_3 = 0.16 $，则对于用户2而言，推荐用户1作为其好友要优于推荐用户3。</p>
+<h2 id="聚类-排序"><a href="#聚类-排序" class="headerlink" title="聚类+排序"></a>聚类+排序</h2><h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1>
       
     </div>
 
@@ -441,6 +467,60 @@
       
 
       
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+              <div>
+                
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+              </div>
+            
+            
+          </div>
+        
+        </div>
       
       
 
@@ -596,7 +676,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#思考"><span class="nav-number">1.</span> <span class="nav-text">思考</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#我的做法"><span class="nav-number">2.</span> <span class="nav-text">我的做法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最后"><span class="nav-number">3.</span> <span class="nav-text">最后</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#思考"><span class="nav-number">1.</span> <span class="nav-text">思考</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#我的做法"><span class="nav-number">2.</span> <span class="nav-text">我的做法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#在线向量"><span class="nav-number">2.1.</span> <span class="nav-text">在线向量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在线相似度"><span class="nav-number">2.2.</span> <span class="nav-text">在线相似度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#聚类-排序"><span class="nav-number">2.3.</span> <span class="nav-text">聚类+排序</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最后"><span class="nav-number">3.</span> <span class="nav-text">最后</span></a></li></ol></div>
             
 
           </div>
