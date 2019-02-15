@@ -40,6 +40,10 @@
 
 
 
+  
+  
+  <link rel="stylesheet" href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5">
+
 
 
 
@@ -75,7 +79,7 @@
     scheme: 'Gemini',
     version: '7.0.0',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: false,
+    fancybox: true,
     fastclick: false,
     lazyload: false,
     tabs: true,
@@ -433,7 +437,7 @@
 <h1 id="Naivete-Solution"><a href="#Naivete-Solution" class="headerlink" title="Naïveté Solution"></a>Naïveté Solution</h1><p>初次面对Shuffle问题，我们可能会很快想到一些非常直接的方法，程序的运行结果看上去也正确，然而这些方法却存在着一些问题。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">输入：数组A[<span class="number">1</span>,...,n] </span><br><span class="line">输出：Shuffle后的数组A[<span class="number">1</span>,...,n]  </span><br><span class="line"><span class="keyword">for</span> i = <span class="number">1</span> to n</span><br><span class="line">  j = random(<span class="number">1</span>, n)   //random(a,b)产生随机数x，x∈[a,b] </span><br><span class="line">  swap(A[i], A[j])</span><br></pre></td></tr></table></figure>
 <p>比如说上面这个方法，随机找一个元素与当前元素交换，这不就Shuffle了吗？然而，我们以序列(1,2,3)为例，进行了100万次Naïveté Shuffle测试，所得各种排列分布如下，</p>
-<center><img src="/2016/08/15/洗牌算法/./naive_shuffle_test.png" width="65%"></center>
+<center><img src="/2016/08/15/洗牌算法/naive_shuffle_test.png" width="65%"></center>
 
 <p>好像和我们想象的不太一样！不难算出，上面的Naïveté Shuffle总共产生了$n^n$种排列，显然其并不能被排列数$n!$整除。这就说明产生的结果中有重复项。如果想了解更多请看<a href="https://blog.codinghorror.com/the-danger-of-naivete/" target="_blank" rel="noopener">这里</a>。</p>
 <h1 id="Knuth-Shuffle"><a href="#Knuth-Shuffle" class="headerlink" title="Knuth-Shuffle"></a>Knuth-Shuffle</h1><p>Knuth-Shuffle是现代最众所周知和广为使用的Shuffle算法。在常见的库函数，例如C++的std::random_shuffle()，Java的java.util.collections.shuffle()，python的random.shuffle()所使用的Shuffle算法全部为Knuth-Shuffle。虽然挂着Donald Knuth的大名，但是这个算法其实是Richard Durstenfeld于1964年提出的，Donald Knuth通过他的<strong><em>The Art of Computer Programming</em></strong>让人们广泛了解和使用了Knuth-Shuffle。</p>
@@ -441,7 +445,7 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">输入：数组A[<span class="number">1</span>,...,n] </span><br><span class="line">输出：Shuffle后的数组A[<span class="number">1</span>,...,n]  </span><br><span class="line"><span class="keyword">for</span> i = <span class="number">1</span> to n</span><br><span class="line">  j = random(i, n)   //random(a,b)产生随机数x，x∈[a,b] </span><br><span class="line">  swap(A[i], A[j])</span><br></pre></td></tr></table></figure>
 <p>Knuth-Shuffle以$O(n)$的时间复杂度和$O(1)$的空间复杂度完成Shuffle操作，那么产生各种序列的概率是否相同呢？</p>
 <p>以序列(1,2,3)为例，进行了100万次Knuth-Shuffle测试，所得各种排列分布如下，</p>
-<center><img src="/2016/08/15/洗牌算法/./knuth_shuffle_test.png" width="65%"></center>
+<center><img src="/2016/08/15/洗牌算法/knuth_shuffle_test.png" width="65%"></center>
 
 <p>可以看到，Knuth-Shuffle的确保证了等概率，严格的数学证明请移步香港中文大学陶宇飞教授的一篇<a href="https://dotblogs.com.tw/litfal/2015/01/02/knuth_shuffle_proof" target="_blank" rel="noopener">Lecture Notes</a>[4]。</p>
 <h1 id="Inside-out-Shuffle"><a href="#Inside-out-Shuffle" class="headerlink" title="Inside-out Shuffle"></a>Inside-out Shuffle</h1><p>Knuth-Shuffle在空间上高效的原地进行了Shuffle操作，然而在某些情况下，我们同时需要原始序列和Shuffled序列。Inside-out Shuffle可以在对新序列初始化的同时完成Shuffle操作。Inside-out Shuffle的思路是，顺序扫描并初始化新序列，将原始序列当前所指元素，填入新序列已初始化的某个位置，并将该位置的元素放入新序列的当前位置。代码同样很短。</p>
@@ -727,6 +731,8 @@
 
 
 
+  
+
 
 
 
@@ -749,6 +755,9 @@
 
   
   <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 
 
   
