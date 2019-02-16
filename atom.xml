@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://changliu.me/"/>
-  <updated>2019-02-15T13:29:41.076Z</updated>
+  <updated>2019-02-16T03:27:40.687Z</updated>
   <id>http://changliu.me/</id>
   
   <author>
@@ -16,15 +16,15 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>一起打副本</title>
-    <link href="http://changliu.me/2019/02/14/%E4%B8%80%E8%B5%B7%E5%88%B7%E5%89%AF%E6%9C%AC/"/>
-    <id>http://changliu.me/2019/02/14/一起刷副本/</id>
+    <title>根据在线时间推荐好友</title>
+    <link href="http://changliu.me/2019/02/14/UserRecommedationByOnlineTime/"/>
+    <id>http://changliu.me/2019/02/14/UserRecommedationByOnlineTime/</id>
     <published>2019-02-14T06:45:57.000Z</published>
-    <updated>2019-02-15T13:29:41.076Z</updated>
+    <updated>2019-02-16T03:27:40.687Z</updated>
     
     <summary type="html">
     
-      &lt;p&gt;去年公司某RPG游戏上线，各个老板们都去组团体验，作为小弟的我们也跟风练号刷副本。没过几天，老大抛给我一个问题，说自己加了很多好友，但是想刷副本的时候，基本上没几个人在线。能不能根据玩家在线的时间段推荐相似的好友？&lt;/p&gt;
+      &lt;p&gt;去年公司某RPG游戏上线，各个老板们都去组团体验，作为小弟的我们也跟风练号刷副本。没过几天，老大抛给我一个问题，说自己加了很多好友，但是想刷副本的时候，基本上没几个人在线。能不能根据玩家在线的时间段推荐相似的好友呢？&lt;/p&gt;
     
     </summary>
     
