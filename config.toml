@@ -1,4 +1,8 @@
 baseURL = "https://changliu0828.github.io/"
 languageCode = "en-us"
-title = "ChangLiu"
-theme = "cactus"
+title = "刘畅"
+theme = ["whiteplain-light", "whiteplain"]
+disqusShortname = "ChangLiu"
+[params.author]
+  name = "刘畅"
+  email = "changliu0828@gmail.com"
