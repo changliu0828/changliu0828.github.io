@@ -3,16 +3,18 @@ languageCode = "en-us"
 title = "刘畅"
 theme = ["whiteplain-light", "whiteplain"]
 disqusShortname = "ChangLiu"
+summaryLength=20
+[params]
 [params.author]
   name = "刘畅"
   email = "changliu0828@gmail.com"
 
 # Header Menu
 [[menu.main]]
-  name = "About"
-  identifier = "about"
-  url = "/about/"
-  weight = 4
+  name = "Archives"
+  identifier = "archives"
+  url = "/archives/"
+  weight = 1
 [markup]
   [markup.highlight]
     codeFences = true
