@@ -13,3 +13,13 @@ disqusShortname = "ChangLiu"
   identifier = "about"
   url = "/about/"
   weight = 4
+[markup]
+  [markup.highlight]
+    codeFences = true
+    hl_Lines = ""
+    lineNoStart = 1
+    lineNos = true 
+    lineNumbersInTable = true
+    noClasses = true
+    style = "github"
+    tabWidth = 2
