@@ -5,3 +5,13 @@ draft: false
 ---
 
 Hello
+
+$$
+f(x) = y
+$$
+
+```cpp
+int main() {
+  return 0;
+}
+```

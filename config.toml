@@ -6,3 +6,10 @@ disqusShortname = "ChangLiu"
 [params.author]
   name = "刘畅"
   email = "changliu0828@gmail.com"
+
+# Header Menu
+[[menu.main]]
+  name = "About"
+  identifier = "about"
+  url = "/about/"
+  weight = 4
