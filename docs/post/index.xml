@@ -17,7 +17,9 @@
       <pubDate>Fri, 14 Aug 2020 15:23:39 +0800</pubDate>
       
       <guid>https://changliu0828.github.io/post/hello/</guid>
-      <description>Hello</description>
+      <description>Hello
+$$ f(x) = y $$
+int main() { return 0; } </description>
     </item>
     
   </channel>
