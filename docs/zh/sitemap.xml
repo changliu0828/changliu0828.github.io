@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://changliu0828.github.io/post/cpp-features/cpp-features.html</loc>
+    <lastmod>2020-08-17T16:08:08+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://changliu0828.github.io/post.html</loc>
+    <lastmod>2020-08-17T16:08:08+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://changliu0828.github.io/</loc>
+    <lastmod>2020-08-17T16:08:08+08:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://changliu0828.github.io/en/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="https://changliu0828.github.io/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://changliu0828.github.io/archives.html</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://changliu0828.github.io/categories.html</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://changliu0828.github.io/en/categories.html"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="https://changliu0828.github.io/categories.html"
+                />
+  </url>
+  
+  <url>
+    <loc>https://changliu0828.github.io/tags.html</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://changliu0828.github.io/en/tags.html"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="https://changliu0828.github.io/tags.html"
+                />
+  </url>
+  
+</urlset>

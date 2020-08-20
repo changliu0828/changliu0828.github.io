@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>c&#43;&#43;11特性简介 - 刘畅的博客</title>
+  <meta property="og:title" content="c&#43;&#43;11特性简介 - 刘畅的博客" />
+  <meta name="twitter:title" content="c&#43;&#43;11特性简介 - 刘畅的博客" />
+  <meta name="description" content="1. 前言 C&#43;&#43;自1985年发行以来成为了世界上最成功的的编程语言之一。本文总结了C&#43;&#43;11引入的部分重要特性。完整特性与编译器支持请参考这里$^{[1]}$。
+   年份 标准 支持的GCC版本 重要特性     2020 c&#43;&#43;20 8-11    2017 c&#43;&#43;17/c&#43;&#43;1z 5-7    2014 C&#43;&#43;14/c&#43;&#43;1y 4.">
+  <meta property="og:description" content="1. 前言 C&#43;&#43;自1985年发行以来成为了世界上最成功的的编程语言之一。本文总结了C&#43;&#43;11引入的部分重要特性。完整特性与编译器支持请参考这里$^{[1]}$。
+   年份 标准 支持的GCC版本 重要特性     2020 c&#43;&#43;20 8-11    2017 c&#43;&#43;17/c&#43;&#43;1z 5-7    2014 C&#43;&#43;14/c&#43;&#43;1y 4.">
+  <meta name="twitter:description" content="1. 前言 C&#43;&#43;自1985年发行以来成为了世界上最成功的的编程语言之一。本文总结了C&#43;&#43;11引入的部分重要特性。完整特性与编译器支持请参考这里$^{[1]}$。
+   年份 标准 支持的GCC版本 重要特性     2020 c&#43;&#43;20 8-11    2017 c&#43;&#43;17/c&#43;&#43;1z 5-7    2014 C&#43;&#43;14/c&#43;&#43;1y 4.">
+  <meta name="author" content="刘畅"/>
+  <meta property="og:site_name" content="刘畅的博客" />
+  <meta property="og:url" content="https://changliu0828.github.io/post/cpp-features/cpp-features/" />
+  <meta property="og:type" content="article" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="generator" content="Hugo 0.74.3" />
+
+  <link rel="stylesheet" href="/css/style.css" media="all" />
+  <link rel="stylesheet" href="/css/syntax.css" media="all" />
+  <link rel="stylesheet" href="/css/custom.css" media="all" />
+
+  <script src="/js/script.js"></script>
+  <script src="/js/custom.js"></script>
+  <script defer src="/js/fontawesome.js"></script>
+
+  <script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+</head>
+
+<body>
+
+<header class="site-header">
+  <nav class="site-navi">
+    <h1 class="site-title"><a href="/">刘畅的博客</a></h1>
+    <ul class="site-navi-items">
+      <li class="site-navi-item-archives"><a href="/archives/" title="归档">归档</a></li>
+    </ul>
+  </nav>
+</header>
+<hr class="site-header-bottom">
+
+  <div class="main" role="main">
+    <article class="article">
+      
+      
+      <h1 class="article-title">c&#43;&#43;11特性简介</h1>
+      
+      <hr class="article-title-bottom">
+      <ul class="article-meta">
+        <li class="article-meta-date"><time>August 17, 2020</time></li>
+      </ul>
+      
+<aside class="toc">
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-前言">1. 前言</a></li>
+    <li><a href="#2-部分特性及示例">2. 部分特性及示例</a>
+      <ul>
+        <li><a href="#21-右值引用rvalue-references">2.1. 右值引用(rvalue references)</a>
+          <ul>
+            <li><a href="#表达式的值">表达式的值</a></li>
+            <li><a href="#右值引用">右值引用</a></li>
+          </ul>
+        </li>
+        <li><a href="#22-移动语义move-semantics">2.2. 移动语义(move semantics)</a>
+          <ul>
+            <li><a href="#stdmove">std::move</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+</aside>
+
+      <h1 id="1-前言">1. 前言</h1>
+<p>C++自1985年发行以来成为了世界上最成功的的编程语言之一。本文总结了C++11引入的部分重要特性。完整特性与编译器支持请参考<a href="https://en.cppreference.com/w/cpp/compiler_support">这里$^{[1]}$</a>。</p>
+<table>
+<thead>
+<tr>
+<th>年份</th>
+<th>标准</th>
+<th>支持的GCC版本</th>
+<th>重要特性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2020</td>
+<td>c++20</td>
+<td>8-11</td>
+<td></td>
+</tr>
+<tr>
+<td>2017</td>
+<td>c++17/c++1z</td>
+<td>5-7</td>
+<td></td>
+</tr>
+<tr>
+<td>2014</td>
+<td>C++14/c++1y</td>
+<td>4.9</td>
+<td>函数返回类型推导，泛型lamda表达式</td>
+</tr>
+<tr>
+<td>2011</td>
+<td>c++11/c++0x</td>
+<td>4.3-4.8</td>
+<td>右值引用/移动语义/lamda表达式/多线程支持</td>
+</tr>
+<tr>
+<td>2003</td>
+<td>c++03</td>
+<td></td>
+<td>对c++98版本的技术修订</td>
+</tr>
+<tr>
+<td>1998</td>
+<td>c++98</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h1 id="2-部分特性及示例">2. 部分特性及示例</h1>
+<h2 id="21-右值引用rvalue-references">2.1. 右值引用(rvalue references)</h2>
+<h3 id="表达式的值">表达式的值</h3>
+<p>在C++中任意一个表达式都由<strong>类型</strong>和<strong>值</strong>两部分组成，类型为其在内存中的解析方式，值为其在内存中的内容。标题中的“右值”即为值的一种分类。</p>
+<p>在C语言时代，表达式的值可以主要分为左值(lvalue)与右值(rvalue)。而在C++11中引入了将亡值（xvalue的概念。在C++17中更进一步引入了，纯右值（prvalue）及泛左值（glvalue）的概念，更详细的信息请参考<a href="https://en.cppreference.com/w/cpp/language/value_category">这里$^{[2]}$</a>。下图展示了值分类的从属关系，对于每种分类，我们分别举例来说明，</p>
+<p>![value_category.jpg](image/value_category.jpg =335x141)</p>
+<ul>
+<li>
+<p>左值(lvalue)：左值指明了一个函数或者对象。例如<code>++a</code>，<code>*p</code>，<code>std::cout&lt;&lt;1</code>的返回值。</p>
+</li>
+<li>
+<p>将亡值(xvalue)：指向一个对象，通常即将结束其生命周期。例如<code>std::move(x)</code>，<code>a[n]</code>其中a为右值数组，<code>static_cast&lt;char&amp;&amp;&gt;(x)</code>，</p>
+</li>
+<li>
+<p>纯右值(prvalue)：右值但不是将亡值。例如<code>a++</code>，<code>&amp;a</code>，<code>a==b</code>，<code>42</code>，<code>str1+str2</code>，<code>str.substr(1, 2)</code>，<code>[](int x){ return x * x; }</code>。</p>
+</li>
+<li>
+<p>泛左值(glvalue，“generalized” lvalue)：左值或将亡值。</p>
+</li>
+<li>
+<p>右值(rvalue)：是一个将亡值，一个临时对象，或不予任何对象关联的值。</p>
+</li>
+</ul>
+<h3 id="右值引用">右值引用</h3>
+<p>C++11中，使用<code>&amp;&amp;</code>操作符取得一个右值的引用。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#458;font-weight:bold">int</span> a <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>;
+<span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">&amp;</span> l <span style="color:#000;font-weight:bold">=</span> a;   <span style="color:#998;font-style:italic">//l是一个左值引用
+</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">&amp;&amp;</span> r <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>;  <span style="color:#998;font-style:italic">//r是一个右值引用
+</span></code></pre></td></tr></table>
+</div>
+</div><h2 id="22-移动语义move-semantics">2.2. 移动语义(move semantics)</h2>
+<p>在<code>c++03</code>时代，我们调用类似于工厂类的如下代码，会导致两次数据的拷贝。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#998;font-style:italic">//C++03
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Data</span> {
+<span style="color:#000;font-weight:bold">public</span><span style="color:#000;font-weight:bold">:</span>
+  Data(<span style="color:#000;font-weight:bold">const</span> Data<span style="color:#000;font-weight:bold">&amp;</span> _data) { ... }
+};
+<span style="color:#998;font-style:italic">//调用两次拷贝构造函数(关闭返回值优化下)
+</span><span style="color:#998;font-style:italic"></span>Data <span style="color:#900;font-weight:bold">createData</span>() { <span style="color:#000;font-weight:bold">return</span> Data(); }  <span style="color:#998;font-style:italic">//Data()为右值
+</span><span style="color:#998;font-style:italic"></span>Data <span style="color:#900;font-weight:bold">data</span>(createData());              <span style="color:#998;font-style:italic">//createData()为右值
+</span></code></pre></td></tr></table>
+</div>
+</div><p>使用右值引用，我们可以把值从一个对象”移动“到另一个对象，这就是移动语义。使用移动语义可以减少不必要的数据拷贝，下面的代码只需要进行两次移动操作即可。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Data</span> {
+<span style="color:#000;font-weight:bold">public</span><span style="color:#000;font-weight:bold">:</span>
+    Data(<span style="color:#000;font-weight:bold">const</span> Data<span style="color:#000;font-weight:bold">&amp;</span> _data) <span style="color:#000;font-weight:bold">:</span> vec(_data.vec) {} <span style="color:#998;font-style:italic">//拷贝构造
+</span><span style="color:#998;font-style:italic"></span>    Data(Data<span style="color:#000;font-weight:bold">&amp;&amp;</span> _data) <span style="color:#000;font-weight:bold">:</span> vec(_data.vec) {}      <span style="color:#998;font-style:italic">//移动构造
+</span><span style="color:#998;font-style:italic"></span>    std<span style="color:#000;font-weight:bold">::</span>vector<span style="color:#000;font-weight:bold">&lt;</span><span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">&gt;</span> vec;
+};
+Data <span style="color:#900;font-weight:bold">createData</span>() { <span style="color:#000;font-weight:bold">return</span> Data(); }
+Data <span style="color:#900;font-weight:bold">data</span>(createData()); <span style="color:#998;font-style:italic">//调用两次移动构造函数
+</span></code></pre></td></tr></table>
+</div>
+</div><p>注：在此关闭了编译器如下优化，编译指令<code>g++ --std=c++11 -fno-elide-constructors</code></p>
+<blockquote>
+<p>-fno-elide-constructors: The C++ standard allows an implementation to omit creating a temporary which is only used to initialize another object of the same type. Specifying this option disables that optimization, and forces G++ to call the copy constructor in all cases.</p>
+</blockquote>
+<h3 id="stdmove">std::move</h3>
+<p>使用std新增函数<code>std::move</code>提供将左值转化为右值的能力，C++11对于stl大部分功能使用<code>std::move</code>进行了重写，大大提高了效率。基于移动语义的<code>std::sort</code>和<code>std::set::insert()</code>比基于拷贝语义的快15倍之多。在使用上我们应当注意对于实现了移动构造的对象，例如大部分<code>stl</code>容器，<code>std::string</code>等，在<code>std::move</code>后其本身的值将不再有效。例如，</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp">std<span style="color:#000;font-weight:bold">::</span>string s1 <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;Hello World&#34;</span>;
+std<span style="color:#000;font-weight:bold">::</span>string s2 <span style="color:#000;font-weight:bold">=</span> std<span style="color:#000;font-weight:bold">::</span>move(s1);
+<span style="color:#998;font-style:italic">//s1 = &#34;&#34;, s2 = &#34;Hello World&#34;
+</span></code></pre></td></tr></table>
+</div>
+</div>
+    </article>
+
+    
+
+    <div class="disqus-comments">
+      <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "ChangLiu" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+
+    <ul class="pager article-pager">
+      <li class="pager-newer pager-noitem">&lt; Newer</li>
+      <li class="pager-older pager-noitem">Older &gt;</li>
+    </ul>
+  </div>
+
+
+<div class="site-footer">
+  <div class="copyright">&copy; Copyright 2020 Chang Liu</div>
+  <ul class="site-footer-items">
+  </ul>
+</div>
+
+
+</body>
+</html>
