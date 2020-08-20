@@ -137,10 +137,6 @@ blockquote blockquote blockquote blockquote {
   margin-bottom: 40px;
   line-height: 1.5;
 }
-img[src$='#center'] {
-    display: block;
-    margin: 0.7rem auto;
-}
 .article img {
   max-width: 100%;
   box-sizing: border-box;
