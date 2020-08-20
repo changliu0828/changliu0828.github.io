@@ -186,23 +186,23 @@ code.has-jax {
 </ul>
 <h3 id="右值引用">右值引用</h3>
 <p>C++11中，使用<code>&amp;&amp;</code>操作符取得一个右值的引用。</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#458;font-weight:bold">int</span> a <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>;
-<span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">&amp;</span> l <span style="color:#000;font-weight:bold">=</span> a;   <span style="color:#998;font-style:italic">//l是一个左值引用
-</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">&amp;&amp;</span> r <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>;  <span style="color:#998;font-style:italic">//r是一个右值引用
+<pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#902000">int</span> a <span style="color:#666">=</span> <span style="color:#40a070">1</span>;
+<span style="color:#902000">int</span><span style="color:#666">&amp;</span> l <span style="color:#666">=</span> a;   <span style="color:#60a0b0;font-style:italic">//l是一个左值引用
+</span><span style="color:#60a0b0;font-style:italic"></span><span style="color:#902000">int</span><span style="color:#666">&amp;&amp;</span> r <span style="color:#666">=</span> <span style="color:#40a070">1</span>;  <span style="color:#60a0b0;font-style:italic">//r是一个右值引用
 </span></code></pre></td></tr></table>
 </div>
 </div><h2 id="22-移动语义move-semantics">2.2. 移动语义(move semantics)</h2>
 <p>在<code>c++03</code>时代，我们调用类似于工厂类的如下代码，会导致两次数据的拷贝。</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
@@ -212,20 +212,20 @@ code.has-jax {
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#998;font-style:italic">//C++03
-</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Data</span> {
-<span style="color:#000;font-weight:bold">public</span><span style="color:#000;font-weight:bold">:</span>
-  Data(<span style="color:#000;font-weight:bold">const</span> Data<span style="color:#000;font-weight:bold">&amp;</span> _data) { ... }
+<pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#60a0b0;font-style:italic">//C++03
+</span><span style="color:#60a0b0;font-style:italic"></span><span style="color:#007020;font-weight:bold">class</span> <span style="color:#0e84b5;font-weight:bold">Data</span> {
+<span style="color:#007020;font-weight:bold">public</span><span style="color:#666">:</span>
+  Data(<span style="color:#007020;font-weight:bold">const</span> Data<span style="color:#666">&amp;</span> _data) { ... }
 };
-<span style="color:#998;font-style:italic">//调用两次拷贝构造函数(关闭返回值优化下)
-</span><span style="color:#998;font-style:italic"></span>Data <span style="color:#900;font-weight:bold">createData</span>() { <span style="color:#000;font-weight:bold">return</span> Data(); }  <span style="color:#998;font-style:italic">//Data()为右值
-</span><span style="color:#998;font-style:italic"></span>Data <span style="color:#900;font-weight:bold">data</span>(createData());              <span style="color:#998;font-style:italic">//createData()为右值
+<span style="color:#60a0b0;font-style:italic">//调用两次拷贝构造函数(关闭返回值优化下)
+</span><span style="color:#60a0b0;font-style:italic"></span>Data <span style="color:#06287e">createData</span>() { <span style="color:#007020;font-weight:bold">return</span> Data(); }  <span style="color:#60a0b0;font-style:italic">//Data()为右值
+</span><span style="color:#60a0b0;font-style:italic"></span>Data <span style="color:#06287e">data</span>(createData());              <span style="color:#60a0b0;font-style:italic">//createData()为右值
 </span></code></pre></td></tr></table>
 </div>
 </div><p>使用右值引用，我们可以把值从一个对象”移动“到另一个对象，这就是移动语义。使用移动语义可以减少不必要的数据拷贝，下面的代码只需要进行两次移动操作即可。</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
@@ -235,14 +235,14 @@ code.has-jax {
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Data</span> {
-<span style="color:#000;font-weight:bold">public</span><span style="color:#000;font-weight:bold">:</span>
-    Data(<span style="color:#000;font-weight:bold">const</span> Data<span style="color:#000;font-weight:bold">&amp;</span> _data) <span style="color:#000;font-weight:bold">:</span> vec(_data.vec) {} <span style="color:#998;font-style:italic">//拷贝构造
-</span><span style="color:#998;font-style:italic"></span>    Data(Data<span style="color:#000;font-weight:bold">&amp;&amp;</span> _data) <span style="color:#000;font-weight:bold">:</span> vec(_data.vec) {}      <span style="color:#998;font-style:italic">//移动构造
-</span><span style="color:#998;font-style:italic"></span>    std<span style="color:#000;font-weight:bold">::</span>vector<span style="color:#000;font-weight:bold">&lt;</span><span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">&gt;</span> vec;
+<pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#007020;font-weight:bold">class</span> <span style="color:#0e84b5;font-weight:bold">Data</span> {
+<span style="color:#007020;font-weight:bold">public</span><span style="color:#666">:</span>
+    Data(<span style="color:#007020;font-weight:bold">const</span> Data<span style="color:#666">&amp;</span> _data) <span style="color:#666">:</span> vec(_data.vec) {} <span style="color:#60a0b0;font-style:italic">//拷贝构造
+</span><span style="color:#60a0b0;font-style:italic"></span>    Data(Data<span style="color:#666">&amp;&amp;</span> _data) <span style="color:#666">:</span> vec(_data.vec) {}      <span style="color:#60a0b0;font-style:italic">//移动构造
+</span><span style="color:#60a0b0;font-style:italic"></span>    std<span style="color:#666">::</span>vector<span style="color:#666">&lt;</span><span style="color:#902000">int</span><span style="color:#666">&gt;</span> vec;
 };
-Data <span style="color:#900;font-weight:bold">createData</span>() { <span style="color:#000;font-weight:bold">return</span> Data(); }
-Data <span style="color:#900;font-weight:bold">data</span>(createData()); <span style="color:#998;font-style:italic">//调用两次移动构造函数
+Data <span style="color:#06287e">createData</span>() { <span style="color:#007020;font-weight:bold">return</span> Data(); }
+Data <span style="color:#06287e">data</span>(createData()); <span style="color:#60a0b0;font-style:italic">//调用两次移动构造函数
 </span></code></pre></td></tr></table>
 </div>
 </div><p>注：在此关闭了编译器如下优化，编译指令<code>g++ --std=c++11 -fno-elide-constructors</code></p>
@@ -251,16 +251,16 @@ Data <span style="color:#900;font-weight:bold">data</span>(createData()); <span 
 </blockquote>
 <h3 id="stdmove">std::move</h3>
 <p>使用std新增函数<code>std::move</code>提供将左值转化为右值的能力，C++11对于stl大部分功能使用<code>std::move</code>进行了重写，大大提高了效率。基于移动语义的<code>std::sort</code>和<code>std::set::insert()</code>比基于拷贝语义的快15倍之多。在使用上我们应当注意对于实现了移动构造的对象，例如大部分<code>stl</code>容器，<code>std::string</code>等，在<code>std::move</code>后其本身的值将不再有效。例如，</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp">std<span style="color:#000;font-weight:bold">::</span>string s1 <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;Hello World&#34;</span>;
-std<span style="color:#000;font-weight:bold">::</span>string s2 <span style="color:#000;font-weight:bold">=</span> std<span style="color:#000;font-weight:bold">::</span>move(s1);
-<span style="color:#998;font-style:italic">//s1 = &#34;&#34;, s2 = &#34;Hello World&#34;
+<pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp">std<span style="color:#666">::</span>string s1 <span style="color:#666">=</span> <span style="color:#4070a0">&#34;Hello World&#34;</span>;
+std<span style="color:#666">::</span>string s2 <span style="color:#666">=</span> std<span style="color:#666">::</span>move(s1);
+<span style="color:#60a0b0;font-style:italic">//s1 = &#34;&#34;, s2 = &#34;Hello World&#34;
 </span></code></pre></td></tr></table>
 </div>
 </div>

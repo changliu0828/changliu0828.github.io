@@ -36,5 +36,5 @@ DefaultContentLanguage = "zh"
     lineNos = true 
     lineNumbersInTable = true
     noClasses = true
-    style = "github"
+    style = "friendly"
     tabWidth = 2
