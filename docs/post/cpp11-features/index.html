@@ -14,7 +14,7 @@
    年份 标准 支持的GCC版本 重要特性     2020 c&#43;&#43;20 8-11    2017 c&#43;&#43;17/c&#43;&#43;1z 5-7    2014 C&#43;&#43;14/c&#43;&#43;1y 4.">
   <meta name="author" content="Chang"/>
   <meta property="og:site_name" content="Chang Liu&#39;s Blog" />
-  <meta property="og:url" content="https://changliu.me/post/cpp-features/cpp-features/" />
+  <meta property="og:url" content="https://changliu.me/post/cpp11-features/" />
   <meta property="og:type" content="article" />
   <meta name="twitter:card" content="summary" />
   <meta name="generator" content="Hugo 0.74.3" />
@@ -181,7 +181,7 @@ code.has-jax {
 <h3 id="表达式的值">表达式的值</h3>
 <p>在C++中任意一个表达式都由<strong>类型</strong>和<strong>值</strong>两部分组成，类型为其在内存中的解析方式，值为其在内存中的内容。标题中的“右值”即为值的一种分类。</p>
 <p>在C语言时代，表达式的值可以主要分为左值(lvalue)与右值(rvalue)。而在C++11中引入了将亡值（xvalue的概念。在C++17中更进一步引入了，纯右值（prvalue）及泛左值（glvalue）的概念，更详细的信息请参考<a href="https://en.cppreference.com/w/cpp/language/value_category">这里$^{[2]}$</a>。下图展示了值分类的从属关系，对于每种分类，我们分别举例来说明，</p>
-<p><img src="./image/value_category.jpg#center" alt="value_category.jpg"></p>
+<p><img src="/image/cpp11-features/value_category.jpg#center" alt="value_category.jpg"></p>
 <ul>
 <li>
 <p>左值(lvalue)：左值指明了一个函数或者对象。例如<code>++a</code>，<code>*p</code>，<code>std::cout&lt;&lt;1</code>的返回值。</p>

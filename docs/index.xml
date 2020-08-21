@@ -14,10 +14,10 @@
     
     <item>
       <title>c&#43;&#43;11特性简介</title>
-      <link>https://changliu.me/post/cpp-features/cpp-features/</link>
+      <link>https://changliu.me/post/cpp11-features/</link>
       <pubDate>Mon, 17 Aug 2020 16:08:08 +0800</pubDate>
       
-      <guid>https://changliu.me/post/cpp-features/cpp-features/</guid>
+      <guid>https://changliu.me/post/cpp11-features/</guid>
       <description>1. 前言 C++自1985年发行以来成为了世界上最成功的的编程语言之一。本文总结了C++11引入的部分重要特性。完整特性与编译器支持请参考这里$^{[1]}$。
    年份 标准 支持的GCC版本 重要特性     2020 c++20 8-11    2017 c++17/c++1z 5-7    2014 C++14/c++1y 4.</description>
     </item>

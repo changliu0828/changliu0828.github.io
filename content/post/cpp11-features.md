@@ -27,7 +27,7 @@ C++自1985年发行以来成为了世界上最成功的的编程语言之一。�
 
 在C语言时代，表达式的值可以主要分为左值(lvalue)与右值(rvalue)。而在C++11中引入了将亡值（xvalue的概念。在C++17中更进一步引入了，纯右值（prvalue）及泛左值（glvalue）的概念，更详细的信息请参考[这里$^{[2]}$](https://en.cppreference.com/w/cpp/language/value_category)。下图展示了值分类的从属关系，对于每种分类，我们分别举例来说明，
 
-![value_category.jpg](./image/value_category.jpg#center)
+![value_category.jpg](/image/cpp11-features/value_category.jpg#center)
 
 + 左值(lvalue)：左值指明了一个函数或者对象。例如`++a`，`*p`，`std::cout<<1`的返回值。
 
