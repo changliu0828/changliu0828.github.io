@@ -10,19 +10,16 @@ DefaultContentLanguage = "en"
 [languages]
   [languages.en]
     title = "Chang Liu's Blog"
-
 [params]
+  dateFormat = "2006-01-02"
 [params.author]
   name = "Chang"
   email = "changliu0828@gmail.com"
-
-# Header Menu
 [[menu.main]]
   name = "Archives"
   identifier = "archives"
   url = "/archives/"
   weight = 2
-
 [markup]
   [markup.tableOfContents]
     startLevel = 1
