@@ -4,7 +4,6 @@ theme = ["whiteplain-light", "whiteplain"]
 disqusShortname = "ChangLiu"
 summaryLength=20
 copyright = "&copy; Copyright 2020 Chang Liu"
-uglyurls = falsk
 
 DefaultContentLanguage = "en"
 
