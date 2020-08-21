@@ -1,10 +1,10 @@
-baseURL = "https://changliu.ne/"
+baseURL = "https://changliu.me/"
 languageCode = "en-us"
 theme = ["whiteplain-light", "whiteplain"]
 disqusShortname = "ChangLiu"
 summaryLength=20
 copyright = "&copy; Copyright 2020 Chang Liu"
-uglyurls = true
+uglyurls = false
 
 DefaultContentLanguage = "en"
 
@@ -22,7 +22,7 @@ DefaultContentLanguage = "en"
   name = "Archives"
   identifier = "archives"
   url = "/archives/"
-  weight = 1
+  weight = 2
 
 [markup]
   [markup.tableOfContents]

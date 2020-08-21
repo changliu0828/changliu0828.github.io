@@ -2,13 +2,13 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Chang Liu&#39;s Blog</title>
-    <link>https://changliu.ne/tags.html</link>
+    <link>https://changliu.me/tags/</link>
     <description>Recent content in Tags on Chang Liu&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; Copyright 2020 Chang Liu</copyright>
     
-	<atom:link href="https://changliu.ne/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://changliu.me/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
   </channel>
