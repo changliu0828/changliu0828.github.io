@@ -1,16 +1,33 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-	
-	<sitemap>
-	   	<loc>https://changliu0828.github.io/en/sitemap.xml</loc>
-		
-	</sitemap>
-	
-	<sitemap>
-	   	<loc>https://changliu0828.github.io/zh/sitemap.xml</loc>
-		
-	   	<lastmod>2020-08-17T16:08:08+08:00</lastmod>
-		
-	</sitemap>
-	
-</sitemapindex>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://changliu.ne/post/cpp-features/cpp-features.html</loc>
+    <lastmod>2020-08-17T16:08:08+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://changliu.ne/</loc>
+    <lastmod>2020-08-17T16:08:08+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://changliu.ne/post.html</loc>
+    <lastmod>2020-08-17T16:08:08+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://changliu.ne/archives.html</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://changliu.ne/categories.html</loc>
+  </url>
+  
+  <url>
+    <loc>https://changliu.ne/tags.html</loc>
+  </url>
+  
+</urlset>

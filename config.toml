@@ -1,4 +1,4 @@
-baseURL = "https://changliu0828.github.io/"
+baseURL = "https://changliu.ne/"
 languageCode = "en-us"
 theme = ["whiteplain-light", "whiteplain"]
 disqusShortname = "ChangLiu"
@@ -6,22 +6,20 @@ summaryLength=20
 copyright = "&copy; Copyright 2020 Chang Liu"
 uglyurls = true
 
-DefaultContentLanguage = "zh"
+DefaultContentLanguage = "en"
 
 [languages]
-  [languages.zh]
-    title = "刘畅的博客"
   [languages.en]
-    title = "Charles Liu's Blog"
+    title = "Chang Liu's Blog"
 
 [params]
 [params.author]
-  name = "刘畅"
+  name = "Chang"
   email = "changliu0828@gmail.com"
 
 # Header Menu
 [[menu.main]]
-  name = "归档"
+  name = "Archives"
   identifier = "archives"
   url = "/archives/"
   weight = 1

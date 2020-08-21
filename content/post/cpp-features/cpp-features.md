@@ -84,3 +84,144 @@ std::string s2 = std::move(s1);
 //s1 = "", s2 = "Hello World"
 ```
 
+## 2.3. 完美转发(perfect forwarding)
+
+## 2.4. 智能指针(smart pointer)
+
+## 2.5. lambda表达式(lambda expressions)
+
+```cpp
+struct Point {
+  int x;
+  int y;
+};
+vector<Point> v;
+//c++98
+int compByX(const Point& p1, const Point& p1) { return p1.x < p2.x; }
+int compByY(const Point& p1, const Point& p1) { return p1.y < p2.y; }
+sort(v.begin, v.end(), compByX);
+sort(v.begin, v.end(), compByY);
+//c++11
+sort(v.begin, v.end(), [](const Point& p1, const Point& p1) { return p1.x < p2.x });
+sort(v.begin, v.end(), [](const Point& p1, const Point& p1) { return p1.y < p2.y });
+```
+
+
+## 2.6. auto类型变量(auto-typed variables)
+
+```cpp
+//c++98
+std::vector<int> v;
+for (std::vector<int>::iterator it = v.begin(); it != v.end(); ++ it) {
+  std::cout << *it << endl;
+}
+//c++11
+for (auto it = v.begin(); it != v.end(); ++ it) {
+  std::cout << *it << endl;
+}
+```
+### 2.7. 基于range的for循环(Range-based for)
+
+```cpp
+//c++98
+std::vector<int> v;
+for (std::vector<int>::iterator it = v.begin(); it != v.end(); ++ it) {
+  std::cout << *it << endl;
+}
+//c++11
+for (int& x : v) { std::cout << x << endl; }
+//结合auto
+for (auto& x : v) { std::cout << x << endl; } //reference
+for (auto x : v) { std::cout << x << endl; }  //copy
+```
+
+### 2.8. 初始化列表(Initializer lists)
+
+```cpp
+//c++98
+std::vector<int> v;
+v.push_back(1);
+v.push_back(2);
+v.push_back(3);
+//c++11
+std::vector<int> v{1,2,3};
+std::vector<int> v = {1,2,3};
+//自定义初始化列表
+#include <initializer_list>
+class myVector {
+public:
+  myVector(const initializer_list<int>& v) {
+    for (auto x : v) _v.push_back(x);
+  }
+private:
+  std::vector<int> _v;
+};
+myVector mv{1,2,3};
+myVector mv = {1,2,3};
+```
+### 2.9. nullptr
+
+安全特性，防止宏定义`NULL`的二义性
+
+```cpp
+void foo(int i);
+void foo(void* p);
+//c++98
+foo(NULL); //Error，重载歧义
+//c++11
+foo(nullptr); //OK, 调用void foo(void* p)
+```
+### 2.10. static_assert
+
+安全特性，编译器静态检查
+
+```cpp
+static_assert( sizeof(int)==4) );
+```
+
+### 2.11. delegating constructor
+```cpp
+//c++98
+class Foo {
+public:
+  Foo() { init(); }
+  Foo(int x) { init(); doSomething(x); }
+private:
+  void init() { //to some init }
+};
+//c++11
+class Foo {
+public:
+  Foo() { //to some init }
+  Foo(int x) : Foo() { doSomething(x); } //Foo必须首先被调用
+};
+```
+
+### 2.12. override
+
+```cpp
+class Base {
+  virtual void A(int x);
+  virtual void B() const;
+};
+
+//c++98
+class Derived : public Base {
+  virtual void A(float x); //OK, create a new function
+  virtual void B();        //OK, create a new function
+};
+//c++11
+class Derived : public Base {
+  virtual void A(float x) override; //Error, no funtion to override
+  virtual void B() override;        //Error, no funtion to override
+};
+```
+
+## 2.13. final
+
+## 2.14. delete
+
+#参考
+1. [C++ compiler support, cppreference.com](https://en.cppreference.com/w/cpp/compiler_support)
+2. [Value categories, cppreference.com](https://en.cppreference.com/w/cpp/language/value_category)
+3. [The Biggest Changes in C++11 (and Why You Should Care)](https://smartbear.com/blog/develop/the-biggest-changes-in-c11-and-why-you-should-care/)
