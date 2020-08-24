@@ -7,11 +7,19 @@
   <meta property="og:title" content="c&#43;&#43;11特性简介 - Chang Liu&#39;s Blog" />
   <meta name="twitter:title" content="c&#43;&#43;11特性简介 - Chang Liu&#39;s Blog" />
   <meta name="description" content="1. 前言 C&#43;&#43;自1985年发行以来成为了世界上最成功的的编程语言之一。本文总结了C&#43;&#43;11引入的部分重要特性。完整特性与编译器支持请参考这里$^{[1]}$。
-   年份 标准 支持的GCC版本 重要特性     2020 c&#43;&#43;20 8-11    2017 c&#43;&#43;17/c&#43;&#43;1z 5-7    2014 C&#43;&#43;14/c&#43;&#43;1y 4.">
+2. 部分特性及示例 2.1. 右值引用(rvalue references) 2.1.1. 表达式的值 在C&#43;&#43;中任意一个表达式都由类型和值两部分组成，类型为其在内存中的解析方式，值为其在内存中的内容。标题中的“右值”即为值的一种分类。
+在C语言时代，表达式的值可以主要分为左值(lvalue)与右值(rvalue)。而在C&#43;&#43;11中引入了将亡值（xvalue的概念。在C&#43;&#43;17中更进一步引入了，纯右值（prvalue）及泛左值（glvalue）的概念，更详细的信息请参考这里$^{[2]}$。下图展示了值分类的从属关系，对于每种分类，我们分别举例来说明，
+  左值(lvalue)：左值指明了一个函数或者对象。例如&#43;&#43;a，*p，std::cout&lt;&lt;1的返回值。
+  将亡值(xvalue)：指向一个对象，通常即将结束其生命周期。例如std::move(x)，a[n]其中a为右值数组，static_cast&lt;char&amp;&amp;&gt;(x)，
+  纯右值(prvalue)：右值但不是将亡值。例如a&#43;&#43;，&amp;a，a==b，42，str1&#43;str2，str.">
   <meta property="og:description" content="1. 前言 C&#43;&#43;自1985年发行以来成为了世界上最成功的的编程语言之一。本文总结了C&#43;&#43;11引入的部分重要特性。完整特性与编译器支持请参考这里$^{[1]}$。
-   年份 标准 支持的GCC版本 重要特性     2020 c&#43;&#43;20 8-11    2017 c&#43;&#43;17/c&#43;&#43;1z 5-7    2014 C&#43;&#43;14/c&#43;&#43;1y 4.">
+2. 部分特性及示例 2.1. 右值引用(rvalue references) 2.1.1. 表达式的值 在C&#43;&#43;中任意一个表达式都由类型和值两部分组成，类型为其在内存中的解析方式，值为其在内存中的内容。标题中的“右值”即为值的一种分类。
+在C语言时代，表达式的值可以主要分为左值(lvalue)与右值(rvalue)。而在C&#43;&#43;11中引入了将亡值（xvalue的概念。在C&#43;&#43;17中更进一步引入了，纯右值（prvalue）及泛左值（glvalue）的概念，更详细的信息请参考这里$^{[2]}$。下图展示了值分类的从属关系，对于每种分类，我们分别举例来说明，
+  左值(lvalue)：左值指明了一个函数或者对象。例如&#43;&#43;a，*p，std::cout&lt;&lt;1的返回值。
+  将亡值(xvalue)：指向一个对象，通常即将结束其生命周期。例如std::move(x)，a[n]其中a为右值数组，static_cast&lt;char&amp;&amp;&gt;(x)，
+  纯右值(prvalue)：右值但不是将亡值。例如a&#43;&#43;，&amp;a，a==b，42，str1&#43;str2，str.">
   <meta name="twitter:description" content="1. 前言 C&#43;&#43;自1985年发行以来成为了世界上最成功的的编程语言之一。本文总结了C&#43;&#43;11引入的部分重要特性。完整特性与编译器支持请参考这里$^{[1]}$。
-   年份 标准 支持的GCC版本 重要特性     2020 c&#43;&#43;20 8-11    2017 c&#43;&#43;17/c&#43;&#43;1z 5-7    2014 C&#43;&#43;14/c&#43;&#43;1y 4.">
+2. 部分特性及示例 2.1. 右值引用(rvalue references) 2.1.1. 表达式的值 在C&#43;&#43;中任意一个表达式都由类型和值两部分组成，类型为其在内存中的解析方式，值为其在内存中的内容。标题中的“右值”即为值的一种分 …">
   <meta name="author" content="Chang"/>
   <meta property="og:site_name" content="Chang Liu&#39;s Blog" />
   <meta property="og:url" content="https://changliu0828.github.io/post/cpp11-features/" />
@@ -96,89 +104,44 @@ code.has-jax {
       <ul>
         <li><a href="#21-右值引用rvalue-references">2.1. 右值引用(rvalue references)</a>
           <ul>
-            <li><a href="#表达式的值">表达式的值</a></li>
-            <li><a href="#右值引用">右值引用</a></li>
+            <li><a href="#211-表达式的值">2.1.1. 表达式的值</a></li>
+            <li><a href="#212-右值引用">2.1.2. 右值引用</a></li>
           </ul>
         </li>
         <li><a href="#22-移动语义move-semantics">2.2. 移动语义(move semantics)</a>
           <ul>
-            <li><a href="#stdmove">std::move</a></li>
+            <li><a href="#221-stdmove">2.2.1. std::move</a></li>
           </ul>
         </li>
-        <li><a href="#23-完美转发perfect-forwarding">2.3. 完美转发(perfect forwarding)</a></li>
-        <li><a href="#24-智能指针smart-pointer">2.4. 智能指针(smart pointer)</a></li>
-        <li><a href="#25-lambda表达式lambda-expressions">2.5. lambda表达式(lambda expressions)</a></li>
-        <li><a href="#26-auto类型变量auto-typed-variables">2.6. auto类型变量(auto-typed variables)</a>
+        <li><a href="#23-变长参数模板variadic-templates">2.3. 变长参数模板(variadic Templates)</a></li>
+        <li><a href="#24-完美转发perfect-forwarding">2.4. 完美转发(perfect forwarding)</a>
           <ul>
-            <li><a href="#27-基于range的for循环range-based-for">2.7. 基于range的for循环(Range-based for)</a></li>
-            <li><a href="#28-初始化列表initializer-lists">2.8. 初始化列表(Initializer lists)</a></li>
-            <li><a href="#29-nullptr">2.9. nullptr</a></li>
-            <li><a href="#210-static_assert">2.10. static_assert</a></li>
-            <li><a href="#211-delegating-constructor">2.11. delegating constructor</a></li>
-            <li><a href="#212-override">2.12. override</a></li>
+            <li><a href="#241-引用折叠reference-collapsing">2.4.1. 引用折叠(Reference Collapsing)</a></li>
           </ul>
         </li>
+        <li><a href="#25-智能指针smart-pointer">2.5. 智能指针(smart pointer)</a></li>
+        <li><a href="#26-lambda表达式lambda-expressions">2.6. lambda表达式(lambda expressions)</a></li>
+        <li><a href="#27-auto类型变量auto-typed-variables">2.7. auto类型变量(auto-typed variables)</a></li>
+        <li><a href="#28-基于range的for循环range-based-for">2.8. 基于range的for循环(Range-based for)</a></li>
+        <li><a href="#29-初始化列表initializer-lists">2.9. 初始化列表(Initializer lists)</a></li>
+        <li><a href="#210-static_assert">2.10. static_assert</a></li>
+        <li><a href="#211-delegating-constructor">2.11. delegating constructor</a></li>
+        <li><a href="#212-override">2.12. override</a></li>
         <li><a href="#213-final">2.13. final</a></li>
         <li><a href="#214-delete">2.14. delete</a></li>
+        <li><a href="#215-nullptr">2.15. nullptr</a></li>
       </ul>
     </li>
+    <li><a href="#3-参考">3. 参考</a></li>
   </ul>
 </nav>
 </aside>
 
       <h1 id="1-前言">1. 前言</h1>
 <p>C++自1985年发行以来成为了世界上最成功的的编程语言之一。本文总结了C++11引入的部分重要特性。完整特性与编译器支持请参考<a href="https://en.cppreference.com/w/cpp/compiler_support">这里$^{[1]}$</a>。</p>
-<table>
-<thead>
-<tr>
-<th>年份</th>
-<th>标准</th>
-<th>支持的GCC版本</th>
-<th>重要特性</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>2020</td>
-<td>c++20</td>
-<td>8-11</td>
-<td></td>
-</tr>
-<tr>
-<td>2017</td>
-<td>c++17/c++1z</td>
-<td>5-7</td>
-<td></td>
-</tr>
-<tr>
-<td>2014</td>
-<td>C++14/c++1y</td>
-<td>4.9</td>
-<td>函数返回类型推导，泛型lamda表达式</td>
-</tr>
-<tr>
-<td>2011</td>
-<td>c++11/c++0x</td>
-<td>4.3-4.8</td>
-<td>右值引用/移动语义/lamda表达式/多线程支持</td>
-</tr>
-<tr>
-<td>2003</td>
-<td>c++03</td>
-<td></td>
-<td>对c++98版本的技术修订</td>
-</tr>
-<tr>
-<td>1998</td>
-<td>c++98</td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
 <h1 id="2-部分特性及示例">2. 部分特性及示例</h1>
 <h2 id="21-右值引用rvalue-references">2.1. 右值引用(rvalue references)</h2>
-<h3 id="表达式的值">表达式的值</h3>
+<h3 id="211-表达式的值">2.1.1. 表达式的值</h3>
 <p>在C++中任意一个表达式都由<strong>类型</strong>和<strong>值</strong>两部分组成，类型为其在内存中的解析方式，值为其在内存中的内容。标题中的“右值”即为值的一种分类。</p>
 <p>在C语言时代，表达式的值可以主要分为左值(lvalue)与右值(rvalue)。而在C++11中引入了将亡值（xvalue的概念。在C++17中更进一步引入了，纯右值（prvalue）及泛左值（glvalue）的概念，更详细的信息请参考<a href="https://en.cppreference.com/w/cpp/language/value_category">这里$^{[2]}$</a>。下图展示了值分类的从属关系，对于每种分类，我们分别举例来说明，</p>
 <p><img src="/image/cpp11-features/value_category.jpg#center" alt="value_category.jpg"></p>
@@ -199,7 +162,7 @@ code.has-jax {
 <p>右值(rvalue)：是一个将亡值，一个临时对象，或不予任何对象关联的值。</p>
 </li>
 </ul>
-<h3 id="右值引用">右值引用</h3>
+<h3 id="212-右值引用">2.1.2. 右值引用</h3>
 <p>C++11中，使用<code>&amp;&amp;</code>操作符取得一个右值的引用。</p>
 <div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -254,7 +217,7 @@ code.has-jax {
 <span style="color:#007020;font-weight:bold">public</span><span style="color:#666">:</span>
     Data(<span style="color:#007020;font-weight:bold">const</span> Data<span style="color:#666">&amp;</span> _data) <span style="color:#666">:</span> vec(_data.vec) {} <span style="color:#60a0b0;font-style:italic">//拷贝构造
 </span><span style="color:#60a0b0;font-style:italic"></span>    Data(Data<span style="color:#666">&amp;&amp;</span> _data) <span style="color:#666">:</span> vec(_data.vec) {}      <span style="color:#60a0b0;font-style:italic">//移动构造
-</span><span style="color:#60a0b0;font-style:italic"></span>    std<span style="color:#666">::</span>vector<span style="color:#666">&lt;</span><span style="color:#902000">int</span><span style="color:#666">&gt;</span> vec;
+</span><span style="color:#60a0b0;font-style:italic"></span>    std<span style="color:#666">::</span>vector<span style="color:#666">&lt;</span><span style="color:#902000">int</span><span style="color:#666">&gt;</span> vec;                                 
 };
 Data <span style="color:#06287e">createData</span>() { <span style="color:#007020;font-weight:bold">return</span> Data(); }
 Data <span style="color:#06287e">data</span>(createData()); <span style="color:#60a0b0;font-style:italic">//调用两次移动构造函数
@@ -264,7 +227,7 @@ Data <span style="color:#06287e">data</span>(createData()); <span style="color:#
 <blockquote>
 <p>-fno-elide-constructors: The C++ standard allows an implementation to omit creating a temporary which is only used to initialize another object of the same type. Specifying this option disables that optimization, and forces G++ to call the copy constructor in all cases.</p>
 </blockquote>
-<h3 id="stdmove">std::move</h3>
+<h3 id="221-stdmove">2.2.1. std::move</h3>
 <p>使用std新增函数<code>std::move</code>提供将左值转化为右值的能力，C++11对于stl大部分功能使用<code>std::move</code>进行了重写，大大提高了效率。基于移动语义的<code>std::sort</code>和<code>std::set::insert()</code>比基于拷贝语义的快15倍之多。在使用上我们应当注意对于实现了移动构造的对象，例如大部分<code>stl</code>容器，<code>std::string</code>等，在<code>std::move</code>后其本身的值将不再有效。例如，</p>
 <div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -278,9 +241,21 @@ std<span style="color:#666">::</span>string s2 <span style="color:#666">=</span>
 <span style="color:#60a0b0;font-style:italic">//s1 = &#34;&#34;, s2 = &#34;Hello World&#34;
 </span></code></pre></td></tr></table>
 </div>
-</div><h2 id="23-完美转发perfect-forwarding">2.3. 完美转发(perfect forwarding)</h2>
-<h2 id="24-智能指针smart-pointer">2.4. 智能指针(smart pointer)</h2>
-<h2 id="25-lambda表达式lambda-expressions">2.5. lambda表达式(lambda expressions)</h2>
+</div><h2 id="23-变长参数模板variadic-templates">2.3. 变长参数模板(variadic Templates)</h2>
+<div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#007020;font-weight:bold">template</span><span style="color:#666">&lt;</span><span style="color:#007020;font-weight:bold">class</span> <span style="">... </span><span style="color:#0e84b5;font-weight:bold">T</span><span style="color:#666">&gt;</span> <span style="color:#007020;font-weight:bold">struct</span> <span style="color:#0e84b5;font-weight:bold">Tuple</span> {}
+<span style="color:#007020;font-weight:bold">template</span><span style="color:#666">&lt;</span><span style="color:#007020;font-weight:bold">class</span> <span style="">... </span><span style="color:#0e84b5;font-weight:bold">Args</span><span style="color:#666">&gt;</span> <span style="color:#902000">void</span> myPirntf(<span style="color:#007020;font-weight:bold">const</span> <span style="color:#902000">char</span><span style="color:#666">*</span>, Args...args);
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="24-完美转发perfect-forwarding">2.4. 完美转发(perfect forwarding)</h2>
+<h3 id="241-引用折叠reference-collapsing">2.4.1. 引用折叠(Reference Collapsing)</h3>
+<h2 id="25-智能指针smart-pointer">2.5. 智能指针(smart pointer)</h2>
+<h2 id="26-lambda表达式lambda-expressions">2.6. lambda表达式(lambda expressions)</h2>
 <div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
@@ -304,8 +279,8 @@ std<span style="color:#666">::</span>string s2 <span style="color:#666">=</span>
 };
 vector<span style="color:#666">&lt;</span>Point<span style="color:#666">&gt;</span> v;
 <span style="color:#60a0b0;font-style:italic">//c++98
-</span><span style="color:#60a0b0;font-style:italic"></span><span style="color:#902000">int</span> <span style="color:#06287e">compByX</span>(<span style="color:#007020;font-weight:bold">const</span> Point<span style="color:#666">&amp;</span> p1, <span style="color:#007020;font-weight:bold">const</span> Point<span style="color:#666">&amp;</span> p1) { <span style="color:#007020;font-weight:bold">return</span> p1.x <span style="color:#666">&lt;</span> p2.x; }
-<span style="color:#902000">int</span> <span style="color:#06287e">compByY</span>(<span style="color:#007020;font-weight:bold">const</span> Point<span style="color:#666">&amp;</span> p1, <span style="color:#007020;font-weight:bold">const</span> Point<span style="color:#666">&amp;</span> p1) { <span style="color:#007020;font-weight:bold">return</span> p1.y <span style="color:#666">&lt;</span> p2.y; }
+</span><span style="color:#60a0b0;font-style:italic"></span><span style="color:#902000">int</span> <span style="color:#06287e">compByX</span>(<span style="color:#007020;font-weight:bold">const</span> Point<span style="color:#666">&amp;</span> p1, <span style="color:#007020;font-weight:bold">const</span> Point<span style="color:#666">&amp;</span> p1) { <span style="color:#007020;font-weight:bold">return</span> p1.x <span style="color:#666">&lt;</span> p2.x; } 
+<span style="color:#902000">int</span> <span style="color:#06287e">compByY</span>(<span style="color:#007020;font-weight:bold">const</span> Point<span style="color:#666">&amp;</span> p1, <span style="color:#007020;font-weight:bold">const</span> Point<span style="color:#666">&amp;</span> p1) { <span style="color:#007020;font-weight:bold">return</span> p1.y <span style="color:#666">&lt;</span> p2.y; } 
 sort(v.begin, v.end(), compByX);
 sort(v.begin, v.end(), compByY);
 <span style="color:#60a0b0;font-style:italic">//c++11
@@ -313,7 +288,7 @@ sort(v.begin, v.end(), compByY);
 sort(v.begin, v.end(), [](<span style="color:#007020;font-weight:bold">const</span> Point<span style="color:#666">&amp;</span> p1, <span style="color:#007020;font-weight:bold">const</span> Point<span style="color:#666">&amp;</span> p1) { <span style="color:#007020;font-weight:bold">return</span> p1.y <span style="color:#666">&lt;</span> p2.y });
 </code></pre></td></tr></table>
 </div>
-</div><h2 id="26-auto类型变量auto-typed-variables">2.6. auto类型变量(auto-typed variables)</h2>
+</div><h2 id="27-auto类型变量auto-typed-variables">2.7. auto类型变量(auto-typed variables)</h2>
 <div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
@@ -338,7 +313,7 @@ sort(v.begin, v.end(), [](<span style="color:#007020;font-weight:bold">const</sp
 }
 </code></pre></td></tr></table>
 </div>
-</div><h3 id="27-基于range的for循环range-based-for">2.7. 基于range的for循环(Range-based for)</h3>
+</div><h2 id="28-基于range的for循环range-based-for">2.8. 基于range的for循环(Range-based for)</h2>
 <div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
@@ -353,7 +328,7 @@ sort(v.begin, v.end(), [](<span style="color:#007020;font-weight:bold">const</sp
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#60a0b0;font-style:italic">//c++98
+<pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#60a0b0;font-style:italic">//c++03
 </span><span style="color:#60a0b0;font-style:italic"></span>std<span style="color:#666">::</span>vector<span style="color:#666">&lt;</span><span style="color:#902000">int</span><span style="color:#666">&gt;</span> v;
 <span style="color:#007020;font-weight:bold">for</span> (std<span style="color:#666">::</span>vector<span style="color:#666">&lt;</span><span style="color:#902000">int</span><span style="color:#666">&gt;::</span>iterator it <span style="color:#666">=</span> v.begin(); it <span style="color:#666">!=</span> v.end(); <span style="color:#666">++</span> it) {
   std<span style="color:#666">::</span>cout <span style="color:#666">&lt;&lt;</span> <span style="color:#666">*</span>it <span style="color:#666">&lt;&lt;</span> endl;
@@ -365,7 +340,8 @@ sort(v.begin, v.end(), [](<span style="color:#007020;font-weight:bold">const</sp
 </span><span style="color:#60a0b0;font-style:italic"></span><span style="color:#007020;font-weight:bold">for</span> (<span style="color:#007020;font-weight:bold">auto</span> <span style="color:#002070;font-weight:bold">x</span> : v) { std<span style="color:#666">::</span>cout <span style="color:#666">&lt;&lt;</span> x <span style="color:#666">&lt;&lt;</span> endl; }  <span style="color:#60a0b0;font-style:italic">//copy
 </span></code></pre></td></tr></table>
 </div>
-</div><h3 id="28-初始化列表initializer-lists">2.8. 初始化列表(Initializer lists)</h3>
+</div><h2 id="29-初始化列表initializer-lists">2.9. 初始化列表(Initializer lists)</h2>
+<p>语法糖，方便对顺序数据结构初始化。</p>
 <div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
@@ -390,7 +366,7 @@ sort(v.begin, v.end(), [](<span style="color:#007020;font-weight:bold">const</sp
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#60a0b0;font-style:italic">//c++98
+<pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#60a0b0;font-style:italic">//c++03
 </span><span style="color:#60a0b0;font-style:italic"></span>std<span style="color:#666">::</span>vector<span style="color:#666">&lt;</span><span style="color:#902000">int</span><span style="color:#666">&gt;</span> v;
 v.push_back(<span style="color:#40a070">1</span>);
 v.push_back(<span style="color:#40a070">2</span>);
@@ -412,28 +388,8 @@ myVector mv{<span style="color:#40a070">1</span>,<span style="color:#40a070">2</
 myVector mv <span style="color:#666">=</span> {<span style="color:#40a070">1</span>,<span style="color:#40a070">2</span>,<span style="color:#40a070">3</span>};
 </code></pre></td></tr></table>
 </div>
-</div><h3 id="29-nullptr">2.9. nullptr</h3>
-<p>安全特性，防止宏定义<code>NULL</code>的二义性</p>
-<div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#902000">void</span> <span style="color:#06287e">foo</span>(<span style="color:#902000">int</span> i);
-<span style="color:#902000">void</span> <span style="color:#06287e">foo</span>(<span style="color:#902000">void</span><span style="color:#666">*</span> p);
-<span style="color:#60a0b0;font-style:italic">//c++98
-</span><span style="color:#60a0b0;font-style:italic"></span>foo(<span style="color:#007020">NULL</span>); <span style="color:#60a0b0;font-style:italic">//Error，重载歧义
-</span><span style="color:#60a0b0;font-style:italic">//c++11
-</span><span style="color:#60a0b0;font-style:italic"></span>foo(<span style="color:#007020;font-weight:bold">nullptr</span>); <span style="color:#60a0b0;font-style:italic">//OK, 调用void foo(void* p)
-</span></code></pre></td></tr></table>
-</div>
-</div><h3 id="210-static_assert">2.10. static_assert</h3>
-<p>安全特性，编译器静态检查</p>
+</div><h2 id="210-static_assert">2.10. static_assert</h2>
+<p>安全特性，编译器静态检查。</p>
 <div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
@@ -442,7 +398,8 @@ myVector mv <span style="color:#666">=</span> {<span style="color:#40a070">1</sp
 <pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#007020;font-weight:bold">static_assert</span>( <span style="color:#007020;font-weight:bold">sizeof</span>(<span style="color:#902000">int</span>)<span style="color:#666">==</span><span style="color:#40a070">4</span>) );
 </code></pre></td></tr></table>
 </div>
-</div><h3 id="211-delegating-constructor">2.11. delegating constructor</h3>
+</div><h2 id="211-delegating-constructor">2.11. delegating constructor</h2>
+<p>语法糖，向java等语言靠近，方便开发。</p>
 <div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
@@ -461,7 +418,7 @@ myVector mv <span style="color:#666">=</span> {<span style="color:#40a070">1</sp
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#60a0b0;font-style:italic">//c++98
+<pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#60a0b0;font-style:italic">//c++03
 </span><span style="color:#60a0b0;font-style:italic"></span><span style="color:#007020;font-weight:bold">class</span> <span style="color:#0e84b5;font-weight:bold">Foo</span> {
 <span style="color:#007020;font-weight:bold">public</span><span style="color:#666">:</span>
   Foo() { init(); }
@@ -477,7 +434,8 @@ myVector mv <span style="color:#666">=</span> {<span style="color:#40a070">1</sp
 </span><span style="color:#60a0b0;font-style:italic"></span>};
 </code></pre></td></tr></table>
 </div>
-</div><h3 id="212-override">2.12. override</h3>
+</div><h2 id="212-override">2.12. override</h2>
+<p>安全特性，显示标识函数的”重载“属性，在编译器检查，防止无效重载。</p>
 <div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
@@ -502,7 +460,7 @@ myVector mv <span style="color:#666">=</span> {<span style="color:#40a070">1</sp
   <span style="color:#007020;font-weight:bold">virtual</span> <span style="color:#902000">void</span> <span style="color:#06287e">B</span>() <span style="color:#007020;font-weight:bold">const</span>;
 };
 
-<span style="color:#60a0b0;font-style:italic">//c++98
+<span style="color:#60a0b0;font-style:italic">//c++03
 </span><span style="color:#60a0b0;font-style:italic"></span><span style="color:#007020;font-weight:bold">class</span> <span style="color:#0e84b5;font-weight:bold">Derived</span> <span style="color:#666">:</span> <span style="color:#007020;font-weight:bold">public</span> Base {
   <span style="color:#007020;font-weight:bold">virtual</span> <span style="color:#902000">void</span> <span style="color:#06287e">A</span>(<span style="color:#902000">float</span> x); <span style="color:#60a0b0;font-style:italic">//OK, create a new function
 </span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#007020;font-weight:bold">virtual</span> <span style="color:#902000">void</span> <span style="color:#06287e">B</span>();        <span style="color:#60a0b0;font-style:italic">//OK, create a new function
@@ -516,11 +474,32 @@ myVector mv <span style="color:#666">=</span> {<span style="color:#40a070">1</sp
 </div>
 </div><h2 id="213-final">2.13. final</h2>
 <h2 id="214-delete">2.14. delete</h2>
-<p>#参考</p>
+<h2 id="215-nullptr">2.15. nullptr</h2>
+<p>安全特性，防止宏定义<code>NULL</code>的二义性</p>
+<div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f0f0;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#902000">void</span> <span style="color:#06287e">foo</span>(<span style="color:#902000">int</span> i);
+<span style="color:#902000">void</span> <span style="color:#06287e">foo</span>(<span style="color:#902000">void</span><span style="color:#666">*</span> p);
+<span style="color:#60a0b0;font-style:italic">//c++98 
+</span><span style="color:#60a0b0;font-style:italic"></span>foo(<span style="color:#007020">NULL</span>); <span style="color:#60a0b0;font-style:italic">//Error，重载歧义
+</span><span style="color:#60a0b0;font-style:italic">//c++11
+</span><span style="color:#60a0b0;font-style:italic"></span>foo(<span style="color:#007020;font-weight:bold">nullptr</span>); <span style="color:#60a0b0;font-style:italic">//OK, 调用void foo(void* p)
+</span></code></pre></td></tr></table>
+</div>
+</div><h1 id="3-参考">3. 参考</h1>
 <ol>
 <li><a href="https://en.cppreference.com/w/cpp/compiler_support">C++ compiler support, cppreference.com</a></li>
 <li><a href="https://en.cppreference.com/w/cpp/language/value_category">Value categories, cppreference.com</a></li>
 <li><a href="https://smartbear.com/blog/develop/the-biggest-changes-in-c11-and-why-you-should-care/">The Biggest Changes in C++11 (and Why You Should Care)</a></li>
+<li><a href="http://km.oa.com/group/492/articles/show/412065?kmref=search&amp;from_page=1&amp;no=1">《深入浅出 C++ 11 右值引用》, botmanli(李俊宁), 2020, KM</a></li>
 </ol>
 
     </article>
