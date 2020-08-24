@@ -1,6 +1,13 @@
 baseURL = "https://changliu0828.github.io/"
-languageCode = "en-us"
-theme = ["whiteplain-light", "whiteplain"]
+hasCJKLanguage = true
+languageCode = "en"
+defaultContentLanguage = "en"
+# License at the end of each post
+showLicense = true
+showToc = true
+
+# theme = ["whiteplain-light", "whiteplain"]
+theme = "fuji"
 disqusShortname = "ChangLiu"
 summaryLength=20
 copyright = "&copy; Copyright 2020 Chang Liu"
@@ -9,26 +16,30 @@ DefaultContentLanguage = "en"
 
 [languages]
   [languages.en]
-    title = "Chang Liu's Blog"
+    title = "刘畅的博客"
+
 [params]
   dateFormat = "2006-01-02"
 [params.author]
   name = "Chang"
   email = "changliu0828@gmail.com"
-[[menu.main]]
-  name = "Archives"
-  identifier = "archives"
-  url = "/archives/"
-  weight = 2
 [markup]
+  [markup.highlight]
+    codeFences = false
+#hl_Lines = ""
+#noClasses = true
+#style = "friendly"
   [markup.tableOfContents]
     startLevel = 1
-  [markup.highlight]
-    codeFences = true
-    hl_Lines = ""
-    lineNoStart = 1
-    lineNos = true 
-    lineNumbersInTable = true
-    noClasses = true
-    style = "friendly"
-    tabWidth = 2
+    endLevel = 3
+[taxonomies]
+  tag = "tags"
+[menu]
+  [[menu.nav]]
+    name = "Home"
+    url = "/"
+    weight = 1
+  [[menu.nav]]
+    name = "Archives"
+    url = "/archives/"
+    weight = 2 

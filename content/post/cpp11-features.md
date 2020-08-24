@@ -8,6 +8,8 @@ draft: false
 
 C++自1985年发行以来成为了世界上最成功的的编程语言之一。本文总结了C++11引入的部分重要特性。完整特性与编译器支持请参考[这里$^{[1]}$](https://en.cppreference.com/w/cpp/compiler_support)。
 
+<!--more-->
+
 # 2. 部分特性及示例
 
 ## 2.1. 右值引用(rvalue references)

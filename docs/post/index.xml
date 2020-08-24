@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on Chang Liu&#39;s Blog</title>
+    <title>Posts on 刘畅的博客</title>
     <link>https://changliu0828.github.io/post/</link>
-    <description>Recent content in Posts on Chang Liu&#39;s Blog</description>
+    <description>Recent content in Posts on 刘畅的博客</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
+    <language>en</language>
     <copyright>&amp;copy; Copyright 2020 Chang Liu</copyright>
     <lastBuildDate>Mon, 17 Aug 2020 16:08:08 +0800</lastBuildDate>
     
@@ -18,12 +18,8 @@
       <pubDate>Mon, 17 Aug 2020 16:08:08 +0800</pubDate>
       
       <guid>https://changliu0828.github.io/post/cpp11-features/</guid>
-      <description>1. 前言 C++自1985年发行以来成为了世界上最成功的的编程语言之一。本文总结了C++11引入的部分重要特性。完整特性与编译器支持请参考这里$^{[1]}$。
-2. 部分特性及示例 2.1. 右值引用(rvalue references) 2.1.1. 表达式的值 在C++中任意一个表达式都由类型和值两部分组成，类型为其在内存中的解析方式，值为其在内存中的内容。标题中的“右值”即为值的一种分类。
-在C语言时代，表达式的值可以主要分为左值(lvalue)与右值(rvalue)。而在C++11中引入了将亡值（xvalue的概念。在C++17中更进一步引入了，纯右值（prvalue）及泛左值（glvalue）的概念，更详细的信息请参考这里$^{[2]}$。下图展示了值分类的从属关系，对于每种分类，我们分别举例来说明，
-  左值(lvalue)：左值指明了一个函数或者对象。例如++a，*p，std::cout&amp;lt;&amp;lt;1的返回值。
-  将亡值(xvalue)：指向一个对象，通常即将结束其生命周期。例如std::move(x)，a[n]其中a为右值数组，static_cast&amp;lt;char&amp;amp;&amp;amp;&amp;gt;(x)，
-  纯右值(prvalue)：右值但不是将亡值。例如a++，&amp;amp;a，a==b，42，str1+str2，str.</description>
+      <description>&lt;h1 id=&#34;1-前言&#34;&gt;1. 前言&lt;/h1&gt;
+&lt;p&gt;C++自1985年发行以来成为了世界上最成功的的编程语言之一。本文总结了C++11引入的部分重要特性。完整特性与编译器支持请参考&lt;a href=&#34;https://en.cppreference.com/w/cpp/compiler_support&#34; target=&#34;_blank&#34;&gt;这里$^{[1]}$&lt;/a&gt;。&lt;/p&gt;</description>
     </item>
     
   </channel>
