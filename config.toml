@@ -2,12 +2,9 @@ baseURL = "https://changliu0828.github.io/"
 hasCJKLanguage = true
 languageCode = "en"
 defaultContentLanguage = "en"
-# License at the end of each post
-showLicense = true
 showToc = true
 
-# theme = ["whiteplain-light", "whiteplain"]
-theme = "fuji"
+theme = ["whiteplain-light", "whiteplain"]
 disqusShortname = "ChangLiu"
 summaryLength=20
 copyright = "&copy; Copyright 2020 Chang Liu"
@@ -25,10 +22,10 @@ DefaultContentLanguage = "en"
   email = "changliu0828@gmail.com"
 [markup]
   [markup.highlight]
-    codeFences = false
-#hl_Lines = ""
-#noClasses = true
-#style = "friendly"
+    codeFences = true 
+    hl_Lines = ""
+    style = "friendly"
+    lineNos = true
   [markup.tableOfContents]
     startLevel = 1
     endLevel = 3

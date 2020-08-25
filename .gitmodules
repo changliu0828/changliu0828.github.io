@@ -4,6 +4,3 @@
 [submodule "themes/whiteplain"]
 	path = themes/whiteplain
 	url = https://github.com/changliu0828/whiteplain.git
-[submodule "themes/fuji"]
-	path = themes/fuji
-	url = https://github.com/changliu0828/hugo-theme-fuji.git
