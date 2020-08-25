@@ -26,6 +26,7 @@ DefaultContentLanguage = "en"
     hl_Lines = ""
     style = "friendly"
     lineNos = true
+    noClasses = false
   [markup.tableOfContents]
     startLevel = 1
     endLevel = 3

@@ -150,63 +150,63 @@ code.has-jax {
 </ul>
 <h3 id="212-右值引用">2.1.2. 右值引用</h3>
 <p>C++11中，使用<code>&amp;&amp;</code>操作符取得一个右值的引用。</p>
-<div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#902000">int</span> a <span style="color:#666">=</span> <span style="color:#40a070">1</span>;
-<span style="color:#902000">int</span><span style="color:#666">&amp;</span> l <span style="color:#666">=</span> a;   <span style="color:#60a0b0;font-style:italic">//l是一个左值引用
-</span><span style="color:#60a0b0;font-style:italic"></span><span style="color:#902000">int</span><span style="color:#666">&amp;&amp;</span> r <span style="color:#666">=</span> <span style="color:#40a070">1</span>;  <span style="color:#60a0b0;font-style:italic">//r是一个右值引用
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="kt">int</span><span class="o">&amp;</span> <span class="n">l</span> <span class="o">=</span> <span class="n">a</span><span class="p">;</span>   <span class="c1">//l是一个左值引用
+</span><span class="c1"></span><span class="kt">int</span><span class="o">&amp;&amp;</span> <span class="n">r</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>  <span class="c1">//r是一个右值引用
 </span></code></pre></td></tr></table>
 </div>
 </div><h2 id="22-移动语义move-semantics">2.2. 移动语义(move semantics)</h2>
 <p>在<code>c++03</code>时代，我们调用类似于工厂类的如下代码，会导致两次数据的拷贝。</p>
-<div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#60a0b0;font-style:italic">//C++03
-</span><span style="color:#60a0b0;font-style:italic"></span><span style="color:#007020;font-weight:bold">class</span> <span style="color:#0e84b5;font-weight:bold">Data</span> {
-<span style="color:#007020;font-weight:bold">public</span><span style="color:#666">:</span>
-  Data(<span style="color:#007020;font-weight:bold">const</span> Data<span style="color:#666">&amp;</span> _data) { ... }
-};
-<span style="color:#60a0b0;font-style:italic">//调用两次拷贝构造函数(关闭返回值优化下)
-</span><span style="color:#60a0b0;font-style:italic"></span>Data <span style="color:#06287e">createData</span>() { <span style="color:#007020;font-weight:bold">return</span> Data(); }  <span style="color:#60a0b0;font-style:italic">//Data()为右值
-</span><span style="color:#60a0b0;font-style:italic"></span>Data <span style="color:#06287e">data</span>(createData());              <span style="color:#60a0b0;font-style:italic">//createData()为右值
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">//C++03
+</span><span class="c1"></span><span class="k">class</span> <span class="nc">Data</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="n">Data</span><span class="p">(</span><span class="k">const</span> <span class="n">Data</span><span class="o">&amp;</span> <span class="n">_data</span><span class="p">)</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
+<span class="p">};</span>
+<span class="c1">//调用两次拷贝构造函数(关闭返回值优化下)
+</span><span class="c1"></span><span class="n">Data</span> <span class="nf">createData</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">Data</span><span class="p">();</span> <span class="p">}</span>  <span class="c1">//Data()为右值
+</span><span class="c1"></span><span class="n">Data</span> <span class="nf">data</span><span class="p">(</span><span class="n">createData</span><span class="p">());</span>              <span class="c1">//createData()为右值
 </span></code></pre></td></tr></table>
 </div>
 </div><p>使用右值引用，我们可以把值从一个对象”移动“到另一个对象，这就是移动语义。使用移动语义可以减少不必要的数据拷贝，下面的代码只需要进行两次移动操作即可。</p>
-<div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#007020;font-weight:bold">class</span> <span style="color:#0e84b5;font-weight:bold">Data</span> {
-<span style="color:#007020;font-weight:bold">public</span><span style="color:#666">:</span>
-    Data(<span style="color:#007020;font-weight:bold">const</span> Data<span style="color:#666">&amp;</span> _data) <span style="color:#666">:</span> vec(_data.vec) {} <span style="color:#60a0b0;font-style:italic">//拷贝构造
-</span><span style="color:#60a0b0;font-style:italic"></span>    Data(Data<span style="color:#666">&amp;&amp;</span> _data) <span style="color:#666">:</span> vec(_data.vec) {}      <span style="color:#60a0b0;font-style:italic">//移动构造
-</span><span style="color:#60a0b0;font-style:italic"></span>    std<span style="color:#666">::</span>vector<span style="color:#666">&lt;</span><span style="color:#902000">int</span><span style="color:#666">&gt;</span> vec;                                 
-};
-Data <span style="color:#06287e">createData</span>() { <span style="color:#007020;font-weight:bold">return</span> Data(); }
-Data <span style="color:#06287e">data</span>(createData()); <span style="color:#60a0b0;font-style:italic">//调用两次移动构造函数
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">class</span> <span class="nc">Data</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+    <span class="n">Data</span><span class="p">(</span><span class="k">const</span> <span class="n">Data</span><span class="o">&amp;</span> <span class="n">_data</span><span class="p">)</span> <span class="o">:</span> <span class="n">vec</span><span class="p">(</span><span class="n">_data</span><span class="p">.</span><span class="n">vec</span><span class="p">)</span> <span class="p">{}</span> <span class="c1">//拷贝构造
+</span><span class="c1"></span>    <span class="n">Data</span><span class="p">(</span><span class="n">Data</span><span class="o">&amp;&amp;</span> <span class="n">_data</span><span class="p">)</span> <span class="o">:</span> <span class="n">vec</span><span class="p">(</span><span class="n">_data</span><span class="p">.</span><span class="n">vec</span><span class="p">)</span> <span class="p">{}</span>      <span class="c1">//移动构造
+</span><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">vec</span><span class="p">;</span>                                 
+<span class="p">};</span>
+<span class="n">Data</span> <span class="nf">createData</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">Data</span><span class="p">();</span> <span class="p">}</span>
+<span class="n">Data</span> <span class="nf">data</span><span class="p">(</span><span class="n">createData</span><span class="p">());</span> <span class="c1">//调用两次移动构造函数
 </span></code></pre></td></tr></table>
 </div>
 </div><p>注：在此关闭了编译器如下优化，编译指令<code>g++ --std=c++11 -fno-elide-constructors</code></p>
@@ -215,269 +215,269 @@ Data <span style="color:#06287e">data</span>(createData()); <span style="color:#
 </blockquote>
 <h3 id="221-stdmove">2.2.1. std::move</h3>
 <p>使用std新增函数<code>std::move</code>提供将左值转化为右值的能力，C++11对于stl大部分功能使用<code>std::move</code>进行了重写，大大提高了效率。基于移动语义的<code>std::sort</code>和<code>std::set::insert()</code>比基于拷贝语义的快15倍之多。在使用上我们应当注意对于实现了移动构造的对象，例如大部分<code>stl</code>容器，<code>std::string</code>等，在<code>std::move</code>后其本身的值将不再有效。例如，</p>
-<div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp">std<span style="color:#666">::</span>string s1 <span style="color:#666">=</span> <span style="color:#4070a0">&#34;Hello World&#34;</span>;
-std<span style="color:#666">::</span>string s2 <span style="color:#666">=</span> std<span style="color:#666">::</span>move(s1);
-<span style="color:#60a0b0;font-style:italic">//s1 = &#34;&#34;, s2 = &#34;Hello World&#34;
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">s1</span> <span class="o">=</span> <span class="s">&#34;Hello World&#34;</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">s2</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">s1</span><span class="p">);</span>
+<span class="c1">//s1 = &#34;&#34;, s2 = &#34;Hello World&#34;
 </span></code></pre></td></tr></table>
 </div>
 </div><h2 id="23-变长参数模板variadic-templates">2.3. 变长参数模板(variadic Templates)</h2>
-<div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#007020;font-weight:bold">template</span><span style="color:#666">&lt;</span><span style="color:#007020;font-weight:bold">class</span> <span style="">... </span><span style="color:#0e84b5;font-weight:bold">T</span><span style="color:#666">&gt;</span> <span style="color:#007020;font-weight:bold">struct</span> <span style="color:#0e84b5;font-weight:bold">Tuple</span> {}
-<span style="color:#007020;font-weight:bold">template</span><span style="color:#666">&lt;</span><span style="color:#007020;font-weight:bold">class</span> <span style="">... </span><span style="color:#0e84b5;font-weight:bold">Args</span><span style="color:#666">&gt;</span> <span style="color:#902000">void</span> myPirntf(<span style="color:#007020;font-weight:bold">const</span> <span style="color:#902000">char</span><span style="color:#666">*</span>, Args...args);
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="err">... </span><span class="nc">T</span><span class="o">&gt;</span> <span class="k">struct</span> <span class="nc">Tuple</span> <span class="p">{}</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="err">... </span><span class="nc">Args</span><span class="o">&gt;</span> <span class="kt">void</span> <span class="n">myPirntf</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span><span class="p">,</span> <span class="n">Args</span><span class="p">...</span><span class="n">args</span><span class="p">);</span>
 </code></pre></td></tr></table>
 </div>
 </div><h2 id="24-完美转发perfect-forwarding">2.4. 完美转发(perfect forwarding)</h2>
 <h3 id="241-引用折叠reference-collapsing">2.4.1. 引用折叠(Reference Collapsing)</h3>
 <h2 id="25-智能指针smart-pointer">2.5. 智能指针(smart pointer)</h2>
 <h2 id="26-lambda表达式lambda-expressions">2.6. lambda表达式(lambda expressions)</h2>
-<div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#007020;font-weight:bold">struct</span> <span style="color:#0e84b5;font-weight:bold">Point</span> {
-  <span style="color:#902000">int</span> x;
-  <span style="color:#902000">int</span> y;
-};
-vector<span style="color:#666">&lt;</span>Point<span style="color:#666">&gt;</span> v;
-<span style="color:#60a0b0;font-style:italic">//c++98
-</span><span style="color:#60a0b0;font-style:italic"></span><span style="color:#902000">int</span> <span style="color:#06287e">compByX</span>(<span style="color:#007020;font-weight:bold">const</span> Point<span style="color:#666">&amp;</span> p1, <span style="color:#007020;font-weight:bold">const</span> Point<span style="color:#666">&amp;</span> p1) { <span style="color:#007020;font-weight:bold">return</span> p1.x <span style="color:#666">&lt;</span> p2.x; } 
-<span style="color:#902000">int</span> <span style="color:#06287e">compByY</span>(<span style="color:#007020;font-weight:bold">const</span> Point<span style="color:#666">&amp;</span> p1, <span style="color:#007020;font-weight:bold">const</span> Point<span style="color:#666">&amp;</span> p1) { <span style="color:#007020;font-weight:bold">return</span> p1.y <span style="color:#666">&lt;</span> p2.y; } 
-sort(v.begin, v.end(), compByX);
-sort(v.begin, v.end(), compByY);
-<span style="color:#60a0b0;font-style:italic">//c++11
-</span><span style="color:#60a0b0;font-style:italic"></span>sort(v.begin, v.end(), [](<span style="color:#007020;font-weight:bold">const</span> Point<span style="color:#666">&amp;</span> p1, <span style="color:#007020;font-weight:bold">const</span> Point<span style="color:#666">&amp;</span> p1) { <span style="color:#007020;font-weight:bold">return</span> p1.x <span style="color:#666">&lt;</span> p2.x });
-sort(v.begin, v.end(), [](<span style="color:#007020;font-weight:bold">const</span> Point<span style="color:#666">&amp;</span> p1, <span style="color:#007020;font-weight:bold">const</span> Point<span style="color:#666">&amp;</span> p1) { <span style="color:#007020;font-weight:bold">return</span> p1.y <span style="color:#666">&lt;</span> p2.y });
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="nc">Point</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">x</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">y</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="n">vector</span><span class="o">&lt;</span><span class="n">Point</span><span class="o">&gt;</span> <span class="n">v</span><span class="p">;</span>
+<span class="c1">//c++98
+</span><span class="c1"></span><span class="kt">int</span> <span class="nf">compByX</span><span class="p">(</span><span class="k">const</span> <span class="n">Point</span><span class="o">&amp;</span> <span class="n">p1</span><span class="p">,</span> <span class="k">const</span> <span class="n">Point</span><span class="o">&amp;</span> <span class="n">p1</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">p1</span><span class="p">.</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">p2</span><span class="p">.</span><span class="n">x</span><span class="p">;</span> <span class="p">}</span> 
+<span class="kt">int</span> <span class="nf">compByY</span><span class="p">(</span><span class="k">const</span> <span class="n">Point</span><span class="o">&amp;</span> <span class="n">p1</span><span class="p">,</span> <span class="k">const</span> <span class="n">Point</span><span class="o">&amp;</span> <span class="n">p1</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">p1</span><span class="p">.</span><span class="n">y</span> <span class="o">&lt;</span> <span class="n">p2</span><span class="p">.</span><span class="n">y</span><span class="p">;</span> <span class="p">}</span> 
+<span class="n">sort</span><span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">begin</span><span class="p">,</span> <span class="n">v</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">compByX</span><span class="p">);</span>
+<span class="n">sort</span><span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">begin</span><span class="p">,</span> <span class="n">v</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">compByY</span><span class="p">);</span>
+<span class="c1">//c++11
+</span><span class="c1"></span><span class="n">sort</span><span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">begin</span><span class="p">,</span> <span class="n">v</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="p">[](</span><span class="k">const</span> <span class="n">Point</span><span class="o">&amp;</span> <span class="n">p1</span><span class="p">,</span> <span class="k">const</span> <span class="n">Point</span><span class="o">&amp;</span> <span class="n">p1</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">p1</span><span class="p">.</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">p2</span><span class="p">.</span><span class="n">x</span> <span class="p">});</span>
+<span class="n">sort</span><span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">begin</span><span class="p">,</span> <span class="n">v</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="p">[](</span><span class="k">const</span> <span class="n">Point</span><span class="o">&amp;</span> <span class="n">p1</span><span class="p">,</span> <span class="k">const</span> <span class="n">Point</span><span class="o">&amp;</span> <span class="n">p1</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">p1</span><span class="p">.</span><span class="n">y</span> <span class="o">&lt;</span> <span class="n">p2</span><span class="p">.</span><span class="n">y</span> <span class="p">});</span>
 </code></pre></td></tr></table>
 </div>
 </div><h2 id="27-auto类型变量auto-typed-variables">2.7. auto类型变量(auto-typed variables)</h2>
-<div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#60a0b0;font-style:italic">//c++98
-</span><span style="color:#60a0b0;font-style:italic"></span>std<span style="color:#666">::</span>vector<span style="color:#666">&lt;</span><span style="color:#902000">int</span><span style="color:#666">&gt;</span> v;
-<span style="color:#007020;font-weight:bold">for</span> (std<span style="color:#666">::</span>vector<span style="color:#666">&lt;</span><span style="color:#902000">int</span><span style="color:#666">&gt;::</span>iterator it <span style="color:#666">=</span> v.begin(); it <span style="color:#666">!=</span> v.end(); <span style="color:#666">++</span> it) {
-  std<span style="color:#666">::</span>cout <span style="color:#666">&lt;&lt;</span> <span style="color:#666">*</span>it <span style="color:#666">&lt;&lt;</span> endl;
-}
-<span style="color:#60a0b0;font-style:italic">//c++11
-</span><span style="color:#60a0b0;font-style:italic"></span><span style="color:#007020;font-weight:bold">for</span> (<span style="color:#007020;font-weight:bold">auto</span> it <span style="color:#666">=</span> v.begin(); it <span style="color:#666">!=</span> v.end(); <span style="color:#666">++</span> it) {
-  std<span style="color:#666">::</span>cout <span style="color:#666">&lt;&lt;</span> <span style="color:#666">*</span>it <span style="color:#666">&lt;&lt;</span> endl;
-}
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">//c++98
+</span><span class="c1"></span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">v</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">it</span> <span class="o">=</span> <span class="n">v</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span> <span class="n">it</span> <span class="o">!=</span> <span class="n">v</span><span class="p">.</span><span class="n">end</span><span class="p">();</span> <span class="o">++</span> <span class="n">it</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">it</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">//c++11
+</span><span class="c1"></span><span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="n">it</span> <span class="o">=</span> <span class="n">v</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span> <span class="n">it</span> <span class="o">!=</span> <span class="n">v</span><span class="p">.</span><span class="n">end</span><span class="p">();</span> <span class="o">++</span> <span class="n">it</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">it</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><h2 id="28-基于range的for循环range-based-for">2.8. 基于range的for循环(Range-based for)</h2>
-<div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#60a0b0;font-style:italic">//c++03
-</span><span style="color:#60a0b0;font-style:italic"></span>std<span style="color:#666">::</span>vector<span style="color:#666">&lt;</span><span style="color:#902000">int</span><span style="color:#666">&gt;</span> v;
-<span style="color:#007020;font-weight:bold">for</span> (std<span style="color:#666">::</span>vector<span style="color:#666">&lt;</span><span style="color:#902000">int</span><span style="color:#666">&gt;::</span>iterator it <span style="color:#666">=</span> v.begin(); it <span style="color:#666">!=</span> v.end(); <span style="color:#666">++</span> it) {
-  std<span style="color:#666">::</span>cout <span style="color:#666">&lt;&lt;</span> <span style="color:#666">*</span>it <span style="color:#666">&lt;&lt;</span> endl;
-}
-<span style="color:#60a0b0;font-style:italic">//c++11
-</span><span style="color:#60a0b0;font-style:italic"></span><span style="color:#007020;font-weight:bold">for</span> (<span style="color:#902000">int</span><span style="color:#666">&amp;</span> <span style="color:#002070;font-weight:bold">x</span> : v) { std<span style="color:#666">::</span>cout <span style="color:#666">&lt;&lt;</span> x <span style="color:#666">&lt;&lt;</span> endl; }
-<span style="color:#60a0b0;font-style:italic">//结合auto
-</span><span style="color:#60a0b0;font-style:italic"></span><span style="color:#007020;font-weight:bold">for</span> (<span style="color:#007020;font-weight:bold">auto</span><span style="color:#666">&amp;</span> <span style="color:#002070;font-weight:bold">x</span> : v) { std<span style="color:#666">::</span>cout <span style="color:#666">&lt;&lt;</span> x <span style="color:#666">&lt;&lt;</span> endl; } <span style="color:#60a0b0;font-style:italic">//reference
-</span><span style="color:#60a0b0;font-style:italic"></span><span style="color:#007020;font-weight:bold">for</span> (<span style="color:#007020;font-weight:bold">auto</span> <span style="color:#002070;font-weight:bold">x</span> : v) { std<span style="color:#666">::</span>cout <span style="color:#666">&lt;&lt;</span> x <span style="color:#666">&lt;&lt;</span> endl; }  <span style="color:#60a0b0;font-style:italic">//copy
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">//c++03
+</span><span class="c1"></span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">v</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">it</span> <span class="o">=</span> <span class="n">v</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span> <span class="n">it</span> <span class="o">!=</span> <span class="n">v</span><span class="p">.</span><span class="n">end</span><span class="p">();</span> <span class="o">++</span> <span class="n">it</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">it</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">//c++11
+</span><span class="c1"></span><span class="k">for</span> <span class="p">(</span><span class="kt">int</span><span class="o">&amp;</span> <span class="nl">x</span> <span class="p">:</span> <span class="n">v</span><span class="p">)</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
+<span class="c1">//结合auto
+</span><span class="c1"></span><span class="k">for</span> <span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span> <span class="nl">x</span> <span class="p">:</span> <span class="n">v</span><span class="p">)</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span> <span class="c1">//reference
+</span><span class="c1"></span><span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="nl">x</span> <span class="p">:</span> <span class="n">v</span><span class="p">)</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>  <span class="c1">//copy
 </span></code></pre></td></tr></table>
 </div>
 </div><h2 id="29-初始化列表initializer-lists">2.9. 初始化列表(Initializer lists)</h2>
 <p>语法糖，方便对顺序数据结构初始化。</p>
-<div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#60a0b0;font-style:italic">//c++03
-</span><span style="color:#60a0b0;font-style:italic"></span>std<span style="color:#666">::</span>vector<span style="color:#666">&lt;</span><span style="color:#902000">int</span><span style="color:#666">&gt;</span> v;
-v.push_back(<span style="color:#40a070">1</span>);
-v.push_back(<span style="color:#40a070">2</span>);
-v.push_back(<span style="color:#40a070">3</span>);
-<span style="color:#60a0b0;font-style:italic">//c++11
-</span><span style="color:#60a0b0;font-style:italic"></span>std<span style="color:#666">::</span>vector<span style="color:#666">&lt;</span><span style="color:#902000">int</span><span style="color:#666">&gt;</span> v{<span style="color:#40a070">1</span>,<span style="color:#40a070">2</span>,<span style="color:#40a070">3</span>};
-std<span style="color:#666">::</span>vector<span style="color:#666">&lt;</span><span style="color:#902000">int</span><span style="color:#666">&gt;</span> v <span style="color:#666">=</span> {<span style="color:#40a070">1</span>,<span style="color:#40a070">2</span>,<span style="color:#40a070">3</span>};
-<span style="color:#60a0b0;font-style:italic">//自定义初始化列表
-</span><span style="color:#60a0b0;font-style:italic"></span><span style="color:#007020">#include</span> <span style="color:#007020">&lt;initializer_list&gt;</span><span style="color:#007020">
-</span><span style="color:#007020"></span><span style="color:#007020;font-weight:bold">class</span> <span style="color:#0e84b5;font-weight:bold">myVector</span> {
-<span style="color:#007020;font-weight:bold">public</span><span style="color:#666">:</span>
-  myVector(<span style="color:#007020;font-weight:bold">const</span> initializer_list<span style="color:#666">&lt;</span><span style="color:#902000">int</span><span style="color:#666">&gt;&amp;</span> v) {
-    <span style="color:#007020;font-weight:bold">for</span> (<span style="color:#007020;font-weight:bold">auto</span> <span style="color:#002070;font-weight:bold">x</span> : v) _v.push_back(x);
-  }
-<span style="color:#007020;font-weight:bold">private</span><span style="color:#666">:</span>
-  std<span style="color:#666">::</span>vector<span style="color:#666">&lt;</span><span style="color:#902000">int</span><span style="color:#666">&gt;</span> _v;
-};
-myVector mv{<span style="color:#40a070">1</span>,<span style="color:#40a070">2</span>,<span style="color:#40a070">3</span>};
-myVector mv <span style="color:#666">=</span> {<span style="color:#40a070">1</span>,<span style="color:#40a070">2</span>,<span style="color:#40a070">3</span>};
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">//c++03
+</span><span class="c1"></span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">v</span><span class="p">;</span>
+<span class="n">v</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">v</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="n">v</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<span class="c1">//c++11
+</span><span class="c1"></span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">v</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">v</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">};</span>
+<span class="c1">//自定义初始化列表
+</span><span class="c1"></span><span class="cp">#include</span> <span class="cpf">&lt;initializer_list&gt;</span><span class="cp">
+</span><span class="cp"></span><span class="k">class</span> <span class="nc">myVector</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="n">myVector</span><span class="p">(</span><span class="k">const</span> <span class="n">initializer_list</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">v</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="nl">x</span> <span class="p">:</span> <span class="n">v</span><span class="p">)</span> <span class="n">_v</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="k">private</span><span class="o">:</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">_v</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="n">myVector</span> <span class="n">mv</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">};</span>
+<span class="n">myVector</span> <span class="n">mv</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">};</span>
 </code></pre></td></tr></table>
 </div>
 </div><h2 id="210-static_assert">2.10. static_assert</h2>
 <p>安全特性，编译器静态检查。</p>
-<div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#007020;font-weight:bold">static_assert</span>( <span style="color:#007020;font-weight:bold">sizeof</span>(<span style="color:#902000">int</span>)<span style="color:#666">==</span><span style="color:#40a070">4</span>) );
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">static_assert</span><span class="p">(</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="o">==</span><span class="mi">4</span><span class="p">)</span> <span class="p">);</span>
 </code></pre></td></tr></table>
 </div>
 </div><h2 id="211-delegating-constructor">2.11. delegating constructor</h2>
 <p>语法糖，向java等语言靠近，方便开发。</p>
-<div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#60a0b0;font-style:italic">//c++03
-</span><span style="color:#60a0b0;font-style:italic"></span><span style="color:#007020;font-weight:bold">class</span> <span style="color:#0e84b5;font-weight:bold">Foo</span> {
-<span style="color:#007020;font-weight:bold">public</span><span style="color:#666">:</span>
-  Foo() { init(); }
-  Foo(<span style="color:#902000">int</span> x) { init(); doSomething(x); }
-<span style="color:#007020;font-weight:bold">private</span><span style="color:#666">:</span>
-  <span style="color:#902000">void</span> init() { <span style="color:#60a0b0;font-style:italic">//to some init }
-</span><span style="color:#60a0b0;font-style:italic"></span>};
-<span style="color:#60a0b0;font-style:italic">//c++11
-</span><span style="color:#60a0b0;font-style:italic"></span><span style="color:#007020;font-weight:bold">class</span> <span style="color:#0e84b5;font-weight:bold">Foo</span> {
-<span style="color:#007020;font-weight:bold">public</span><span style="color:#666">:</span>
-  Foo() { <span style="color:#60a0b0;font-style:italic">//to some init }
-</span><span style="color:#60a0b0;font-style:italic"></span>  Foo(<span style="color:#902000">int</span> x) <span style="color:#666">:</span> Foo() { doSomething(x); } <span style="color:#60a0b0;font-style:italic">//Foo必须首先被调用
-</span><span style="color:#60a0b0;font-style:italic"></span>};
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">//c++03
+</span><span class="c1"></span><span class="k">class</span> <span class="nc">Foo</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="n">Foo</span><span class="p">()</span> <span class="p">{</span> <span class="n">init</span><span class="p">();</span> <span class="p">}</span>
+  <span class="n">Foo</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span> <span class="n">init</span><span class="p">();</span> <span class="n">doSomething</span><span class="p">(</span><span class="n">x</span><span class="p">);</span> <span class="p">}</span>
+<span class="k">private</span><span class="o">:</span>
+  <span class="kt">void</span> <span class="n">init</span><span class="p">()</span> <span class="p">{</span> <span class="c1">//to some init }
+</span><span class="c1"></span><span class="p">};</span>
+<span class="c1">//c++11
+</span><span class="c1"></span><span class="k">class</span> <span class="nc">Foo</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="n">Foo</span><span class="p">()</span> <span class="p">{</span> <span class="c1">//to some init }
+</span><span class="c1"></span>  <span class="n">Foo</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="o">:</span> <span class="n">Foo</span><span class="p">()</span> <span class="p">{</span> <span class="n">doSomething</span><span class="p">(</span><span class="n">x</span><span class="p">);</span> <span class="p">}</span> <span class="c1">//Foo必须首先被调用
+</span><span class="c1"></span><span class="p">};</span>
 </code></pre></td></tr></table>
 </div>
 </div><h2 id="212-override">2.12. override</h2>
 <p>安全特性，显示标识函数的”重载“属性，在编译器检查，防止无效重载。</p>
-<div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#007020;font-weight:bold">class</span> <span style="color:#0e84b5;font-weight:bold">Base</span> {
-  <span style="color:#007020;font-weight:bold">virtual</span> <span style="color:#902000">void</span> <span style="color:#06287e">A</span>(<span style="color:#902000">int</span> x);
-  <span style="color:#007020;font-weight:bold">virtual</span> <span style="color:#902000">void</span> <span style="color:#06287e">B</span>() <span style="color:#007020;font-weight:bold">const</span>;
-};
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">class</span> <span class="nc">Base</span> <span class="p">{</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">A</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">);</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">B</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+<span class="p">};</span>
 
-<span style="color:#60a0b0;font-style:italic">//c++03
-</span><span style="color:#60a0b0;font-style:italic"></span><span style="color:#007020;font-weight:bold">class</span> <span style="color:#0e84b5;font-weight:bold">Derived</span> <span style="color:#666">:</span> <span style="color:#007020;font-weight:bold">public</span> Base {
-  <span style="color:#007020;font-weight:bold">virtual</span> <span style="color:#902000">void</span> <span style="color:#06287e">A</span>(<span style="color:#902000">float</span> x); <span style="color:#60a0b0;font-style:italic">//OK, create a new function
-</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#007020;font-weight:bold">virtual</span> <span style="color:#902000">void</span> <span style="color:#06287e">B</span>();        <span style="color:#60a0b0;font-style:italic">//OK, create a new function
-</span><span style="color:#60a0b0;font-style:italic"></span>};
-<span style="color:#60a0b0;font-style:italic">//c++11
-</span><span style="color:#60a0b0;font-style:italic"></span><span style="color:#007020;font-weight:bold">class</span> <span style="color:#0e84b5;font-weight:bold">Derived</span> <span style="color:#666">:</span> <span style="color:#007020;font-weight:bold">public</span> Base {
-  <span style="color:#007020;font-weight:bold">virtual</span> <span style="color:#902000">void</span> <span style="color:#06287e">A</span>(<span style="color:#902000">float</span> x) <span style="color:#007020;font-weight:bold">override</span>; <span style="color:#60a0b0;font-style:italic">//Error, no funtion to override
-</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#007020;font-weight:bold">virtual</span> <span style="color:#902000">void</span> <span style="color:#06287e">B</span>() <span style="color:#007020;font-weight:bold">override</span>;        <span style="color:#60a0b0;font-style:italic">//Error, no funtion to override
-</span><span style="color:#60a0b0;font-style:italic"></span>};
+<span class="c1">//c++03
+</span><span class="c1"></span><span class="k">class</span> <span class="nc">Derived</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Base</span> <span class="p">{</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">A</span><span class="p">(</span><span class="kt">float</span> <span class="n">x</span><span class="p">);</span> <span class="c1">//OK, create a new function
+</span><span class="c1"></span>  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">B</span><span class="p">();</span>        <span class="c1">//OK, create a new function
+</span><span class="c1"></span><span class="p">};</span>
+<span class="c1">//c++11
+</span><span class="c1"></span><span class="k">class</span> <span class="nc">Derived</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Base</span> <span class="p">{</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">A</span><span class="p">(</span><span class="kt">float</span> <span class="n">x</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span> <span class="c1">//Error, no funtion to override
+</span><span class="c1"></span>  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">B</span><span class="p">()</span> <span class="k">override</span><span class="p">;</span>        <span class="c1">//Error, no funtion to override
+</span><span class="c1"></span><span class="p">};</span>
 </code></pre></td></tr></table>
 </div>
 </div><h2 id="213-final">2.13. final</h2>
 <h2 id="214-delete">2.14. delete</h2>
 <h2 id="215-nullptr">2.15. nullptr</h2>
 <p>安全特性，防止宏定义<code>NULL</code>的二义性</p>
-<div class="highlight"><div style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#902000">void</span> <span style="color:#06287e">foo</span>(<span style="color:#902000">int</span> i);
-<span style="color:#902000">void</span> <span style="color:#06287e">foo</span>(<span style="color:#902000">void</span><span style="color:#666">*</span> p);
-<span style="color:#60a0b0;font-style:italic">//c++98 
-</span><span style="color:#60a0b0;font-style:italic"></span>foo(<span style="color:#007020">NULL</span>); <span style="color:#60a0b0;font-style:italic">//Error，重载歧义
-</span><span style="color:#60a0b0;font-style:italic">//c++11
-</span><span style="color:#60a0b0;font-style:italic"></span>foo(<span style="color:#007020;font-weight:bold">nullptr</span>); <span style="color:#60a0b0;font-style:italic">//OK, 调用void foo(void* p)
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">void</span> <span class="nf">foo</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">foo</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span> <span class="n">p</span><span class="p">);</span>
+<span class="c1">//c++98 
+</span><span class="c1"></span><span class="n">foo</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span> <span class="c1">//Error，重载歧义
+</span><span class="c1">//c++11
+</span><span class="c1"></span><span class="n">foo</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span> <span class="c1">//OK, 调用void foo(void* p)
 </span></code></pre></td></tr></table>
 </div>
 </div><h1 id="3-参考">3. 参考</h1>
