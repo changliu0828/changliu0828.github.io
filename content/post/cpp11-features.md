@@ -45,6 +45,7 @@ int&& r = 1;  //r是一个右值引用
 ## 2.2. 移动语义(move semantics)
 
 在`c++03`时代，我们调用类似于工厂类的如下代码，会导致两次数据的拷贝。
+
 ```cpp
 //C++03
 class Data {
@@ -55,7 +56,9 @@ public:
 Data createData() { return Data(); }  //Data()为右值
 Data data(createData());              //createData()为右值
 ```
+
 使用右值引用，我们可以把值从一个对象”移动“到另一个对象，这就是移动语义。使用移动语义可以减少不必要的数据拷贝，下面的代码只需要进行两次移动操作即可。
+
 ```cpp
 class Data {
 public:
@@ -66,6 +69,7 @@ public:
 Data createData() { return Data(); }
 Data data(createData()); //调用两次移动构造函数
 ```
+
 注：在此关闭了编译器如下优化，编译指令`g++ --std=c++11 -fno-elide-constructors`
 > -fno-elide-constructors: The C++ standard allows an implementation to omit creating a temporary which is only used to initialize another object of the same type. Specifying this option disables that optimization, and forces G++ to call the copy constructor in all cases.
 
