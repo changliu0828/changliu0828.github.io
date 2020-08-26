@@ -4,15 +4,13 @@ date: 2020-08-17T16:08:08+08:00
 draft: false 
 ---
 
-C++自1985年发行以来成为了世界上最成功的的编程语言之一。本文总结了C++11引入的部分重要特性。完整特性与编译器支持请参考[这里$^{[1]}$](https://en.cppreference.com/w/cpp/compiler_support)。
+C++自1985年发行以来成为了世界上最成功的的编程语言之一。本文总结了C++11引入的部分重要特性，并逐一举例说明。完整特性与编译器支持请参考[这里$^{[1]}$](https://en.cppreference.com/w/cpp/compiler_support)。
 
 <!--more-->
 
-# 2. 部分特性及示例
+# 部分特性 
 
-## 2.1. 右值引用(rvalue references)
-
-### 2.1.1. 表达式的值
+## 右值引用(rvalue references)
 
 在C++中任意一个表达式都由**类型**和**值**两部分组成，类型为其在内存中的解析方式，值为其在内存中的内容。标题中的“右值”即为值的一种分类。
 
@@ -30,8 +28,6 @@ C++自1985年发行以来成为了世界上最成功的的编程语言之一。�
 
 + 右值(rvalue)：是一个将亡值，一个临时对象，或不予任何对象关联的值。
 
-### 2.1.2. 右值引用
-
 C++11中，使用`&&`操作符取得一个右值的引用。
 
 ```cpp
@@ -40,10 +36,9 @@ int& l = a;   //l是一个左值引用
 int&& r = 1;  //r是一个右值引用
 ```
 
-## 2.2. 移动语义(move semantics)
+## 移动语义(move semantics)
 
 在`c++03`时代，我们调用类似于工厂类的如下代码，会导致两次数据的拷贝。
-
 ```cpp
 //C++03
 class Data {
@@ -54,24 +49,21 @@ public:
 Data createData() { return Data(); }  //Data()为右值
 Data data(createData());              //createData()为右值
 ```
-
 使用右值引用，我们可以把值从一个对象”移动“到另一个对象，这就是移动语义。使用移动语义可以减少不必要的数据拷贝，下面的代码只需要进行两次移动操作即可。
-
 ```cpp
 class Data {
 public:
-    Data(const Data& _data) : vec(_data.vec) {} //拷贝构造
-    Data(Data&& _data) : vec(_data.vec) {}      //移动构造
-    std::vector<int> vec;                                 
+  Data(const Data& _data) : vec(_data.vec) {} //拷贝构造
+  Data(Data&& _data) : vec(_data.vec) {}      //移动构造
+  std::vector<int> vec;                                 
 };
 Data createData() { return Data(); }
 Data data(createData()); //调用两次移动构造函数
 ```
-
 注：在此关闭了编译器如下优化，编译指令`g++ --std=c++11 -fno-elide-constructors`
 > -fno-elide-constructors: The C++ standard allows an implementation to omit creating a temporary which is only used to initialize another object of the same type. Specifying this option disables that optimization, and forces G++ to call the copy constructor in all cases.
 
-### 2.2.1. std::move
+### std::move
 使用std新增函数`std::move`提供将左值转化为右值的能力，C++11对于stl大部分功能使用`std::move`进行了重写，大大提高了效率。基于移动语义的`std::sort`和`std::set::insert()`比基于拷贝语义的快15倍之多。在使用上我们应当注意对于实现了移动构造的对象，例如大部分`stl`容器，`std::string`等，在`std::move`后其本身的值将不再有效。例如，
 
 ```cpp
@@ -80,20 +72,31 @@ std::string s2 = std::move(s1);
 //s1 = "", s2 = "Hello World"
 ```
 
-## 2.3. 变长参数模板(variadic Templates)
+## 完美转发(perfect forwarding)
+
+完美转发为可变参数模板函数提供了保持原有值语义的转发行为。
 
 ```cpp
-template<class ... T> struct Tuple {}
-template<class ... Args> void myPirntf(const char*, Args...args);
+//模板参数的转发, OuterFunction接受左值引用
+template<typename T>
+void OuterFunction(T& param) { 
+  InnerFunction(param); 
+}
+OuterFunction(5); //编译错误，不能传递右值
 ```
 
-## 2.4. 完美转发(perfect forwarding)
+为此，我们需要写一个支持右值引用的函数，
+```cpp
+//模板参数的转发, OuterFunction接受左值引用
+template<typename T>
+void OuterFunction(T&& param) { 
+  InnerFunction(param); 
+}
+OuterFunction(5); //OK
+```
+## 智能指针
 
-### 2.4.1. 引用折叠(Reference Collapsing)
-
-## 2.5. 智能指针(smart pointer)
-
-## 2.6. lambda表达式(lambda expressions)
+## lambda表达式(lambda expressions)
 
 ```cpp
 struct Point {
@@ -112,7 +115,7 @@ sort(v.begin, v.end(), [](const Point& p1, const Point& p1) { return p1.y < p2.y
 ```
 
 
-## 2.7. auto类型变量(auto-typed variables)
+## auto类型变量(auto-typed variables)
 
 ```cpp
 //c++98
@@ -125,7 +128,7 @@ for (auto it = v.begin(); it != v.end(); ++ it) {
   std::cout << *it << endl;
 }
 ```
-## 2.8. 基于range的for循环(Range-based for)
+## 基于range的for循环(Range-based for)
 
 ```cpp
 //c++03
@@ -140,7 +143,7 @@ for (auto& x : v) { std::cout << x << endl; } //reference
 for (auto x : v) { std::cout << x << endl; }  //copy
 ```
 
-## 2.9. 初始化列表(Initializer lists)
+## 初始化列表(Initializer lists)
 
 语法糖，方便对顺序数据结构初始化。
 
@@ -167,7 +170,7 @@ myVector mv{1,2,3};
 myVector mv = {1,2,3};
 ```
 
-## 2.10. static_assert
+## 静态断言(static_assert)
 
 安全特性，编译器静态检查。
 
@@ -175,7 +178,7 @@ myVector mv = {1,2,3};
 static_assert( sizeof(int)==4) );
 ```
 
-## 2.11. delegating constructor
+## 委托构造函数(delegating constructor)
 
 语法糖，向java等语言靠近，方便开发。
 
@@ -196,7 +199,7 @@ public:
 };
 ```
 
-## 2.12. override
+## override关键字
 
 安全特性，显示标识函数的”重载“属性，在编译器检查，防止无效重载。
 
@@ -218,11 +221,52 @@ class Derived : public Base {
 };
 ```
 
-## 2.13. final
+## final关键字
 
-## 2.14. delete
+安全特性，防止override
 
-## 2.15. nullptr
+```cpp
+struct Base
+{
+    virtual void foo();
+};
+ 
+struct A : Base
+{
+    void foo() final; // Base::foo is overridden and A::foo is the final override
+    void bar() final; // Error: bar cannot be final as it is non-virtual
+};
+ 
+struct B final : A // struct B is final
+{
+    void foo() override; // Error: foo cannot be overridden as it is final in A
+};
+ 
+struct C : B // Error: B is final
+{
+};
+```
+
+## delete与default关键字
+
+delete禁用某些成员函数
+
+```cpp
+class X {
+  X& operator=(const X&) = delete;	// Disallow copying
+  X(const X&) = delete;
+};
+```
+
+default恢复默认无参构造函数
+```cpp
+class X {
+  X() = default;
+  X(const X&) {...};
+};
+```
+
+## nullptr关键字
 
 安全特性，防止宏定义`NULL`的二义性
 
@@ -235,7 +279,7 @@ foo(NULL); //Error，重载歧义
 foo(nullptr); //OK, 调用void foo(void* p)
 ```
 
-# 3. 参考
+# 参考
 1. [C++ compiler support, cppreference.com](https://en.cppreference.com/w/cpp/compiler_support)
 2. [Value categories, cppreference.com](https://en.cppreference.com/w/cpp/language/value_category)
 3. [The Biggest Changes in C++11 (and Why You Should Care)](https://smartbear.com/blog/develop/the-biggest-changes-in-c11-and-why-you-should-care/)

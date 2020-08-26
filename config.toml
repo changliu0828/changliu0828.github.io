@@ -22,22 +22,38 @@ DefaultContentLanguage = "en"
   email = "changliu0828@gmail.com"
 [markup]
   [markup.highlight]
-    codeFences = true 
+    codeFences          = true 
+    pygmentsUseClassic  = true
+    pygmentsCodeFences  = true
+    style               = "autumn"
+    noClasses           = false
     hl_Lines = ""
-    style = "friendly"
     lineNos = true
-    noClasses = false
   [markup.tableOfContents]
     startLevel = 1
     endLevel = 3
 [taxonomies]
+  category = "categories"
   tag = "tags"
-[menu]
-  [[menu.nav]]
-    name = "Home"
-    url = "/"
-    weight = 1
-  [[menu.nav]]
-    name = "Archives"
-    url = "/archives/"
-    weight = 2 
+  series = "series"
+# Header Menu
+[[menu.main]]
+  name = "Categories"
+  identifier = "categories"
+  url = "/categories/"
+  weight = 1
+[[menu.main]]
+  name = "Tags"
+  identifier = "tags"
+  url = "/tags/"
+  weight = 2
+[[menu.main]]
+  name = "Archives"
+  identifier = "archives"
+  url = "/archives/"
+  weight = 3
+[[menu.main]]
+  name = "About"
+  identifier = "about"
+  url = "/about/"
+  weight = 4

@@ -18,7 +18,7 @@
       <pubDate>Mon, 17 Aug 2020 16:08:08 +0800</pubDate>
       
       <guid>https://changliu0828.github.io/post/cpp11-features/</guid>
-      <description>&lt;p&gt;C++自1985年发行以来成为了世界上最成功的的编程语言之一。本文总结了C++11引入的部分重要特性。完整特性与编译器支持请参考&lt;a href=&#34;https://en.cppreference.com/w/cpp/compiler_support&#34;&gt;这里$^{[1]}$&lt;/a&gt;。&lt;/p&gt;</description>
+      <description>&lt;p&gt;C++自1985年发行以来成为了世界上最成功的的编程语言之一。本文总结了C++11引入的部分重要特性，并逐一举例说明。完整特性与编译器支持请参考&lt;a href=&#34;https://en.cppreference.com/w/cpp/compiler_support&#34;&gt;这里$^{[1]}$&lt;/a&gt;。&lt;/p&gt;</description>
     </item>
     
   </channel>
