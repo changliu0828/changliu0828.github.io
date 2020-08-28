@@ -1,0 +1,34 @@
+baseurl = "http://changliu0828.github.io"
+languageCode = "en-us"
+title = "Chang Liu's Blog"
+theme = "xmin"
+googleAnalytics = ""
+disqusShortname = ""
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
+footnotereturnlinkcontents = "↩"
+
+[permalinks]
+    post = "/post/:year/:month/:day/:slug/"
+    note = "/note/:year/:month/:day/:slug/"
+
+[[menu.main]]
+    name = "Home"
+    url = "/"
+    weight = 1
+[[menu.main]]
+    name = "Categories"
+    url = "/categories/"
+    weight = 2
+[[menu.main]]
+    name = "Tags"
+    url = "/tags/"
+    weight = 3
+
+[params]
+    description = "Chang Liu's Blog"
+    footer = "&copy; [Chang Liu](www.changliu.me) 2020 | [Mail](mailto:changliu0828@gmail.com)"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
