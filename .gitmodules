@@ -1,6 +1,0 @@
-[submodule "themes/whiteplain-light"]
-	path = themes/whiteplain-light
-	url = https://github.com/changliu0828/whiteplain-light.git
-[submodule "themes/whiteplain"]
-	path = themes/whiteplain
-	url = https://github.com/changliu0828/whiteplain.git
