@@ -2,7 +2,7 @@
 title: c++11特性简介 
 date: '2020-08-28'
 categories:
-  - c++
+  - Summary
 tags:
   - c++
 ---
