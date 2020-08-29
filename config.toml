@@ -1,7 +1,7 @@
 baseurl = "http://changliu0828.github.io"
 languageCode = "en-us"
 title = "Chang Liu's Blog"
-theme = "xmin"
+theme = "hugo-xmin"
 googleAnalytics = ""
 disqusShortname = ""
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
@@ -32,3 +32,5 @@ footnotereturnlinkcontents = "↩"
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true
+  [markup.highlight]
+    style = "autumn" 

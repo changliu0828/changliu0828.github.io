@@ -6,58 +6,22 @@
     <description>Recent content in Home on Chang Liu&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 14 Jun 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 28 Aug 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://changliu0828.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Another Note on A blogdown Tutorial</title>
-      <link>http://changliu0828.github.io/note/2017/06/14/another-note/</link>
-      <pubDate>Wed, 14 Jun 2017 00:00:00 +0000</pubDate>
+      <title>c&#43;&#43;11特性简介</title>
+      <link>http://changliu0828.github.io/post/2020/08/28/c-11%E7%89%B9%E6%80%A7%E7%AE%80%E4%BB%8B/</link>
+      <pubDate>Fri, 28 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://changliu0828.github.io/note/2017/06/14/another-note/</guid>
-      <description>I just discovered an awesome tutorial on blogdown written by Alison. I have to admit this is the best blogdown tutorial I have seen so far.</description>
-    </item>
-    
-    <item>
-      <title>A Quick Note on Two Beautiful Websites</title>
-      <link>http://changliu0828.github.io/note/2017/06/13/a-quick-note/</link>
-      <pubDate>Tue, 13 Jun 2017 00:00:00 +0000</pubDate>
-      
-      <guid>http://changliu0828.github.io/note/2017/06/13/a-quick-note/</guid>
-      <description>To me, the two most impressive websites based on blogdown are:
- Rob J Hyndman&amp;rsquo;s personal website. Live Free or Dichotomize by Lucy and Nick et al.  I&amp;rsquo;m sure there will be more.</description>
-    </item>
-    
-    <item>
-      <title>A Plain Markdown Post</title>
-      <link>http://changliu0828.github.io/post/2016/02/14/a-plain-markdown-post/</link>
-      <pubDate>Sun, 14 Feb 2016 00:00:00 +0000</pubDate>
-      
-      <guid>http://changliu0828.github.io/post/2016/02/14/a-plain-markdown-post/</guid>
-      <description>This sample post is mainly for blogdown users. If you do not use blogdown, you can skip the first section.
-1. Markdown or R Markdown This is a post written in plain Markdown (*.md) instead of R Markdown (*.Rmd). The major differences are:
- You cannot run any R code in a plain Markdown document, whereas in an R Markdown document, you can embed R code chunks (```{r}); A plain Markdown post is rendered through Blackfriday, and an R Markdown document is compiled by rmarkdown and Pandoc.</description>
-    </item>
-    
-    <item>
-      <title>Lorem Ipsum</title>
-      <link>http://changliu0828.github.io/post/2015/07/23/lorem-ipsum/</link>
-      <pubDate>Thu, 23 Jul 2015 00:00:00 +0000</pubDate>
-      
-      <guid>http://changliu0828.github.io/post/2015/07/23/lorem-ipsum/</guid>
-      <description>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-Quisque mattis volutpat lorem vitae feugiat.</description>
-    </item>
-    
-    <item>
-      <title>About Hugo XMin</title>
-      <link>http://changliu0828.github.io/about/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://changliu0828.github.io/about/</guid>
-      <description>XMin is the first Hugo theme I have designed. The original reason that I wrote it was I needed a minimal example of Hugo themes when I was writing the blogdown book. Basically I wanted a simple theme that supports a navigation menu, a home page, other single pages, lists of pages, blog posts, categories, tags, and RSS. That is all. Nothing fancy. In terms of CSS and JavaScript, I really want to keep them minimal.</description>
+      <guid>http://changliu0828.github.io/post/2020/08/28/c-11%E7%89%B9%E6%80%A7%E7%AE%80%E4%BB%8B/</guid>
+      <description>C++自1985年发行以来成为了世界上最成功的的编程语言之一。本文总结了C++11引入的部分重要特性，并逐一举例说明。完整特性与编译器支持请参考这里$^{[1]}$。
+部分特性与示例 1. 右值引用(rvalue references) 在C语言中，左值与右值原是即为简单的概念。凡是既可以出现在赋值语句两边的称为左值，只能出现在赋值语句右边的称为右值。例如下面的代码中，a和b是左值，42和a + b是右值。如果右值出现在赋值语句左边，则会产生一个编译错误。
+int a = 42; int b = a; 42 = a + b; //compile error a + b = a; //compile error 另一种说法是，左值是哪些能被&amp;amp;操作符取到地址的值，右值是通过左值运算得出的临时结果或一些字面常量。把上面的代码编译成汇编语言就一目了然了，下面的代码中左值a和b都在栈上分配了空间，分别是-4(%rbp)和-8(%rbp)，而右值42只是一个立即数，a + b则是addl的两个参数。
+movl $42, -4(%rbp) ;int a = 42; movl -4(%rbp), %eax movl %eax, -8(%rbp) movl -8(%rbp), %eax ;int b = a addl %eax, -4(rbp); ;a = a + b 使用引用是提高程序运行效率的常用手段，而在只提供左值引用的C++03时代，在某些场景下的引用并没有那么“好用”。下面的代码中，由于无法传递右值Data()的引用，我们不得不使用3行丑陋的代码来完成一个简单的工作。
+extern Data Merge(Data&amp;amp; data1, Data&amp;amp; data2); //compile error Data double_data = Merge(Data(), Data()); //ok, but ugly Data data1; Data data2; Data double_data = Merge(data1, data2); C++中，提供了右值引用操作符&amp;amp;&amp;amp;，于是我们增加支持右值引用的Merge，代码可以简化成，</description>
     </item>
     
   </channel>
