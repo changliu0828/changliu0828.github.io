@@ -1,5 +1,5 @@
 baseurl = "http://changliu0828.github.io"
-languageCode = "en-us"
+languageCode = "en"
 title = "Chang Liu's Blog"
 theme = "hugo-xmin"
 googleAnalytics = ""

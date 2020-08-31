@@ -7,13 +7,13 @@ tags:
   - c++
 ---
 
-C++自1985年发行以来成为了世界上最成功的的编程语言之一。本文总结了C++11引入的部分重要特性，并逐一举例说明。完整特性与编译器支持请参考[这里$^{[1]}$](https://en.cppreference.com/w/cpp/compiler_support)。
+C++自1985年发行以来成为了世界上最成功的高级编程语言之一。2011年，在吸取了现代语言的若干特性后，C++11标准发布。本文总结了C++11引入的部分重要特性，并逐一举例说明。如需查看完整特性与编译器支持请参考[这里$^{[1]}$](https://en.cppreference.com/w/cpp/compiler_support)。
 
 # 部分特性与示例
 
 ## 1. 右值引用(rvalue references)
 
-在C语言中，左值与右值原是即为简单的概念。凡是既可以出现在赋值语句两边的称为左值，只能出现在赋值语句右边的称为右值。例如下面的代码中，`a`和`b`是左值，`42`和`a + b`是右值。如果右值出现在赋值语句左边，则会产生一个编译错误。
+在C语言中，左值与右值原是极为简单的概念——凡是既可以出现在赋值语句两边的称为左值，只能出现在赋值语句右边的称为右值。例如下面的代码中，`a`和`b`是左值，`42`和`a + b`是右值。如果右值出现在赋值语句左边，则会如你所熟知的一样，产生一个编译错误。
 
 ```cpp
 int a = 42;
@@ -21,29 +21,28 @@ int b = a;
 42 = a + b; //compile error
 a + b = a;  //compile error
 ```
-另一种说法是，左值是哪些能被`&`操作符取到地址的值，右值是通过左值运算得出的临时结果或一些字面常量。把上面的代码编译成汇编语言就一目了然了，下面的代码中左值`a`和`b`都在栈上分配了空间，分别是`-4(%rbp)`和`-8(%rbp)`，而右值`42`只是一个立即数，`a + b`则是`addl`的两个参数。
+另一种区分左值与右值的方法是，左值是哪些能被`&`操作符取到地址的值，右值是通过左值运算得出的临时结果或一些字面常量。把上面的代码编译成汇编语言就一目了然了。下面的代码中左值`a`和`b`都在栈上分配了空间，分别是`-4(%rbp)`和`-8(%rbp)`，而右值`42`是一个立即数，`a + b`则是`addl`的两个参数。
 
 ```asm
 movl  $42, -4(%rbp)   ;int a = 42;
-movl  -4(%rbp), %eax  
+movl  -4(%rbp), %eax
 movl  %eax, -8(%rbp)
 movl  -8(%rbp), %eax  ;int b = a
 addl  %eax, -4(rbp);  ;a = a + b
 ```
 
-使用引用是提高程序运行效率的常用手段，而在只提供左值引用的C++03时代，在某些场景下的引用并没有那么“好用”。下面的代码中，由于无法传递右值`Data()`的引用，我们不得不使用3行丑陋的代码来完成一个简单的工作。
+谈过了“右值”，我们来讨论下”引用“。使用引用是提高程序运行效率的常用手段，而在只提供左值引用的C++03时代，在某些场景下的引用并没有那么“好用”。例如下面的代码中，由于无法传递右值`Data()`的引用，我们不得不使用3行丑陋的代码来完成一个简单的工作。
 
 ```cpp
 extern Data Merge(Data& data1, Data& data2);
-//compile error
-Data double_data = Merge(Data(), Data()); 
+Data double_data = Merge(Data(), Data()); //compile error
 //ok, but ugly
 Data data1;
 Data data2;
 Data double_data = Merge(data1, data2);
 ```
 
-C++中，提供了右值引用操作符`&&`，于是我们增加支持右值引用的`Merge`，代码可以简化成，
+为此，C++中，提供了右值引用操作符`&&`。于是我们保留原先的左值引用版`Merge`，增加支持右值引用的`Merge`，代码可以简化成，
 
 ```cpp
 extern Data Merge(Data& data1, Data& data2);
@@ -61,7 +60,7 @@ Data double_data = Merge(data1, Data()); //compile error
 Data double_data = Merge(std::move(data1), Data()); //ok
 ```
 
-在C++03时代，我们可以通过`const`左值引用扩展右值的生命周期到引用销毁时刻，但其值**不可被修改**。通过右值引用，**不仅可以延长右值的生命周期，其值也可以自由修改**。
+在c++03时代，我们可以对右值进行`const`引用，从而扩展右值的生命周期到引用销毁之时，但缺点是其值**不可被修改**。在c++11中，通过右值引用，我们**不仅可以延长右值的生命周期，其值也可以自由修改**。
 
 ```cpp
 const int& a = 42;
@@ -93,52 +92,150 @@ Data d2(d1); //d1 is lvalue, copy constructor
 Data d2(std::move(d1)); //std::move(d1) is rvalue, move constructor
 ```
 
-另外一个值得注意的问题是，有些时候我们以为是一个移动构造，但其实执行的是拷贝构造，例如下面的`_str`其实执行的是`string`的拷贝构造，这是因为**右值引用是一个左值**，正确的做法是`_str = std::move(other._str)`。
+另外一个值得注意的问题是，有些时候我们以为是一个移动构造，但其实执行的是拷贝构造，例如下面的`_str`其实执行的是`string`的拷贝构造，这是因为发生了后文中会提到的**右值引用类型推导**，正确的做法是`_str = std::move(other._str)`。
 
 ```cpp
 Data(Data&& other) {
-  _str = other._str;
+  _str = other._str;            //copy
+  _str = std::move(other._str); //correct move
 }
 ```
 
 ## 3. 完美转发(perfect forwarding)
 
-完美转发为可变参数模板函数提供了保持原有值语义的转发行为。
+在泛型编程中，我们有时候需要”转发“一些参数给其他函数。比较典型的一个例子是传递一个类型和若干构造他的参数。例如下面的代码，
 
 ```cpp
-//模板参数的转发, OuterFunction接受左值引用
-template<typename T>
-void OuterFunction(T& param) { 
-  InnerFunction(param); 
+template<typename T, typename ARG1, typename ARG2>
+T* allocate(ARG1 arg1, ARG2 arg2) {
+  return new T(arg1, arg2);
 }
-OuterFunction(5); //编译错误，不能传递右值
 ```
 
-为此，我们需要写一个支持右值引用的函数，
+抽象一下，我们需要的是一个包裹函数`wrapper`来传递参数给`func`。
+
 ```cpp
-//模板参数的转发, OuterFunction接受左值引用
-template<typename T>
-void OuterFunction(T&& param) { 
-  InnerFunction(param); 
+template<typename T1, typename T2>
+void wrapper(T1& e1, T2& e2) {
+  func(e1, e2);
 }
-OuterFunction(5); //OK
+wrapper(42, 10);  //compile error
 ```
-## 4. 智能指针
 
-C++11增加了三种智能指针，
-+ `unique_ptr`；独占资源
-+ `shared_ptr`：共享资源，引用计数自动销毁
-+ `weak_ptr`：解决`shared_ptr`互相引用问题，不占用引用计数
+在上面的代码中，我们使用引用来传递参数以提高效率，这正是我们以前习惯的“伎俩”。然而，使用左值引用的`wrapper`对右值无能为力。为此，对于两个参数`T1`和`T2`，我们需要分别支持左值引用和右值引用的`wrapper`函数，也就是4个`wrapper`，
 
 ```cpp
-unique_ptr<string> pu1(new string ("Hello"));
-unique_ptr<string> pu2 = pu1; //ERROR
+template<typename T1, typename T2>
+void wrapper(T1& e1, T2& e2) { func(e1, e2); }
 
-shared_ptr<string> ps1(new string ("Hello")); //ps1.use_count() = 1
-ps2 = ps1;  //ps1.use_count() = 2
+template<typename T1, typename T2>
+void wrapper(T1& e1, T2&& e2) { func(e1, e2); }
+
+template<typename T1, typename T2>
+void wrapper(T1&& e1, T2& e2) { func(e1, e2); }
+
+template<typename T1, typename T2>
+void wrapper(T1&& e1, T2&& e2) { func(e1, e2); }
 ```
 
-## 5. lambda表达式(lambda expressions)
+灾难发生了，对于$n$个参数的函数来讲，需要$2^n$个特例来接受所有可能性。更可怕的是，c++11提供了可变参数模板！。那我们有没有办法在**保持值类型不变进行转发**呢？完美转发正是我们想要的答案。
+
+### 引用折叠(reference collapsing)
+
+在介绍完美转发之前，我想有必要先阐释下引用折叠。请首先思考一下，在下面的例子中，`r`的类型分别会是什么？
+
+```cpp
+template<typename T>
+void wrapper(T t) {
+ T& r = t;
+}
+int a = 42;
+wrapper<int&>(a);
+wrapper<int&&>(42);
+```
+
+对于“引用的引用”，c++11中给出了明确的解析方式，我们称之为引用折叠(reference collapsing)。具体的规则为：
+
+```cpp
+& & -> &
+&& & -> &
+& && -> &
+&& && -> &&
+```
+
+我们可以简单记忆为，在有左值引用的`&`的情况下，最终的值类型一定是左值引用。
+
+### 右值引用类型推导
+
+另外值得一提的是，在模板函数的形参为右值引用时，形参的类型取决于传入的实参类型。具体来说，我们分析下面的代码中形参`t`的类型。当传入类型左值类型`U`时，`t`的类型为`U&`。传入右值类型`U`时，`t`的类型为`U`。这既是右值引用类型推导规则。
+
+```cpp
+template <class T> void func(T&& t) {}
+func(42);           // 42 is an rvalue: T deduced to int
+
+double d = 3.14;
+func(d);            // d is an lvalue; T deduced to double&
+```
+
+### std::forward
+
+那么回到我们的`wrapper`函数。在c++11中，对它进行完美转发的正确写法应该是下面的代码。
+
+```cpp
+template <typename T1, typename T2>
+void wrapper(T1&& e1, T2&& e2) {
+    func(std::forward<T1>(e1), std::forward<T2>(e2));
+}
+```
+
+其中`std::forward`的实现为，
+
+```cpp
+template<class T>
+T&& forward(typename std::remove_reference<T>::type& t) noexcept {
+  return static_cast<T&&>(t);
+}
+template <class T>
+T&& forward(typename std::remove_reference<T>::type&& t) noexcept {
+  return static_cast<T&&>(t);
+}
+```
+
+如果我们如下使用wrapper，
+
+```cpp
+int a = 42;
+wrapper(a, 1.0f);
+```
+
+实参`a`的形参`e1`的类型为`int&`，所以forward特例化为如下代码，保留了左值引用类型。
+
+```cpp
+int& && forward(int& t) noexcept { return static_cast<int& &&>(t); }
+```
+引用折叠后，即，
+
+```cpp
+int& forward(int& t) noexcept { return static_cast<int&>(t); }
+```
+
+实参`42`的形参`e2`的类型为`int&&`，所以forward特例化为如下代码，保留了右值引用类型。
+
+```cpp
+int&& && forward(int&& t) noexcept { return static_cast<int&& &&>(t); }
+```
+
+引用折叠后，即，
+
+```cpp
+int&& forward(int&& t) noexcept { return static_cast<int&&>(t); }
+```
+
+至此，c++11通过引用折叠与右值引用类型推导实现了完美转发。
+
+## 4. lambda表达式(lambda expressions)
+
+lambda表达式使得我们可以更加优雅的实现一些“只需要使用一次”的函数。例如`std::sort`中常用的比较函数，
 
 ```cpp
 struct Point {
@@ -146,9 +243,9 @@ struct Point {
   int y;
 };
 vector<Point> v;
-//c++98
-int compByX(const Point& p1, const Point& p1) { return p1.x < p2.x; } 
-int compByY(const Point& p1, const Point& p1) { return p1.y < p2.y; } 
+//c++03
+int compByX(const Point& p1, const Point& p1) { return p1.x < p2.x; }
+int compByY(const Point& p1, const Point& p1) { return p1.y < p2.y; }
 sort(v.begin, v.end(), compByX);
 sort(v.begin, v.end(), compByY);
 //c++11
@@ -156,35 +253,32 @@ sort(v.begin, v.end(), [](const Point& p1, const Point& p1) { return p1.x < p2.x
 sort(v.begin, v.end(), [](const Point& p1, const Point& p1) { return p1.y < p2.y });
 ```
 
-## 6. auto类型变量(auto-typed variables)
+## 5. 自动类型推导(auto)与decltype关键字
+
+与其他现代高级语言一样，`auto`为强类型语言实现了类似于脚本语言的自动类型推导功能。
 
 ```cpp
-//c++98
-std::vector<int> v;
-for (std::vector<int>::iterator it = v.begin(); it != v.end(); ++ it) {
-  std::cout << *it << endl;
-}
-//c++11
 for (auto it = v.begin(); it != v.end(); ++ it) {
   std::cout << *it << endl;
 }
 ```
-## 7. 基于range的for循环(Range-based for)
+
+`decltype`则提供了编译期的自动类型推导。如果你不想执行某个表达式，又想得到它的类型，那请使用`decltype`，
 
 ```cpp
-//c++03
-std::vector<int> v;
-for (std::vector<int>::iterator it = v.begin(); it != v.end(); ++ it) {
-  std::cout << *it << endl;
-}
-//c++11
+decltype(a+b) c;
+```
+
+## 6. 基于range的for循环(range-based for)
+
+```cpp
 for (int& x : v) { std::cout << x << endl; }
 //结合auto
 for (auto& x : v) { std::cout << x << endl; } //reference
 for (auto x : v) { std::cout << x << endl; }  //copy
 ```
 
-## 8. 初始化列表(Initializer lists)
+## 7. 初始化列表(Initializer lists)
 
 语法糖，方便对顺序数据结构初始化。
 
@@ -211,7 +305,7 @@ myVector mv{1,2,3};
 myVector mv = {1,2,3};
 ```
 
-## 9. 静态断言(static_assert)
+## 8. 静态断言(static_assert)
 
 安全特性，编译器静态检查。
 
@@ -219,9 +313,9 @@ myVector mv = {1,2,3};
 static_assert( sizeof(int)==4) );
 ```
 
-## 10. 委托构造函数(delegating constructor)
+## 9. 委托构造函数(delegating constructor)
 
-语法糖，向java等语言靠近，方便开发。
+语法糖，方便开发。
 
 ```cpp
 //c++03
@@ -240,7 +334,7 @@ public:
 };
 ```
 
-## 11. override关键字
+## 10. override关键字
 
 安全特性，显示标识函数的”重载“属性，在编译器检查，防止无效重载。
 
@@ -262,33 +356,30 @@ class Derived : public Base {
 };
 ```
 
-## 12. final关键字
+## 11. final关键字
 
-安全特性，防止override
+安全特性，防止override。
 
 ```cpp
-struct Base
-{
+struct Base {
     virtual void foo();
 };
- 
-struct A : Base
-{
+
+struct A : Base {
     void foo() final; // Base::foo is overridden and A::foo is the final override
     void bar() final; // Error: bar cannot be final as it is non-virtual
 };
- 
-struct B final : A // struct B is final
+
+struct B final : A { // struct B is final
 {
     void foo() override; // Error: foo cannot be overridden as it is final in A
 };
- 
-struct C : B // Error: B is final
-{
+
+struct C : B { // Error: B is final
 };
 ```
 
-## 13. delete与default关键字
+## 12. delete与default关键字
 
 delete禁用某些成员函数
 
@@ -307,21 +398,124 @@ class X {
 };
 ```
 
-## 14. nullptr关键字
+## 13. nullptr关键字
 
 安全特性，防止宏定义`NULL`的二义性
 
 ```cpp
 void foo(int i);
 void foo(void* p);
-//c++98 
+//c++98
 foo(NULL); //Error，重载歧义
 //c++11
 foo(nullptr); //OK, 调用void foo(void* p)
 ```
 
+## 14. 标准库
+
+### 14.1. 智能指针
+
+为了防止使用指针过程中的空指针，野指针等常见为题，c++11增加了三种智能指针.
+
+#### unique_ptr
+
+保证了资源的“独占使用”，在任意时刻只能有一个unique_ptr指向资源。
+
+```cpp
+unique_ptr<string> p1(new string ("Hello"));
+unique_ptr<string> p2 = p1; //error
+```
+
+我们可以使用`release`和`reset`方法来转移资源的所有权，
+
+```cpp
+unique_ptr<string> pu2.reset(p1.release());
+```
+
+此外，我们可以赋值和拷贝一个将要销毁的`unique_ptr`，例如，
+
+```cpp
+unique_ptr<string> func() {}
+unique_ptr<string> p1 = func();
+```
+
+#### shared_ptr
+
+通过引用计数实现了资源的自动释放。
+
+```cpp
+shared_ptr<string> ps1(new string ("Hello")); //ps1.use_count() = 1
+ps2 = ps1;  //ps1.use_count() = 2
+```
+
+在使用时，我们需要注意禁止使用指针给智能指针赋值。下面的代码中，`p1`和`p2`分别维护引用计数，当资源释放时，会导致重复析构。
+
+```cpp
+int *a = new int(42);
+shared_ptr<int> p1(a);
+shared_ptr<int> p2(a);
+```
+
+此外，`shared_ptr`还存在循环引用问题，如下代码展示了这一情况，
+
+```cpp
+class A {
+  shared_ptr<B> _p;
+public:
+  setP(shared_ptr<B>& p) { _p = p };
+};
+class B {
+  shared_ptr<A> _p;
+public:
+  setP(shared_ptr<A>& p) { _p = p };
+};
+
+shared_ptr<A> pA(new A);
+shared_ptr<A> pB(new B);
+pA->setP(pB);
+pB->setP(pA);
+```
+
+#### weak_ptr
+
+解决`shared_ptr`循环引用问题，与`shared_ptr`配合使用，不占用引用计数。
+
+```cpp
+class A {
+  weak_ptr<B> _p;
+public:
+  setP(weak_ptr<B>& p) { _p = p };
+};
+class B {
+  weak_ptr<A> _p;
+public:
+  setP(weak_ptr<A>& p) { _p = p };
+};
+
+shared_ptr<A> pA(new A);
+shared_ptr<A> pB(new B);
+pA->setP(pB);
+pB->setP(pA);
+```
+
+### 14.2. all_of, any_of, none_of
+
+```cpp
+all_of(v.begin(), v.end(), ispositive());
+any_of(v.begin(), v.end(), ispositive());
+none_of(v.begin(), v.end(), ispositive());
+```
+
+### 14.3. unordered_map, unordered_set
+
+哈希表与哈希集合。
+
+# 最后
+
+c++11是c++03迈向现代编程语言的重要一步，使用移动语义以及用移动语义重写的大部分标准库可以大大提高程序运行效率。使用lambda表达式等
+
 # 参考
 1. [C++ compiler support, cppreference.com](https://en.cppreference.com/w/cpp/compiler_support)
 2. [Value categories, cppreference.com](https://en.cppreference.com/w/cpp/language/value_category)
 3. [The Biggest Changes in C++11 (and Why You Should Care)](https://smartbear.com/blog/develop/the-biggest-changes-in-c11-and-why-you-should-care/)
-4. [《深入浅出 C++ 11 右值引用》, botmanli(李俊宁), 2020, KM](http://km.oa.com/group/492/articles/show/412065?kmref=search&from_page=1&no=1)
+4. [Perfect forwarding and universal references in C++](https://eli.thegreenplace.net/2014/perfect-forwarding-and-universal-references-in-c)
