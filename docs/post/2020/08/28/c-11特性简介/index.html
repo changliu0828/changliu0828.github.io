@@ -32,7 +32,7 @@
 
 
 <main>
-<p>C++自1985年发行以来成为了世界上最成功的高级编程语言之一。2011年，在吸取了现代语言的若干特性后，C++11标准发布。本文总结了C++11引入的部分重要特性，并逐一举例说明。如需查看完整特性与编译器支持请参考<a href="https://en.cppreference.com/w/cpp/compiler_support">这里$^{[1]}$</a>。</p>
+<p>c++自1985年发行以来，以其高效、灵活的特性成为最成功的高级编程语言之一。2011年，距离上一个c++标准c++03发布的8年后，c++委员会吸取了现代编程语言的若干特性，发布了新的c++11标准，使得古朴的c++得以跻身现代编程语言的行列。本文挑选了部分c++11引入的新特性进行说明，阐述其缘由，使用以及注意事项。如果你需要查看完整特性与编译器支持请参考<a href="https://en.cppreference.com/w/cpp/compiler_support">这里$^{[1]}$</a>。</p>
 <h1 id="部分特性与示例">部分特性与示例</h1>
 <h2 id="1-右值引用rvalue-references">1. 右值引用(rvalue references)</h2>
 <p>在C语言中，左值与右值原是极为简单的概念——凡是既可以出现在赋值语句两边的称为左值，只能出现在赋值语句右边的称为右值。例如下面的代码中，<code>a</code>和<code>b</code>是左值，<code>42</code>和<code>a + b</code>是右值。如果右值出现在赋值语句左边，则会如你所熟知的一样，产生一个编译错误。</p>
@@ -213,7 +213,7 @@ myVector mv = {<span style="color:#099">1</span>,<span style="color:#099">2</spa
 <p>安全特性，编译器静态检查。</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#00a">static_assert</span>( <span style="color:#00a">sizeof</span>(<span style="color:#0aa">int</span>)==<span style="color:#099">4</span>) );
 </code></pre></div><h2 id="9-委托构造函数delegating-constructor">9. 委托构造函数(delegating constructor)</h2>
-<p>语法糖，方便开发。</p>
+<p>语法糖，方便简化类的初始化行为。</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#aaa;font-style:italic">//c++03
 </span><span style="color:#aaa;font-style:italic"></span><span style="color:#00a">class</span> <span style="color:#0a0;text-decoration:underline">Foo</span> {
 <span style="color:#00a">public</span>:
@@ -246,7 +246,7 @@ myVector mv = {<span style="color:#099">1</span>,<span style="color:#099">2</spa
 </span><span style="color:#aaa;font-style:italic"></span>  <span style="color:#00a">virtual</span> <span style="color:#0aa">void</span> <span style="color:#0a0">B</span>() <span style="color:#00a">override</span>;        <span style="color:#aaa;font-style:italic">//Error, no funtion to override
 </span><span style="color:#aaa;font-style:italic"></span>};
 </code></pre></div><h2 id="11-final关键字">11. final关键字</h2>
-<p>安全特性，防止override。</p>
+<p>提供了防止override的能力。</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#00a">struct</span> <span style="color:#0a0;text-decoration:underline">Base</span> {
     <span style="color:#00a">virtual</span> <span style="color:#0aa">void</span> <span style="color:#0a0">foo</span>();
 };
@@ -264,7 +264,7 @@ myVector mv = {<span style="color:#099">1</span>,<span style="color:#099">2</spa
 <span style="color:#00a">struct</span> <span style="color:#0a0;text-decoration:underline">C</span> : B { <span style="color:#aaa;font-style:italic">// Error: B is final
 </span><span style="color:#aaa;font-style:italic"></span>};
 </code></pre></div><h2 id="12-delete与default关键字">12. delete与default关键字</h2>
-<p>delete禁用某些成员函数</p>
+<p>提供了禁用某些成员函数的能力。</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#00a">class</span> <span style="color:#0a0;text-decoration:underline">X</span> {
   X&amp; <span style="color:#00a">operator</span>=(<span style="color:#00a">const</span> X&amp;) = <span style="color:#00a">delete</span>;	<span style="color:#aaa;font-style:italic">// Disallow copying
 </span><span style="color:#aaa;font-style:italic"></span>  X(<span style="color:#00a">const</span> X&amp;) = <span style="color:#00a">delete</span>;
@@ -282,7 +282,7 @@ myVector mv = {<span style="color:#099">1</span>,<span style="color:#099">2</spa
 </span><span style="color:#aaa;font-style:italic"></span>foo(<span style="color:#0aa">NULL</span>); <span style="color:#aaa;font-style:italic">//Error，重载歧义
 </span><span style="color:#aaa;font-style:italic">//c++11
 </span><span style="color:#aaa;font-style:italic"></span>foo(<span style="color:#00a">nullptr</span>); <span style="color:#aaa;font-style:italic">//OK, 调用void foo(void* p)
-</span></code></pre></div><h2 id="14-标准库">14. 标准库</h2>
+</span></code></pre></div><h2 id="14-std标准库">14. std::标准库</h2>
 <h3 id="141-智能指针">14.1. 智能指针</h3>
 <p>为了防止使用指针过程中的空指针，野指针等常见为题，c++11增加了三种智能指针.</p>
 <h4 id="unique_ptr">unique_ptr</h4>
@@ -302,7 +302,7 @@ unique_ptr&lt;string&gt; p1 = func();
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#0aa">int</span> *a = <span style="color:#00a">new</span> <span style="color:#0aa">int</span>(<span style="color:#099">42</span>);
 shared_ptr&lt;<span style="color:#0aa">int</span>&gt; p1(a);
 shared_ptr&lt;<span style="color:#0aa">int</span>&gt; p2(a);
-</code></pre></div><p>此外，<code>shared_ptr</code>还存在循环引用问题，如下代码展示了这一情况，</p>
+</code></pre></div><p>此外，<code>shared_ptr</code>在使用中存在循环引用问题，如下代码展示了这一情况，</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#00a">class</span> <span style="color:#0a0;text-decoration:underline">A</span> {
   shared_ptr&lt;B&gt; _p;
 <span style="color:#00a">public</span>:
@@ -336,13 +336,15 @@ shared_ptr&lt;A&gt; pB(<span style="color:#00a">new</span> B);
 pA-&gt;setP(pB);
 pB-&gt;setP(pA);
 </code></pre></div><h3 id="142-all_of-any_of-none_of">14.2. all_of, any_of, none_of</h3>
+<p>如下例，</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp">all_of(v.begin(), v.end(), ispositive());
 any_of(v.begin(), v.end(), ispositive());
 none_of(v.begin(), v.end(), ispositive());
-</code></pre></div><h3 id="143-unordered_map-unordered_set">14.3. unordered_map, unordered_set</h3>
-<p>哈希表与哈希集合。</p>
+</code></pre></div><h3 id="143-stdunordered_map-stdunordered_set">14.3. std::unordered_map, std::unordered_set</h3>
+<p>与<code>std::map</code>和<code>std::set</code>使用发放类似，以哈希表作为底层实现，提供$ O(1) $的插入查询效率。哈希表的负载因子(LoadFactor)超过阈值时，会自动进行rehashing，进而可能导致迭代器失效。</p>
 <h1 id="最后">最后</h1>
-<p>c++11是c++03迈向现代编程语言的重要一步，使用移动语义以及用移动语义重写的大部分标准库可以大大提高程序运行效率。使用lambda表达式等</p>
+<p>在2020年，虽然最新的标准已经来到了c++20，但c++11依然具有学习的意义。在我看来其可以视为是c++迈向现代编程语言的最重要一步，也是承上启下的一个关键性版本。</p>
+<p>最后，感谢你的阅读。如果你觉得本文有任何错误，亦或是你有任何疑虑和感想，请一定<a href="mailto:changliu0828@gmail.com">让我知道</a>。</p>
 <h1 id="参考">参考</h1>
 <ol>
 <li><a href="https://en.cppreference.com/w/cpp/compiler_support">C++ compiler support, cppreference.com</a></li>

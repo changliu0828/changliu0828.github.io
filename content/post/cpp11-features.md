@@ -7,7 +7,7 @@ tags:
   - c++
 ---
 
-C++自1985年发行以来成为了世界上最成功的高级编程语言之一。2011年，在吸取了现代语言的若干特性后，C++11标准发布。本文总结了C++11引入的部分重要特性，并逐一举例说明。如需查看完整特性与编译器支持请参考[这里$^{[1]}$](https://en.cppreference.com/w/cpp/compiler_support)。
+c++自1985年发行以来，以其高效、灵活的特性成为最成功的高级编程语言之一。2011年，距离上一个c++标准c++03发布的8年后，c++委员会吸取了现代编程语言的若干特性，发布了新的c++11标准，使得古朴的c++得以跻身现代编程语言的行列。本文挑选了部分c++11引入的新特性进行说明，阐述其缘由，使用以及注意事项。如果你需要查看完整特性与编译器支持请参考[这里$^{[1]}$](https://en.cppreference.com/w/cpp/compiler_support)。
 
 # 部分特性与示例
 
@@ -315,7 +315,7 @@ static_assert( sizeof(int)==4) );
 
 ## 9. 委托构造函数(delegating constructor)
 
-语法糖，方便开发。
+语法糖，方便简化类的初始化行为。
 
 ```cpp
 //c++03
@@ -358,7 +358,7 @@ class Derived : public Base {
 
 ## 11. final关键字
 
-安全特性，防止override。
+提供了防止override的能力。
 
 ```cpp
 struct Base {
@@ -381,7 +381,7 @@ struct C : B { // Error: B is final
 
 ## 12. delete与default关键字
 
-delete禁用某些成员函数
+提供了禁用某些成员函数的能力。
 
 ```cpp
 class X {
@@ -411,7 +411,7 @@ foo(NULL); //Error，重载歧义
 foo(nullptr); //OK, 调用void foo(void* p)
 ```
 
-## 14. 标准库
+## 14. std::标准库
 
 ### 14.1. 智能指针
 
@@ -456,7 +456,7 @@ shared_ptr<int> p1(a);
 shared_ptr<int> p2(a);
 ```
 
-此外，`shared_ptr`还存在循环引用问题，如下代码展示了这一情况，
+此外，`shared_ptr`在使用中存在循环引用问题，如下代码展示了这一情况，
 
 ```cpp
 class A {
@@ -500,19 +500,23 @@ pB->setP(pA);
 
 ### 14.2. all_of, any_of, none_of
 
+如下例，
+
 ```cpp
 all_of(v.begin(), v.end(), ispositive());
 any_of(v.begin(), v.end(), ispositive());
 none_of(v.begin(), v.end(), ispositive());
 ```
 
-### 14.3. unordered_map, unordered_set
+### 14.3. std::unordered_map, std::unordered_set
 
-哈希表与哈希集合。
+与`std::map`和`std::set`使用发放类似，以哈希表作为底层实现，提供$ O(1) $的插入查询效率。哈希表的负载因子(LoadFactor)超过阈值时，会自动进行rehashing，进而可能导致迭代器失效。
 
 # 最后
 
-c++11是c++03迈向现代编程语言的重要一步，使用移动语义以及用移动语义重写的大部分标准库可以大大提高程序运行效率。使用lambda表达式等
+在2020年，虽然最新的标准已经来到了c++20，但c++11依然具有学习的意义。在我看来其可以视为是c++迈向现代编程语言的最重要一步，也是承上启下的一个关键性版本。
+
+最后，感谢你的阅读。如果你觉得本文有任何错误，亦或是你有任何疑虑和感想，请一定[让我知道](mailto:changliu0828@gmail.com)。
 
 # 参考
 1. [C++ compiler support, cppreference.com](https://en.cppreference.com/w/cpp/compiler_support)
