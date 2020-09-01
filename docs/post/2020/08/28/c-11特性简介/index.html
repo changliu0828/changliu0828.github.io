@@ -38,14 +38,14 @@
         <li><a href="#1-右值引用rvalue-references">1. 右值引用(rvalue references)</a></li>
         <li><a href="#2-移动语义move-semantic">2. 移动语义(move semantic)</a>
           <ul>
-            <li><a href="#stdmove">std::move</a></li>
+            <li><a href="#21-stdmove">2.1. std::move</a></li>
           </ul>
         </li>
         <li><a href="#3-完美转发perfect-forwarding">3. 完美转发(perfect forwarding)</a>
           <ul>
-            <li><a href="#引用折叠reference-collapsing">引用折叠(reference collapsing)</a></li>
-            <li><a href="#右值引用类型推导">右值引用类型推导</a></li>
-            <li><a href="#stdforward">std::forward</a></li>
+            <li><a href="#31-引用折叠reference-collapsing">3.1. 引用折叠(reference collapsing)</a></li>
+            <li><a href="#32-右值引用类型推导">3.2. 右值引用类型推导</a></li>
+            <li><a href="#33-stdforward">3.3. std::forward</a></li>
           </ul>
         </li>
         <li><a href="#4-lambda表达式lambda-expressions">4. lambda表达式(lambda expressions)</a></li>
@@ -118,7 +118,7 @@ b = <span style="color:#099">43</span>; <span style="color:#aaa;font-style:itali
   _res = other._res;
   other._res = <span style="color:#00a">nullptr</span>;
 }
-</code></pre></div><h3 id="stdmove">std::move</h3>
+</code></pre></div><h3 id="21-stdmove">2.1. std::move</h3>
 <p>使用<code>std::move</code>可以将左值转为右值，从而方便使用移动语义。<strong>这里指的注意的是，将左值传入移动构造函数，会导致其值被释放。所以应当确保在调用移动构造后，该左值不被使用。</strong></p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#00a">extern</span> Data::Data(<span style="color:#00a">const</span> Data&amp; other);
 <span style="color:#00a">extern</span> Data::Data(Data&amp;&amp; other);
@@ -155,7 +155,7 @@ wrapper(<span style="color:#099">42</span>, <span style="color:#099">10</span>);
 <span style="color:#00a">template</span>&lt;<span style="color:#00a">typename</span> T1, <span style="color:#00a">typename</span> T2&gt;
 <span style="color:#0aa">void</span> wrapper(T1&amp;&amp; e1, T2&amp;&amp; e2) { func(e1, e2); }
 </code></pre></div><p>灾难发生了，对于$n$个参数的函数来讲，需要$2^n$个特例来接受所有可能性。更可怕的是，c++11提供了可变参数模板！那我们有没有办法在<strong>保持值类型不变进行转发</strong>呢？完美转发正是我们想要的答案。</p>
-<h3 id="引用折叠reference-collapsing">引用折叠(reference collapsing)</h3>
+<h3 id="31-引用折叠reference-collapsing">3.1. 引用折叠(reference collapsing)</h3>
 <p>在介绍完美转发之前，我想有必要先阐释下引用折叠。请首先思考一下，在下面的例子中，<code>r</code>的类型分别会是什么？</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#00a">template</span>&lt;<span style="color:#00a">typename</span> T&gt;
 <span style="color:#0aa">void</span> wrapper(T t) {
@@ -170,14 +170,14 @@ wrapper&lt;<span style="color:#0aa">int</span>&amp;&amp;&gt;(<span style="color:
 &amp; &amp;&amp; -&gt; &amp;
 &amp;&amp; &amp;&amp; -&gt; &amp;&amp;
 </code></pre></div><p>我们可以简单记忆为，在有左值引用的<code>&amp;</code>的情况下，最终的值类型一定是左值引用。</p>
-<h3 id="右值引用类型推导">右值引用类型推导</h3>
+<h3 id="32-右值引用类型推导">3.2. 右值引用类型推导</h3>
 <p>另外值得一提的是，在模板函数的形参为右值引用时，形参的类型取决于传入的实参类型。具体来说，我们分析下面的代码中形参<code>t</code>的类型。当传入类型左值类型<code>U</code>时，<code>t</code>的类型为<code>U&amp;</code>。传入右值类型<code>U</code>时，<code>t</code>的类型为<code>U</code>。这既是右值引用类型推导规则。</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#00a">template</span> &lt;<span style="color:#00a">class</span> <span style="color:#0a0;text-decoration:underline">T</span>&gt; <span style="color:#0aa">void</span> func(T&amp;&amp; t) {}
 func(<span style="color:#099">42</span>);           <span style="color:#aaa;font-style:italic">// 42 is an rvalue: T deduced to int
 </span><span style="color:#aaa;font-style:italic"></span>
 <span style="color:#0aa">double</span> d = <span style="color:#099">3.14</span>;
 func(d);            <span style="color:#aaa;font-style:italic">// d is an lvalue; T deduced to double&amp;
-</span></code></pre></div><h3 id="stdforward">std::forward</h3>
+</span></code></pre></div><h3 id="33-stdforward">3.3. std::forward</h3>
 <p>那么回到我们的<code>wrapper</code>函数。在c++11中，对它进行完美转发的正确写法应该是下面的代码。</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#00a">template</span> &lt;<span style="color:#00a">typename</span> T1, <span style="color:#00a">typename</span> T2&gt;
 <span style="color:#0aa">void</span> wrapper(T1&amp;&amp; e1, T2&amp;&amp; e2) {
