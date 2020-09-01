@@ -110,7 +110,7 @@ wrapper(<span style="color:#099">42</span>, <span style="color:#099">10</span>);
 
 <span style="color:#00a">template</span>&lt;<span style="color:#00a">typename</span> T1, <span style="color:#00a">typename</span> T2&gt;
 <span style="color:#0aa">void</span> wrapper(T1&amp;&amp; e1, T2&amp;&amp; e2) { func(e1, e2); }
-</code></pre></div><p>灾难发生了，对于$n$个参数的函数来讲，需要$2^n$个特例来接受所有可能性。更可怕的是，c++11提供了可变参数模板！。那我们有没有办法在<strong>保持值类型不变进行转发</strong>呢？完美转发正是我们想要的答案。</p>
+</code></pre></div><p>灾难发生了，对于$n$个参数的函数来讲，需要$2^n$个特例来接受所有可能性。更可怕的是，c++11提供了可变参数模板！那我们有没有办法在<strong>保持值类型不变进行转发</strong>呢？完美转发正是我们想要的答案。</p>
 <h3 id="引用折叠reference-collapsing">引用折叠(reference collapsing)</h3>
 <p>在介绍完美转发之前，我想有必要先阐释下引用折叠。请首先思考一下，在下面的例子中，<code>r</code>的类型分别会是什么？</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#00a">template</span>&lt;<span style="color:#00a">typename</span> T&gt;
