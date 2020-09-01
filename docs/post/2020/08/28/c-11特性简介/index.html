@@ -75,7 +75,7 @@ b = <span style="color:#099">43</span>; <span style="color:#aaa;font-style:itali
   other._res = <span style="color:#00a">nullptr</span>;
 }
 </code></pre></div><h3 id="stdmove">std::move</h3>
-<p>使用<code>std::move</code>可以将左值转为右值，从而方便使用移动语义。<strong>这里指的注意的是，将左值传入移动构造函数，会导致其值被释放。所以应当确保在调用移动构造后，改左值不被使用。</strong></p>
+<p>使用<code>std::move</code>可以将左值转为右值，从而方便使用移动语义。<strong>这里指的注意的是，将左值传入移动构造函数，会导致其值被释放。所以应当确保在调用移动构造后，该左值不被使用。</strong></p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#00a">extern</span> Data::Data(<span style="color:#00a">const</span> Data&amp; other);
 <span style="color:#00a">extern</span> Data::Data(Data&amp;&amp; other);
 Data d1;
