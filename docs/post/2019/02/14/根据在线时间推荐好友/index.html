@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>根据在线时间推荐好友 | Chang Liu&#39;s Blog</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    
+  </head>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/categories/">Categories</a></li>
+      
+      <li><a href="/tags/">Tags</a></li>
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">根据在线时间推荐好友</span></h1>
+
+<h2 class="date">2019/02/14</h2>
+</div>
+
+
+
+<main>
+<p>玩过类似魔兽世界这种网游的朋友，应该都有组团刷副本的经历。然而有些时候我们会发现，虽然加了很多游戏好友，但自己想刷副本时经常会缺“奶”，缺“T”。能不能根据玩家在线的时间段推荐相似的好友呢？</p>
+<h1 id="思考">思考</h1>
+<p>推荐的本质是排序。给用户推荐用户，就是要找到一个相似度评估函数来衡量两个用户的在线时间段是否相似。然后把目标玩家与所有玩家的相似度一一计算，并按序推荐。</p>
+<p>在介绍我的做法前，列三个遇到的问题：</p>
+<ol>
+<li>如何表示每个玩家的在线习惯，新玩家怎么办？</li>
+<li>如何设计相似度评估函数？</li>
+<li>系统如何支持千万以上量级的玩家？</li>
+</ol>
+<p>如果是你，如何解决上面的问题。</p>
+<h1 id="我的做法">我的做法</h1>
+<h2 id="在线向量">在线向量</h2>
+<p>使用一个24维向量描述用户24个小时的在线习惯，<strong>每一维表示玩家在此时刻内在线的期望</strong>，称为<strong>在线向量</strong>。</p>
+<p>如下图，假设我们有一个玩家A，他某天在12:00到13:00之间上线了一会，晚上在20点过也上线了一会。</p>
+<p><img src="/image/friend-recommendation/online_vertor_1.png" alt="玩家A某天的在线时段"></p>
+<p>我们如果粗略的认为A在12:00-13:00，20:00-21:00之间和的在线概率为1，就得到了下图中的在线向量。</p>
+<p><img src="/image/friend-recommendation/online_vertor_2.png" alt="玩家A某天的在线向量"></p>
+<p>如果从长期来看，将一段时间内每天的时间向量取平均值，就得到了这段时间的平均向量。下图中的绿色方框是玩家A经过四天的观察得到的在线向量，即</p>
+<p><img src="/image/friend-recommendation/online_vertor_3.png" alt="玩家A四天的在线向量"></p>
+<p>$$ V_A = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0.25, 0, 0, 0, 0, 0, 0, 0.25, 0, 0, 0) $$</p>
+<p>使用在线向量，我们可以粗略刻画玩家在某个时间点在线的期望。此外，在线向量的norm也在一定程度上刻画了用户的活跃情况，对于频繁上线的用户，其在线向量的norm会大于不常上线的用户。我们可以利用这点，尽量给推荐更加活跃的用户作为好友。</p>
+<h2 id="在线相似度">在线相似度</h2>
+<p>对于两个用户之间的在线相似度，我们使用两人的在线向量的內积表示。这个內积可以理解为两个玩家在一天中“相遇”的期望。</p>
+<p>$$ S_{AB} = V_A \cdot V_B $$</p>
+<p>假设我们有3个用户，</p>
+<p>$$
+\begin{aligned}
+V_A &amp; = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0.25, 0, 0, 0, 0, 0, 0, 0.25, 0, 0, 0) \\<br>
+V_B &amp; = (1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 1, 0) \\<br>
+V_C &amp; = (1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0.5, 0, 0, 0, 0, 0, 0, 0.5, 0, 0, 0)
+\end{aligned}
+$$</p>
+<p>假设我们要给A推荐用户，分别计算A与B、A与C的相似度，</p>
+<p>$$
+\begin{aligned}
+S_{AB} &amp; = V_A \cdot V_B = 0.25 \times 0.1 = 0.025 \\<br>
+S_{AC} &amp; = V_A \cdot V_C = 0.5 \times 1 + 0.25 \times 0.5 + 0.25 \times 0.5 = 0.75
+\end{aligned}
+$$</p>
+<p>用户B、C相比，我们更愿意推荐C给A作为好友。尽管B的活跃程度非常高，但是与C与A的在线习惯更为匹配。这种推荐方案符合我的要求。</p>
+<h2 id="聚类随机排序">聚类+随机+排序</h2>
+<p>对于每一条推荐请求，计算其与所有用户的在线相似度，并排序推荐显然开销巨大。常见的推荐系统往往采用分层的架构减少计算开销，大致意思就是底层过滤一些根本不靠谱的，上层再对少量数据精排。</p>
+<p>我们底层使用离线聚类，将所有用户打上类标签。在应对用户的推荐请求时，只对同一类的用户随机挑选若干，然后进行相似度计算和排序，并最终按序推荐给用户。通过控制聚类的类数，和随机挑选的用户数，可以保证最后的排序人数可控。</p>
+<h2 id="实验">实验</h2>
+<p>为了验证效果，我拿了某游戏800名用户一段时间的在线记录做验证demo。下图展示了这些玩家的在线向量。</p>
+<p><img src="/image/friend-recommendation/data.png" alt="实验数据"></p>
+<p>下图中，我随机挑选了2个用户，计算所有用户和他们的在线相似度并排序。从效果来看，推荐效果还是比较理想的。</p>
+<p><img src="/image/friend-recommendation/example.png" alt="两个样本"></p>
+<p>此外，我也试验了一下聚类的效果。从下图的实验结果来看，在聚为五类时，用户的在线习惯也比较明显的展现了。</p>
+<p><img src="/image/friend-recommendation/cluster.png" alt="聚类"></p>
+<p>除了用于粗排，聚类也从一个侧面做了一些用户画像的工作。图6很好的展示了这点，从上到下的5类用户，分别对应晚间上线、中午上线、傍晚上线、上午上线、全天在线几种类型，利用这点可以采取更加精细化的运营策略。</p>
+
+</main>
+
+  <footer>
+  <script src="//yihui.name/js/math-code.js"></script>
+<script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+<script async src="//yihui.name/js/center-img.js"></script>
+
+  
+  <hr/>
+  © <a href="www.changliu.me">Chang Liu</a> 2020 | <a href="mailto:changliu0828@gmail.com">Contact</a>
+  
+  </footer>
+  </body>
+</html>
+
