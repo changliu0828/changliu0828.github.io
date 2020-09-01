@@ -57,7 +57,16 @@ a:visited {
   color:#000000;
 }
 
-#TableOfContents, #TOC {
+.toc {
   border: 1px solid #eee;
   border-radius: 5px;
 }
+.toc ul {
+  list-style-type: none;
+  padding: 0;
+  padding-left: 12px;
+  margin: 0;
+ }
+.toc nav > ul {
+  padding-left: 12px;
+ }
