@@ -34,3 +34,6 @@ footnotereturnlinkcontents = "↩"
       unsafe = true
   [markup.highlight]
     style = "autumn" 
+  [markup.tableOfContents]
+    startLevel = 1
+
