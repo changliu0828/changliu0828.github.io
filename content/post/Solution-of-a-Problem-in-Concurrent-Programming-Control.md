@@ -1,5 +1,5 @@
 ---
-title: "Dijstra's mutual exlusion algorithm"
+title: "Dijstra's mutual exclusion algorithm"
 date: 2020-09-03T19:48:34+08:00
 categories:
   - paper 
