@@ -1,5 +1,5 @@
 ---
-title: "Dijstra's mutal exlusion algorithm"
+title: "Dijstra's mutual exlusion algorithm"
 date: 2020-09-03T19:48:34+08:00
 categories:
   - paper 
@@ -9,7 +9,7 @@ tags:
 
 ---
 
-[Edsger W. Dijkstra](https://en.wikipedia.org/wiki/Edsger_W._Dijkstra)于1965年发表文章[Solution of a Problem in Concurrent Programming Control](https://www.di.ens.fr/~pouzet/cours/systeme/bib/dijkstra.pdf)，引出并发系统下的互斥(Mutual exclusion)问题，自此开辟了分布式计算领域。Dijkstra在文中给出了基于共享存储原子性访问的解决方案只有十多行代码，但阅读起来较难以理解。在查阅若干资料后，总结了一种较为直观的解释方法，记录于此。
+[Edsger W. Dijkstra](https://en.wikipedia.org/wiki/Edsger_W._Dijkstra)于1965年发表文章[Solution of a Problem in Concurrent Programming Control](https://www.di.ens.fr/~pouzet/cours/systeme/bib/dijkstra.pdf)，引出并发系统下的互斥(mutual exclusion)问题，自此开辟了分布式计算领域。Dijkstra在文中给出了基于共享存储原子性访问的解决方案只有十多行代码，但阅读起来较难以理解。在查阅若干资料后，总结了一种较为直观的解释方法，记录于此。
 
 # 问题
 
