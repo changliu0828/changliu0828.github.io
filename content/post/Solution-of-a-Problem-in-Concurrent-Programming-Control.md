@@ -24,11 +24,11 @@ tags:
 
 ![problem](/image/Solution-of-a-Problem-in-Concurrent-Programming-Control/problem.png)
 
-当今现在，在基于共享内存通信的单机多进程上，我们可以很方便的使用基于TAS(Test&Set)或的CAS(Copy&Swap)实现的互斥锁mutex来实现临界区互斥访问。然而，在只有对内存单元原子读写的条件下，如何完成互斥访问呢？Dijstra给出了他的解法。
+当今现在，在基于共享内存通信的单机多进程上，我们可以很方便的使用基于TAS(Test&Set)或的CAS(Copy&Swap)实现的互斥锁mutex来实现临界区互斥访问。然而，在只有对内存单元原子读写的条件下，如何完成互斥访问呢？Dijkstra给出了他的解法。
 
 # 解法与证明
 
-在共享存储上，Dijstra使用了如下数据，
+在共享存储上，Dijkstra使用了如下数据，
 
 > Boolean array b, c[1:N]; integer K
 
@@ -53,7 +53,7 @@ Li4:  begin c[i] := false
       go to Li0
 ```
 
-Dijstra原文中给出的证明集中论证两点。第一，所有节点互斥访问临界区。第二，不会出现系统死锁。建议大家可以先结合代码看下原文中证明。
+Dijkstra原文中给出的证明集中论证两点。第一，所有节点互斥访问临界区。第二，不会出现系统死锁。建议大家可以先结合代码看下原文中证明。
 
 # 易读版本
 

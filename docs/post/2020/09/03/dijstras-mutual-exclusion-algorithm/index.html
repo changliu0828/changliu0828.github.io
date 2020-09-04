@@ -44,9 +44,9 @@
 </ol>
 <p>各个节点之间可以通过共享存储(common store)通信，共享存储提供以字(word)为单位的原子性读写。</p>
 <p><img src="/image/Solution-of-a-Problem-in-Concurrent-Programming-Control/problem.png" alt="problem"></p>
-<p>当今现在，在基于共享内存通信的单机多进程上，我们可以很方便的使用基于TAS(Test&amp;Set)或的CAS(Copy&amp;Swap)实现的互斥锁mutex来实现临界区互斥访问。然而，在只有对内存单元原子读写的条件下，如何完成互斥访问呢？Dijstra给出了他的解法。</p>
+<p>当今现在，在基于共享内存通信的单机多进程上，我们可以很方便的使用基于TAS(Test&amp;Set)或的CAS(Copy&amp;Swap)实现的互斥锁mutex来实现临界区互斥访问。然而，在只有对内存单元原子读写的条件下，如何完成互斥访问呢？Dijkstra给出了他的解法。</p>
 <h1 id="解法与证明">解法与证明</h1>
-<p>在共享存储上，Dijstra使用了如下数据，</p>
+<p>在共享存储上，Dijkstra使用了如下数据，</p>
 <blockquote>
 <p>Boolean array b, c[1:N]; integer K</p>
 </blockquote>
@@ -67,7 +67,7 @@ Li4:  begin c[i] := false
       c[i] := true; b[i] := true
       remainder of the cycle in which stopping is allowed;
       go to Li0
-</code></pre><p>Dijstra原文中给出的证明集中论证两点。第一，所有节点互斥访问临界区。第二，不会出现系统死锁。建议大家可以先结合代码看下原文中证明。</p>
+</code></pre><p>Dijkstra原文中给出的证明集中论证两点。第一，所有节点互斥访问临界区。第二，不会出现系统死锁。建议大家可以先结合代码看下原文中证明。</p>
 <h1 id="易读版本">易读版本</h1>
 <p>在此，我为了便于理解，对原代码做了如下修改，</p>
 <ul>
