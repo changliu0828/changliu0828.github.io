@@ -95,8 +95,8 @@ Li4:} <span style="color:#00a">else</span> {
 </code></pre></div><p><strong>证明：</strong></p>
 <p><strong>1. mutual exclusion</strong></p>
 <p>如果程序想运行到critical section，则必须运行通过 <code>Li4</code> 中的代码且不返回 <code>Li1</code> 。即，除了自身的 <code>in_critical_section[i]</code> 为 <code>true</code> 外，其余所有节点的 <code>in_critical_section[i]</code> 均为 <code>false</code> 。</p>
-<p><strong>2. non-blocking</strong>
-如果第 $k$ 个节点不在 <code>Li0~Li4</code> 的循环中，则 <code>want_to_enter_critical_section</code> 为 <code>false</code>。所有在循环中的节点会在 <code>Li1</code> 判定 <code>(k != i)</code>，其中的一个或多个节点会执行到 <code>Li3</code> ，其中某个节点将设定 <code>k = i</code>。此后 <code>want_to_enter_critical_section[k]</code> 为 <code>true</code>，其他节点无法再更改 <code>k</code> ，直至第14行将 <code>want_to_enter_critical_section[k]</code> 为 <code>false</code>。</p>
+<p><strong>2. non-blocking</strong></p>
+<p>如果第 $k$ 个节点不在 <code>Li0~Li4</code> 的循环中，则 <code>want_to_enter_critical_section</code> 为 <code>false</code>。所有在循环中的节点会在 <code>Li1</code> 判定 <code>(k != i)</code>，其中的一个或多个节点会执行到 <code>Li3</code> ，其中某个节点将设定 <code>k = i</code>。此后 <code>want_to_enter_critical_section[k]</code> 为 <code>true</code>，其他节点无法再更改 <code>k</code> ，直至第14行将 <code>want_to_enter_critical_section[k]</code> 为 <code>false</code>。</p>
 <p>在 <code>k</code> 被确定后，第k个节点会不断尝试 <code>Li4</code> 中的代码，直至其余所有的<code>in_critical_section[i]</code> 全部为 <code>false</code>。这种情况必然会发生，不论临界区中的节点离开临界区，还是临界区外的发现 <code>Li1: k != i</code>，都会执行 <code>in_critical_section[i] = false;</code>。</p>
 <p>证毕。</p>
 <p><strong>并发情况</strong></p>

@@ -88,6 +88,7 @@ Li4:} else {
 如果程序想运行到critical section，则必须运行通过 `Li4` 中的代码且不返回 `Li1` 。即，除了自身的 `in_critical_section[i]` 为 `true` 外，其余所有节点的 `in_critical_section[i]` 均为 `false` 。
 
 **2. non-blocking**
+
 如果第 $k$ 个节点不在 `Li0~Li4` 的循环中，则 `want_to_enter_critical_section` 为 `false`。所有在循环中的节点会在 `Li1` 判定 `(k != i)`，其中的一个或多个节点会执行到 `Li3` ，其中某个节点将设定 `k = i`。此后 `want_to_enter_critical_section[k]` 为 `true`，其他节点无法再更改 `k` ，直至第14行将 `want_to_enter_critical_section[k]` 为 `false`。
 
 在 `k` 被确定后，第k个节点会不断尝试 `Li4` 中的代码，直至其余所有的`in_critical_section[i]` 全部为 `false`。这种情况必然会发生，不论临界区中的节点离开临界区，还是临界区外的发现 `Li1: k != i`，都会执行 `in_critical_section[i] = false;`。
