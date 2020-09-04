@@ -108,4 +108,4 @@ y: in_critical_section[x] == true goto Li1;
 
 # 最后
 
-谢谢你的阅读。如果你读过本文后有任何的思考或疑虑，请务必[让我知道](maito:changliu0828@gmail.com)。
+谢谢你的阅读。如果你读过本文后有任何的思考或疑虑，请务必[让我知道](mailto:changliu0828@gmail.com)。
