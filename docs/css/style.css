@@ -15,7 +15,7 @@ body {
   border-radius: 5px;
 }
 .menu, .article-meta, footer { text-align: center; }
-.title { font-size: 1.1em; }
+.title { font-size: 1.0em; }
 footer a { text-decoration: none; }
 hr {
   border-style: dashed;
@@ -33,7 +33,7 @@ code { background: #f9f9f9; }
 pre code { background: none; }
 
 /* misc elements */
-img, iframe, video { max-width: 100%; }
+img, iframe, video { max-width: 80%; }
 main { hyphens: auto; }
 blockquote {
   background: #f9f9f9;

@@ -6,10 +6,26 @@
     <description>Recent content in Home on Chang Liu&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 28 Aug 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 03 Sep 2020 19:48:34 +0800</lastBuildDate>
     
 	<atom:link href="http://changliu0828.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Dijstra&#39;s mutal exlusion algorithm</title>
+      <link>http://changliu0828.github.io/post/2020/09/03/dijstras-mutal-exlusion-algorithm/</link>
+      <pubDate>Thu, 03 Sep 2020 19:48:34 +0800</pubDate>
+      
+      <guid>http://changliu0828.github.io/post/2020/09/03/dijstras-mutal-exlusion-algorithm/</guid>
+      <description>Edsger W. Dijkstra于1965年发表文章Solution of a Problem in Concurrent Programming Control，引出并发系统下的互斥(Mutual exclusion)问题，自此开辟了分布式计算领域。Dijkstra在文中给出了基于共享存储原子性访问的解决方案只有十多行代码，但阅读起来较难以理解。在查阅若干资料后，总结了一种较为直观的解释方法，记录于此。
+问题 考虑N个节点(进程)，每个都在运行一个无限循环的程序。每轮循环当中都存在一个临界区(critical section)。我们需要设计算法控制多个计算机中，同时只有一台可以进入其临界区，并需要满足下列条件，
+ 所有的节点是对称(symmetrical)的，即我们不能引入类似于“1号节点优先于2号节点”的静态优先级配置。 各个节点的运行速度可能不同，同一个节点在不同时刻的运行速度也可能不同。 任意节点在临界区外停止运行，不应引起系统的死锁。 如果多个节点想要访问临界区，必须在有限时间内决策出哪个节点优先访问。  各个节点之间可以通过共享存储(common store)通信，共享存储提供以字(word)为单位的原子性读写。
+当今现在，在基于共享内存通信的单机多进程上，我们可以很方便的使用基于TAS(Test&amp;amp;Set)或的CAS(Copy&amp;amp;Swap)实现的互斥锁mutex来实现临界区互斥访问。然而，在只有对内存单元原子读写的条件下，如何完成互斥访问呢？Dijstra给出了他的解法。
+解法与证明 在共享存储上，Dijstra使用了如下数据，
+ Boolean array b, c[1:N]; integer K
+ 其中，$k$ 满足 $1 \leqslant k \leqslant N$，$b[i]$ 和 $c[i]$ 只被节点 $i$ 修改，且初始值为true。对于第 $i$ 个节点$(1 \leqslant i \leqslant N)$，执行下面的代码
+integer j Li0: b[i] := false Li1: if k != i then Li2: begin c[i] := true Li3: if b[k] then k := i go to Li1 end else Li4: begin c[i] := false for j := 1 step 1 until N do if j !</description>
+    </item>
     
     <item>
       <title>c&#43;&#43;11特性简介</title>
