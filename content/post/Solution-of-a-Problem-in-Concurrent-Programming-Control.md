@@ -66,22 +66,22 @@ Dijkstra原文中给出的证明集中论证两点。第一，所有节点互斥
 + 将 `b` 和 `c` 数组的初始值改为 `false` ，并翻转代码中所有的布尔值，即 `false` 改为 `true`, `true` 改为 `false` 。
 
 ```c
-bool want_to_enter_critical_section[N] = { false }; //b array
-bool in_critical_section[N] = { false };            //c array
-Li0: want_to_enter_critical_section[i] = true;
-Li1:if (k != i) {
+bool  want_to_enter_critical_section[N] = { false }; //b array
+bool  in_critical_section[N] = { false };            //c array
+Li0:  want_to_enter_critical_section[i] = true;
+Li1:  if (k != i) {
 Li2:    in_critical_section[i] = false;
 Li3:    if (!want_to_enter_critical_section[k]) k = i;
         goto Li1;
-Li4:} else {
+Li4:  } else {
         in_critical_section[i] = true;
         for (int j = 0; j < N; ++ j)
-            if (j != i && in_critical_section[j]) goto Li1;
-    }
-    //critical section;
-    in_critical_section[i] = false; want_to_enter_critical_section[i] = false;
-    //remainder of the cycle in which stopping is allowed;
-    goto Li0;
+          if (j != i && in_critical_section[j]) goto Li1;
+      }
+      //critical section;
+      in_critical_section[i] = false; want_to_enter_critical_section[i] = false;
+      //remainder of the cycle in which stopping is allowed;
+      goto Li0;
 ```
 **证明：**
 
@@ -91,7 +91,7 @@ Li4:} else {
 
 **2. non-blocking**
 
-如果第 $k$ 个节点不在 `Li0~Li4` 的循环中，则 `want_to_enter_critical_section` 为 `false`。所有在循环中的节点会在 `Li1` 判定 `(k != i)`，其中的一个或多个节点会执行到 `Li3` ，其中某个节点将设定 `k = i`。此后 `want_to_enter_critical_section[k]` 为 `true`，其他节点无法再更改 `k` ，直至第14行将 `want_to_enter_critical_section[k]` 为 `false`。
+如果第 $k$ 个节点不在 `Li0~Li4` 的循环中，则 `want_to_enter_critical_section` 为 `false`。所有在循环中的节点会在 `Li1` 判定 `(k != i)`，其中的一个或多个节点会执行到 `Li3` ，其中某个节点将设定 `k = i`。此后 `want_to_enter_critical_section[k]` 为 `true`，其他节点无法再更改 `k` ，直至离开critical section后将 `want_to_enter_critical_section[k]` 为 `false`。
 
 在 `k` 被确定后，第k个节点会不断尝试 `Li4` 中的代码，直至其余所有的`in_critical_section[i]` 全部为 `false`。这种情况必然会发生，不论临界区中的节点离开临界区，还是临界区外的发现 `Li1: k != i`，都会执行 `in_critical_section[i] = false;`。
 
