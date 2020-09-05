@@ -12,11 +12,11 @@
     
     
     <item>
-      <title>Dijstra&#39;s mutual exclusion algorithm</title>
-      <link>http://changliu0828.github.io/post/2020/09/03/dijstras-mutual-exclusion-algorithm/</link>
+      <title>[PaperNote]Solution of a Problem in Concurrent Programming Control, Dijkstra, 1965</title>
+      <link>http://changliu0828.github.io/post/2020/09/03/papernotesolution-of-a-problem-in-concurrent-programming-control-dijkstra-1965/</link>
       <pubDate>Thu, 03 Sep 2020 19:48:34 +0800</pubDate>
       
-      <guid>http://changliu0828.github.io/post/2020/09/03/dijstras-mutual-exclusion-algorithm/</guid>
+      <guid>http://changliu0828.github.io/post/2020/09/03/papernotesolution-of-a-problem-in-concurrent-programming-control-dijkstra-1965/</guid>
       <description>Edsger W. Dijkstra于1965年发表文章Solution of a Problem in Concurrent Programming Control，引出并发系统下的互斥(mutual exclusion)问题，自此开辟了分布式计算领域。Dijkstra在文中给出了基于共享存储原子性访问的解决方案只有十多行代码，但阅读起来较难以理解。在查阅若干资料后，总结了一种较为直观的解释方法，记录于此。
 问题 考虑N个节点(进程)，每个都在运行一个无限循环的程序。每轮循环当中都存在一个临界区(critical section)。我们需要设计算法控制多个计算机中，同时只有一台可以进入其临界区，并需要满足下列条件，
  所有的节点是对称(symmetrical)的，即我们不能引入类似于“1号节点优先于2号节点”的静态优先级配置。 各个节点的运行速度可能不同，同一个节点在不同时刻的运行速度也可能不同。 任意节点在临界区外停止运行，不应引起系统的死锁。 如果多个节点想要访问临界区，必须在有限时间内决策出哪个节点优先访问。  各个节点之间可以通过共享存储(common store)通信，共享存储提供以字(word)为单位的原子性读写。
