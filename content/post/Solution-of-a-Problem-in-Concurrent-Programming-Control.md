@@ -28,9 +28,11 @@ tags:
 
 # 解法与证明
 
-在共享存储上，Dijkstra使用了如下数据，
+在共享存储上，Dijkstra使用了两个长度为N的布尔数组，和一个整数。 
 
-> Boolean array b, c[1:N]; integer K
+```pascal
+Boolean array b, c[1:N]; integer K
+```
 
 其中，$k$ 满足 $1 \leqslant k \leqslant N$，$b[i]$ 和 $c[i]$ 只被节点 $i$ 修改，且初始值为true。对于第 $i$ 个节点$(1 \leqslant i \leqslant N)$，执行下面的代码
 

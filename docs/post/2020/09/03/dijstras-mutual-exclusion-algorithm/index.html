@@ -46,11 +46,9 @@
 <p><img src="/image/Solution-of-a-Problem-in-Concurrent-Programming-Control/problem.png" alt="problem"></p>
 <p>当今现在，在基于共享内存通信的单机多进程上，我们可以很方便的使用基于TAS(Test&amp;Set)或的CAS(Copy&amp;Swap)实现的互斥锁mutex来实现临界区互斥访问。然而，在只有对内存单元原子读写的条件下，如何完成互斥访问呢？Dijkstra给出了他的解法。</p>
 <h1 id="解法与证明">解法与证明</h1>
-<p>在共享存储上，Dijkstra使用了如下数据，</p>
-<blockquote>
-<p>Boolean array b, c[1:N]; integer K</p>
-</blockquote>
-<p>其中，$k$ 满足 $1 \leqslant k \leqslant N$，$b[i]$ 和 $c[i]$ 只被节点 $i$ 修改，且初始值为true。对于第 $i$ 个节点$(1 \leqslant i \leqslant N)$，执行下面的代码</p>
+<p>在共享存储上，Dijkstra使用了两个长度为N的布尔数组，和一个整数。</p>
+<pre><code class="language-pascal" data-lang="pascal">Boolean array b, c[1:N]; integer K
+</code></pre><p>其中，$k$ 满足 $1 \leqslant k \leqslant N$，$b[i]$ 和 $c[i]$ 只被节点 $i$ 修改，且初始值为true。对于第 $i$ 个节点$(1 \leqslant i \leqslant N)$，执行下面的代码</p>
 <pre><code class="language-pascal" data-lang="pascal">integer j
 Li0:  b[i] := false
 Li1:  if k != i then
