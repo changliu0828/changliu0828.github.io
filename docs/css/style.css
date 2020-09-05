@@ -70,3 +70,5 @@ a:visited {
 .toc nav > ul {
   padding-left: 12px;
  }
+
+.post-list a { text-decoration: none; }
