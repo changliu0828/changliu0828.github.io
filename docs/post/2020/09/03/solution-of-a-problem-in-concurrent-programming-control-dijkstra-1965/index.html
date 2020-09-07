@@ -71,7 +71,7 @@ Li4:  begin c[i] := false
 <ul>
 <li>修改为c语言版本</li>
 <li>将数组和节点下标修改为通用的 $0,1, &hellip;, N-1$。</li>
-<li>将数组 <code>b</code> 改名为 <code>apply_enter_critical_section</code>，数组 <code>c</code> 改名为 <code>in_critical_section</code>。</li>
+<li>将数组 <code>b</code> 改名为 <code>want_to_enter_critical_section</code>，数组 <code>c</code> 改名为 <code>in_critical_section</code>。</li>
 <li>将 <code>b</code> 和 <code>c</code> 数组的初始值改为 <code>false</code> ，并翻转代码中所有的布尔值，即 <code>false</code> 改为 <code>true</code>, <code>true</code> 改为 <code>false</code> 。</li>
 </ul>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#0aa">bool</span>  want_to_enter_critical_section[N] = { <span style="color:#0aa">false</span> }; <span style="color:#aaa;font-style:italic">//b array

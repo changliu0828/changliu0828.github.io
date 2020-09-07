@@ -2,10 +2,9 @@
 title: "Solution of a Problem in Concurrent Programming Control, Dijkstra, 1965"
 date: 2020-09-03T19:48:34+08:00
 categories:
-  - paper 
-  - distributed system 
+  - Paper Notes
 tags:
-  - distributed system 
+  - Distributed System 
 
 ---
 
@@ -62,7 +61,7 @@ Dijkstra原文中给出的证明集中论证两点。第一，所有节点互斥
 在此，我为了便于理解，对原代码做了如下修改，
 + 修改为c语言版本
 + 将数组和节点下标修改为通用的 $0,1, ..., N-1$。
-+ 将数组 `b` 改名为 `apply_enter_critical_section`，数组 `c` 改名为 `in_critical_section`。
++ 将数组 `b` 改名为 `want_to_enter_critical_section`，数组 `c` 改名为 `in_critical_section`。
 + 将 `b` 和 `c` 数组的初始值改为 `false` ，并翻转代码中所有的布尔值，即 `false` 改为 `true`, `true` 改为 `false` 。
 
 ```c
