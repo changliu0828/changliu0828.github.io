@@ -13,10 +13,10 @@
     
     <item>
       <title>c&#43;&#43;11特性简介</title>
-      <link>http://changliu0828.github.io/post/2020/08/28/c-11%E7%89%B9%E6%80%A7%E7%AE%80%E4%BB%8B/</link>
+      <link>http://changliu0828.github.io/post/cpp11-features/</link>
       <pubDate>Fri, 28 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://changliu0828.github.io/post/2020/08/28/c-11%E7%89%B9%E6%80%A7%E7%AE%80%E4%BB%8B/</guid>
+      <guid>http://changliu0828.github.io/post/cpp11-features/</guid>
       <description>c++自1985年发行以来，以其高效、灵活的特性成为最成功的高级编程语言之一。2011年，距离上一个c++标准c++03发布的8年后，c++委员会吸取了现代编程语言的若干特性，发布了新的c++11标准，使得古朴的c++得以跻身现代编程语言的行列。本文挑选了部分c++11引入的新特性进行说明，阐述其缘由，使用以及注意事项。如果你需要查看完整特性与编译器支持请参考这里$^{[1]}$。
 部分特性与示例 1. 右值引用(rvalue references) 在C语言中，左值与右值原是极为简单的概念——凡是既可以出现在赋值语句两边的称为左值，只能出现在赋值语句右边的称为右值。例如下面的代码中，a和b是左值，42和a + b是右值。如果右值出现在赋值语句左边，则会如你所熟知的一样，产生一个编译错误。
 int a = 42; int b = a; 42 = a + b; //compile error a + b = a; //compile error 另一种区分左值与右值的方法是，左值是哪些能被&amp;amp;操作符取到地址的值，右值是通过左值运算得出的临时结果或一些字面常量。把上面的代码编译成汇编语言就一目了然了。下面的代码中左值a和b都在栈上分配了空间，分别是-4(%rbp)和-8(%rbp)，而右值42是一个立即数，a + b则是addl的两个参数。
