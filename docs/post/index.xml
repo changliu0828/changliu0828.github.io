@@ -6,13 +6,25 @@
     <description>Recent content in Posts on Chang Liu&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 03 Sep 2020 19:48:34 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 05 Sep 2020 18:40:23 +0800</lastBuildDate>
     
 	<atom:link href="http://changliu0828.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Solution of a Problem in Concurrent Programming Control, Dijkstra, 1965</title>
+      <title>面包店算法, Lamport, 1974</title>
+      <link>http://changliu0828.github.io/post/a-new-solution-of-dijkstras-concurrent-programming-problem/</link>
+      <pubDate>Sat, 05 Sep 2020 18:40:23 +0800</pubDate>
+      
+      <guid>http://changliu0828.github.io/post/a-new-solution-of-dijkstras-concurrent-programming-problem/</guid>
+      <description>Dijkstra互斥问题 在之前的文章中提到过Dijkstra于1965年提出的基于共享存储的临界区互斥访问问题。Dijkstra提出了基于对内存单元的原子性读写实现的方案。
+然而，Lamport指出Dijkstra的方案会因为节点在临界区内失效而导致系统死锁。在其于1974年发表的文章A New Solution of Dijkstra&amp;rsquo;s Concurrent Programming Problem中，Lamport提出了完全基于软件实现的解决方案，被称为“面包店算法”。
+面包店算法 ”面包店算法&amp;quot;模拟面包店内取号服务的模式，实现了先来先服务的的互斥访问。我们有如下说明，
+ 如果不同节点对同一内存单元并发读写，只有写会正确执行，读可能会读到不确定值。 节点失效时，其立即跳转至其非临界区并挂起。其后一段时间内读取其内存会返回不确定值，最终所有的读会返回0。 使用初始值为0的两个数组choosing[1:N] 和 number[1:N]，其中N为节点数量。 number[i] 的取值没有上限。 代码中 maximum 函数读到各个变量的值的顺序没有要求。 代码 L3 中的比较运算 (a,b)&amp;lt;(c,d) 可以视为 if a &amp;lt; c or if a = c and b &amp;lt; d。  1 2 3 4 5 6 7 8 9 10 11 12 13 14  begin integer j; L1: choosing[i] := 1; number[i] := 1 + maximum(number[1], ... , number[N]); choosing[i] := 0; for j = 1 step 1 until N do begin L2: if choosing[j] !</description>
+    </item>
+    
+    <item>
+      <title>分布式领域开山之作, Dijkstra, 1965</title>
       <link>http://changliu0828.github.io/post/solution-of-a-problem-in-concurrent-programming-control/</link>
       <pubDate>Thu, 03 Sep 2020 19:48:34 +0800</pubDate>
       
@@ -22,8 +34,8 @@
  所有的节点是对称(symmetrical)的，即我们不能引入类似于“1号节点优先于2号节点”的静态优先级配置。 各个节点的运行速度可能不同，同一个节点在不同时刻的运行速度也可能不同。 任意节点在临界区外停止运行，不应引起系统的死锁。 如果多个节点想要访问临界区，必须在有限时间内决策出哪个节点优先访问。  各个节点之间可以通过共享存储(common store)通信，共享存储提供以字(word)为单位的原子性读写。
 当今现在，在基于共享内存通信的单机多进程上，我们可以很方便的使用基于TAS(Test&amp;amp;Set)或的CAS(Copy&amp;amp;Swap)实现的互斥锁mutex来实现临界区互斥访问。然而，在只有对内存单元原子读写的条件下，如何完成互斥访问呢？Dijkstra给出了他的解法。
 解法与证明 在共享存储上，Dijkstra使用了两个长度为N的布尔数组，和一个整数。
-Boolean array b, c[1:N]; integer K 其中，$k$ 满足 $1 \leqslant k \leqslant N$，$b[i]$ 和 $c[i]$ 只被节点 $i$ 修改，且初始值为true。对于第 $i$ 个节点$(1 \leqslant i \leqslant N)$，执行下面的代码
-integer j Li0: b[i] := false Li1: if k != i then Li2: begin c[i] := true Li3: if b[k] then k := i go to Li1 end else Li4: begin c[i] := false for j := 1 step 1 until N do if j !</description>
+1  Boolean array b, c[1:N]; integer K   其中，$k$ 满足 $1 \leqslant k \leqslant N$，$b[i]$ 和 $c[i]$ 只被节点 $i$ 修改，且初始值为true。对于第 $i$ 个节点$(1 \leqslant i \leqslant N)$，执行下面的代码
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16  integer j Li0: b[i] := false Li1: if k !</description>
     </item>
     
     <item>
@@ -34,9 +46,8 @@ integer j Li0: b[i] := false Li1: if k != i then Li2: begin c[i] := true Li3: if
       <guid>http://changliu0828.github.io/post/cpp11-features/</guid>
       <description>c++自1985年发行以来，以其高效、灵活的特性成为最成功的高级编程语言之一。2011年，距离上一个c++标准c++03发布的8年后，c++委员会吸取了现代编程语言的若干特性，发布了新的c++11标准，使得古朴的c++得以跻身现代编程语言的行列。本文挑选了部分c++11引入的新特性进行说明，阐述其缘由，使用以及注意事项。如果你需要查看完整特性与编译器支持请参考这里$^{[1]}$。
 部分特性与示例 1. 右值引用(rvalue references) 在C语言中，左值与右值原是极为简单的概念——凡是既可以出现在赋值语句两边的称为左值，只能出现在赋值语句右边的称为右值。例如下面的代码中，a和b是左值，42和a + b是右值。如果右值出现在赋值语句左边，则会如你所熟知的一样，产生一个编译错误。
-int a = 42; int b = a; 42 = a + b; //compile error a + b = a; //compile error 另一种区分左值与右值的方法是，左值是哪些能被&amp;amp;操作符取到地址的值，右值是通过左值运算得出的临时结果或一些字面常量。把上面的代码编译成汇编语言就一目了然了。下面的代码中左值a和b都在栈上分配了空间，分别是-4(%rbp)和-8(%rbp)，而右值42是一个立即数，a + b则是addl的两个参数。
-movl $42, -4(%rbp) ;int a = 42; movl -4(%rbp), %eax movl %eax, -8(%rbp) movl -8(%rbp), %eax ;int b = a addl %eax, -4(rbp); ;a = a + b 谈过了“右值”，我们来讨论下”引用“。使用引用是提高程序运行效率的常用手段，而在只提供左值引用的C++03时代，在某些场景下的引用并没有那么“好用”。例如下面的代码中，由于无法传递右值Data()的引用，我们不得不使用3行丑陋的代码来完成一个简单的工作。
-extern Data Merge(Data&amp;amp; data1, Data&amp;amp; data2); Data double_data = Merge(Data(), Data()); //compile error //ok, but ugly Data data1; Data data2; Data double_data = Merge(data1, data2); 为此，C++中，提供了右值引用操作符&amp;amp;&amp;amp;。于是我们保留原先的左值引用版Merge，增加支持右值引用的Merge，代码可以简化成，</description>
+1 2 3 4  int a = 42; int b = a; 42 = a + b; //compile error a + b = a; //compile error   另一种区分左值与右值的方法是，左值是哪些能被&amp;amp;操作符取到地址的值，右值是通过左值运算得出的临时结果或一些字面常量。把上面的代码编译成汇编语言就一目了然了。下面的代码中左值a和b都在栈上分配了空间，分别是-4(%rbp)和-8(%rbp)，而右值42是一个立即数，a + b则是addl的两个参数。
+1 2 3 4 5  movl $42, -4(%rbp) ;int a = 42; movl -4(%rbp), %eax movl %eax, -8(%rbp) movl -8(%rbp), %eax ;int b = a addl %eax, -4(rbp); ;a = a + b   谈过了“右值”，我们来讨论下”引用“。使用引用是提高程序运行效率的常用手段，而在只提供左值引用的C++03时代，在某些场景下的引用并没有那么“好用”。例如下面的代码中，由于无法传递右值Data()的引用，我们不得不使用3行丑陋的代码来完成一个简单的工作。</description>
     </item>
     
     <item>

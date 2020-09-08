@@ -6,15 +6,24 @@
     <description>Recent content in Tags on Chang Liu&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 03 Sep 2020 19:48:34 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 05 Sep 2020 18:40:23 +0800</lastBuildDate>
     
 	<atom:link href="http://changliu0828.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>Bakery Algorithm</title>
+      <link>http://changliu0828.github.io/tags/bakery-algorithm/</link>
+      <pubDate>Sat, 05 Sep 2020 18:40:23 +0800</pubDate>
+      
+      <guid>http://changliu0828.github.io/tags/bakery-algorithm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Distributed System</title>
       <link>http://changliu0828.github.io/tags/distributed-system/</link>
-      <pubDate>Thu, 03 Sep 2020 19:48:34 +0800</pubDate>
+      <pubDate>Sat, 05 Sep 2020 18:40:23 +0800</pubDate>
       
       <guid>http://changliu0828.github.io/tags/distributed-system/</guid>
       <description></description>
