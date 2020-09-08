@@ -72,3 +72,6 @@ a:visited {
  }
 
 .post-list a { text-decoration: none; }
+.categories {
+  float: right;
+}
