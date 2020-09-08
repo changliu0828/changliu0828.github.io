@@ -15,7 +15,7 @@ body {
   border-radius: 5px;
 }
 .menu, .article-meta, footer { text-align: center; }
-.title { font-size: 14px; }
+.title { font-size: 1.0em; }
 footer a { text-decoration: none; }
 hr {
   border-style: dashed;
