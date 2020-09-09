@@ -73,5 +73,6 @@ a:visited {
 
 .post-list a { text-decoration: none; }
 .categories {
-  float: right;
+  display: inline-block;
+  width: 7.0em;
 }
