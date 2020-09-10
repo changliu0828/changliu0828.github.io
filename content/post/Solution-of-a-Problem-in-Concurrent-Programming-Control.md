@@ -2,7 +2,7 @@
 title: "分布式领域开山之作, Dijkstra, 1965"
 date: 2020-09-03T19:48:34+08:00
 categories:
-  - Paper Notes
+  - PaperNotes
 tags:
   - Distributed System 
 
