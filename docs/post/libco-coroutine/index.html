@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Posts | Chang Liu&#39;s Blog</title>
+    <title>libco与协程 | Chang Liu&#39;s Blog</title>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/fonts.css" />
     <script src="https://kit.fontawesome.com/a0e5d04d0b.js" crossorigin="anonymous"></script>
@@ -24,83 +24,27 @@
     <hr/>
     </nav>
 
+<div class="article-meta">
+<h2><span class="title">libco与协程</span></h2>
+
+<h3 class="date">2020/09/11</h3>
+</div>
 
 
-<h1>Posts</h1>
 
 
+<main>
+<h1 id="回调地狱callback-hell">回调地狱(callback hell)</h1>
+<p>在正式开始聊协程之前，容我们简单回顾下协程之所以产生的原因。</p>
+<p>起初，如下图(a)中所示，我们的系统中有源源不断的任务(图中的task)需要处理。为此我们编写了一个服务端程序。这个程序以单进程方式运行(图中的process)，并无限循环的尽可能获取任务（图中loop）。对于获取到的每个人物，调用处理函数 <code>f()</code> 完成具体处理逻辑。特别的，对于函数 <code>f()</code> 来讲，代码片段 <code>g()</code> 消耗了比较长的时间。但尽管如此，系统外部任务的产生频率还是比 <code>f()</code> 的运行时间低，即系统对任务的消费能力高于任务的生产能力，我们的服务运转良好。</p>
+<p>然而随着业务的发展，我们单位时间内接受的任务越来越多，(a)中的单进程单线程服务模式已经无法及时消费任务。为此，如下图(b)中所示，我们可以将功能较为独立，消耗资源较大的 <code>g()</code> 部分抽离为单独的进程。原进程使用异步方式 <code>call_g()</code> 调用<code>g()</code>，并注册回调函数 <code>g_callback()</code> 处理 <code>g()</code> 的返回。在编码时，我们需要将原有顺序的编程方式改为调用部分加回调部分的编程方式。</p>
+<p><img src="/image/libco-coroutine/server-model.png" alt="server-model.png"></p>
 
+</main>
 
-<ul>
-  
-  
-  
-  <li class="post-list">
-    <span class="date">2020/09/11</span>
-    <span class="categories">
-      
-      
-      
-      <i class="far fa-folder"></i><a href = '/categories/codenotes/'>CodeNotes</a>
-      
-      
-    </span>
-    <a href="/post/libco-coroutine/">libco与协程</a>
-  </li>
-  
-  <li class="post-list">
-    <span class="date">2020/09/05</span>
-    <span class="categories">
-      
-      
-      
-      <i class="far fa-folder"></i><a href = '/categories/papernotes/'>PaperNotes</a>
-      
-      
-    </span>
-    <a href="/post/a-new-solution-of-dijkstras-concurrent-programming-problem/">面包店算法, Lamport, 1974</a>
-  </li>
-  
-  <li class="post-list">
-    <span class="date">2020/09/03</span>
-    <span class="categories">
-      
-      
-      
-      <i class="far fa-folder"></i><a href = '/categories/papernotes/'>PaperNotes</a>
-      
-      
-    </span>
-    <a href="/post/solution-of-a-problem-in-concurrent-programming-control/">分布式领域开山之作, Dijkstra, 1965</a>
-  </li>
-  
-  <li class="post-list">
-    <span class="date">2020/08/28</span>
-    <span class="categories">
-      
-      
-      
-      <i class="far fa-folder"></i><a href = '/categories/summary/'>Summary</a>
-      
-      
-    </span>
-    <a href="/post/cpp11-features/">c++11特性简介</a>
-  </li>
-  
-  <li class="post-list">
-    <span class="date">2019/02/14</span>
-    <span class="categories">
-      
-      
-      
-      <i class="far fa-folder"></i><a href = '/categories/summary/'>Summary</a>
-      
-      
-    </span>
-    <a href="/post/friend-recommendation/">根据在线时间推荐好友</a>
-  </li>
-  
-</ul>
+<div class="post-comment">
+    
+</div>
 
   <footer>
   <script src="//yihui.name/js/math-code.js"></script>
