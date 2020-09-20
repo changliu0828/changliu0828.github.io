@@ -2,7 +2,7 @@
 title: "面包店算法, Lamport, 1974"
 date: 2020-09-05T18:40:23+08:00
 categories:
-  - PaperNotes
+  - 论文笔记 
 tags:
   - Distributed System 
   - Bakery Algorithm 

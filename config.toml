@@ -11,15 +11,15 @@ footnotereturnlinkcontents = "↩"
     post = "/post/:filename/"
 
 [[menu.main]]
-    name = "Home"
+    name = "主页"
     url = "/"
     weight = 1
 [[menu.main]]
-    name = "Categories"
+    name = "分类"
     url = "/categories/"
     weight = 2
 [[menu.main]]
-    name = "Tags"
+    name = "标签"
     url = "/tags/"
     weight = 3
 
