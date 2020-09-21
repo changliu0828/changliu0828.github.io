@@ -62,7 +62,7 @@
 <p>然而随着业务的发展，我们单位时间内接受的任务越来越多，(a)中的单进程单线程服务模式已经无法及时消费任务。为此，如下图(b)中所示，我们可以将功能较为独立，消耗资源较大的 <code>g()</code> 部分抽离为单独的进程。原进程使用异步方式 <code>call_g()</code> 调用<code>g()</code>，并注册回调函数 <code>g_callback()</code> 处理 <code>g()</code> 的返回。在编码时，我们需要将原有顺序的编程方式改为调用部分加回调部分的编程方式。</p>
 <figure>
     <img src="/image/libco-coroutine/server-model.png"
-         alt="图1" width="100%"/> <figcaption>
+         alt="图1" width="649"/> <figcaption>
             <p>图1</p>
         </figcaption>
 </figure>
@@ -70,7 +70,7 @@
 <p>虽然异步的编程方式提高了系统的吞吐量，但如下图展示的那样，完整的顺序执行代码片段被分隔成了若干代码片段。在代码相对复杂，需要远程调用较多的时候，代码的可维护性急剧下降，我们称这种现象为<strong>回调地狱(callback hell)</strong>。</p>
 <figure>
     <img src="/image/libco-coroutine/callback-hell.png"
-         alt="图2. 同步与异步编程下的代码片段" width="45%"/> <figcaption>
+         alt="图2. 同步与异步编程下的代码片段" width="306"/> <figcaption>
             <p>图2. 同步与异步编程下的代码片段</p>
         </figcaption>
 </figure>
@@ -179,7 +179,7 @@ main:
 <p>$L25$行将返回值<code>0</code>赋值给<code>eax</code>，完成整个过程。</p>
 <figure>
     <img src="/image/libco-coroutine/function-call-example.png"
-         alt="图3. sum.cpp函数栈" width="60%"/> <figcaption>
+         alt="图3. sum.cpp函数栈" width="370"/> <figcaption>
             <p>图3. sum.cpp函数栈</p>
         </figcaption>
 </figure>
@@ -267,15 +267,78 @@ main:
 }
 </code></pre></td></tr></table>
 </div>
-</div><figure>
+</div><p>经过<code>co_make</code>填充后的协程栈如下图4所示。其中与我们上文中提到的函数调用栈不同的是，在参数与返回值地址之前，空了4字节(图中NULL)，这为之后的上下文切换做下准备。</p>
+<figure>
     <img src="/image/libco-coroutine/co_make.png"
-         alt="图4. co_make初始化协程栈" width="60%"/> <figcaption>
+         alt="图4. co_make初始化协程栈" width="390"/> <figcaption>
             <p>图4. co_make初始化协程栈</p>
         </figcaption>
 </figure>
 
 <h2 id="co_swap上下文切换"><code>co_swap</code>上下文切换</h2>
-<h1 id="协程栈">协程栈</h1>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#00a">extern</span> <span style="color:#a50">&#34;C&#34;</span>
+{
+  <span style="color:#00a">extern</span> <span style="color:#0aa">void</span> <span style="color:#0a0">coctx_swap</span>( coctx_t *,coctx_t* ) <span style="color:#00a">asm</span>(<span style="color:#a50">&#34;coctx_swap&#34;</span>);
+};
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-nasm" data-lang="nasm"><span style="color:#0a0">.globl</span> <span style="color:#a00">coctx_swap</span>
+coctx_swap:
+    <span style="color:#0a0">movl</span> <span style="color:#099">4</span>(%<span style="color:#0aa">esp</span>), %<span style="color:#0aa">eax</span>              <span style="color:#aaa;font-style:italic">;eax = *(esp+4) 取第一个参数coctx_t</span>
+    <span style="color:#0a0">movl</span> %<span style="color:#0aa">esp</span>, <span style="color:#099">28</span>(%<span style="color:#0aa">eax</span>)             <span style="color:#aaa;font-style:italic">;coctx_t.regs[7] = esp </span>
+    <span style="color:#0a0">movl</span> %<span style="color:#0aa">ebp</span>, <span style="color:#099">24</span>(%<span style="color:#0aa">eax</span>)             <span style="color:#aaa;font-style:italic">;coctx_t.regs[6] = ebp</span>
+    <span style="color:#0a0">movl</span> %<span style="color:#0aa">esi</span>, <span style="color:#099">20</span>(%<span style="color:#0aa">eax</span>)             <span style="color:#aaa;font-style:italic">;coctx_t.regs[5] = esi</span>
+    <span style="color:#0a0">movl</span> %<span style="color:#0aa">edi</span>, <span style="color:#099">16</span>(%<span style="color:#0aa">eax</span>)             <span style="color:#aaa;font-style:italic">;coctx_t.regs[4] = edi</span>
+    <span style="color:#0a0">movl</span> %<span style="color:#0aa">edx</span>, <span style="color:#099">12</span>(%<span style="color:#0aa">eax</span>)             <span style="color:#aaa;font-style:italic">;coctx_t.regs[3] = edx</span>
+    <span style="color:#0a0">movl</span> %<span style="color:#0aa">ecx</span>, <span style="color:#099">8</span>(%<span style="color:#0aa">eax</span>)              <span style="color:#aaa;font-style:italic">;coctx_t.regs[2] = ecx</span>
+    <span style="color:#0a0">movl</span> %<span style="color:#0aa">ebx</span>, <span style="color:#099">4</span>(%<span style="color:#0aa">eax</span>)              <span style="color:#aaa;font-style:italic">;coctx_t.regs[1] = ebx</span>
+
+    <span style="color:#0a0">movl</span> <span style="color:#099">8</span>(%<span style="color:#0aa">esp</span>), %<span style="color:#0aa">eax</span>              <span style="color:#aaa;font-style:italic">;eax = *(esp+8) 取第二个参数coctx_t</span>
+    <span style="color:#0a0">movl</span> <span style="color:#099">4</span>(%<span style="color:#0aa">eax</span>), %<span style="color:#0aa">ebx</span>              <span style="color:#aaa;font-style:italic">;ebx = coctx_t.regs[1] </span>
+    <span style="color:#0a0">movl</span> <span style="color:#099">8</span>(%<span style="color:#0aa">eax</span>), %<span style="color:#0aa">ecx</span>              <span style="color:#aaa;font-style:italic">;ecx = coctx_t.regs[2] </span>
+    <span style="color:#0a0">movl</span> <span style="color:#099">12</span>(%<span style="color:#0aa">eax</span>), %<span style="color:#0aa">edx</span>             <span style="color:#aaa;font-style:italic">;edx = coctx_t.regs[3]            </span>
+    <span style="color:#0a0">movl</span> <span style="color:#099">16</span>(%<span style="color:#0aa">eax</span>), %<span style="color:#0aa">edi</span>             <span style="color:#aaa;font-style:italic">;edi = coctx_t.regs[4] </span>
+    <span style="color:#0a0">movl</span> <span style="color:#099">20</span>(%<span style="color:#0aa">eax</span>), %<span style="color:#0aa">esi</span>             <span style="color:#aaa;font-style:italic">;esi = coctx_t.regs[5] </span>
+    <span style="color:#0a0">movl</span> <span style="color:#099">24</span>(%<span style="color:#0aa">eax</span>), %<span style="color:#0aa">ebp</span>             <span style="color:#aaa;font-style:italic">;ebp = coctx_t.regs[6] </span>
+    <span style="color:#0a0">movl</span> <span style="color:#099">28</span>(%<span style="color:#0aa">eax</span>), %<span style="color:#0aa">esp</span>             <span style="color:#aaa;font-style:italic">;esp = coctx_t.regs[7] </span>
+
+  <span style="color:#0a0">ret</span>
+</code></pre></td></tr></table>
+</div>
+</div><h1 id="协程栈">协程栈</h1>
 <h1 id="调度机制">调度机制</h1>
 <h1 id="参考">参考</h1>
 
