@@ -31,12 +31,12 @@ footnotereturnlinkcontents = "↩"
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true
-  [markup.highlight]
-    style = "autumn" 
-    lineNos = true
-    guessSyntax = true
   [markup.tableOfContents]
     startLevel = 1
+  [markup.highlight]
+    style = "autumn"
+    lineNos = true
+    guessSyntax = true
     
 [params.valine]
   enable = true

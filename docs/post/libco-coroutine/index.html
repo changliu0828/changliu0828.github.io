@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     <script src="https://kit.fontawesome.com/a0e5d04d0b.js" crossorigin="anonymous"></script>
 
+
   </head>
 
   <body>
@@ -31,14 +32,252 @@
 </div>
 
 
+<aside class="toc">
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#回调地狱">回调地狱</a></li>
+    <li><a href="#何为协程">何为协程</a></li>
+    <li><a href="#协程的上下文与切换">协程的上下文与切换</a>
+      <ul>
+        <li><a href="#coctx_t上下文信息"><code>coctx_t</code>上下文信息</a></li>
+        <li><a href="#co_make上下文初始化"><code>co_make</code>上下文初始化</a></li>
+        <li><a href="#co_swap上下文切换"><code>co_swap</code>上下文切换</a></li>
+      </ul>
+    </li>
+    <li><a href="#协程栈">协程栈</a></li>
+    <li><a href="#调度机制">调度机制</a></li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
+</aside>
+
 
 
 <main>
-<h1 id="回调地狱callback-hell">回调地狱(callback hell)</h1>
-<p>在正式开始聊协程之前，容我们简单回顾下协程之所以产生的原因。</p>
+<h1 id="前言">前言</h1>
+<h1 id="回调地狱">回调地狱</h1>
+<p>在正式开始探讨正题之前，容我们简单回顾下协程之所以产生的原因。</p>
 <p>起初，如下图(a)中所示，我们的系统中有源源不断的任务(图中的task)需要处理。为此我们编写了一个服务端程序。这个程序以单进程方式运行(图中的process)，并无限循环的尽可能获取任务（图中loop）。对于获取到的每个人物，调用处理函数 <code>f()</code> 完成具体处理逻辑。特别的，对于函数 <code>f()</code> 来讲，代码片段 <code>g()</code> 消耗了比较长的时间。但尽管如此，系统外部任务的产生频率还是比 <code>f()</code> 的运行时间低，即系统对任务的消费能力高于任务的生产能力，我们的服务运转良好。</p>
 <p>然而随着业务的发展，我们单位时间内接受的任务越来越多，(a)中的单进程单线程服务模式已经无法及时消费任务。为此，如下图(b)中所示，我们可以将功能较为独立，消耗资源较大的 <code>g()</code> 部分抽离为单独的进程。原进程使用异步方式 <code>call_g()</code> 调用<code>g()</code>，并注册回调函数 <code>g_callback()</code> 处理 <code>g()</code> 的返回。在编码时，我们需要将原有顺序的编程方式改为调用部分加回调部分的编程方式。</p>
-<p><img src="/image/libco-coroutine/server-model.png" alt="server-model.png"></p>
+<figure>
+    <img src="/image/libco-coroutine/server-model.png"
+         alt="图1" width="100%"/> <figcaption>
+            <p>图1</p>
+        </figcaption>
+</figure>
+
+<p>虽然异步的编程方式提高了系统的吞吐量，但如下图展示的那样，完整的顺序执行代码片段被分隔成了若干代码片段。在代码相对复杂，需要远程调用较多的时候，代码的可维护性急剧下降，我们称这种现象为<strong>回调地狱(callback hell)</strong>。</p>
+<figure>
+    <img src="/image/libco-coroutine/callback-hell.png"
+         alt="图2. 同步与异步编程下的代码片段" width="45%"/> <figcaption>
+            <p>图2. 同步与异步编程下的代码片段</p>
+        </figcaption>
+</figure>
+
+<h1 id="何为协程">何为协程</h1>
+<p>那么如何解决回调地狱，在保持异步执行的情况下，将支离破碎的代码段恢复成我们所熟悉的顺序执行呢？我们知道c/c++的函数调用是通过栈帧(stack frame)的方式完成，如果我们在远程调用阻塞时，人为的将程序执行时的上下文保存，让出CPU，并在远程调用返回后加载上下文，就可以在一个函数栈中完成异步过程。我们称这种机制为<strong>协程(coroutine)</strong>。与熟悉的进程/线程切换类似，协程是用户自发的上下文切换和管理机制，所以也常被称为“用户态线程”。</p>
+<h1 id="协程的上下文与切换">协程的上下文与切换</h1>
+<p>那么需要我们手动保存和加载的运行时“上下文”都包含哪些内容呢？以下面的 <code>main</code> 函数调用 <code>sum</code> 函数为例，</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#0aa">int</span> <span style="color:#0a0">sum</span>(<span style="color:#0aa">int</span> x, <span style="color:#0aa">int</span> y) {
+  <span style="color:#0aa">int</span> z = x + y;
+  <span style="color:#00a">return</span> z;
+}
+<span style="color:#0aa">int</span> <span style="color:#0a0">main</span>() {
+  <span style="color:#0aa">int</span> a = <span style="color:#099">1</span>;
+  <span style="color:#0aa">int</span> b = <span style="color:#099">10</span>;
+  <span style="color:#0aa">int</span> c = sum(a, b);
+  <span style="color:#00a">return</span> <span style="color:#099">0</span>;
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>在使用 <code> g++ -m32 -s sum.cpp</code> 编译后，对应的汇编代码如下，</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-nasm" data-lang="nasm">_Z3sumii:
+<span style="color:#0a0">pushl</span>   %<span style="color:#0aa">ebp</span>
+<span style="color:#0a0">movl</span>    %<span style="color:#0aa">esp</span>, %<span style="color:#0aa">ebp</span>
+<span style="color:#0a0">subl</span>    <span style="color:#00a">$</span><span style="color:#099">16</span>, %<span style="color:#0aa">esp</span>         <span style="color:#aaa;font-style:italic">;make space for stack</span>
+<span style="color:#0a0">movl</span>    <span style="color:#099">12</span>(%<span style="color:#0aa">ebp</span>), %<span style="color:#0aa">eax</span>    <span style="color:#aaa;font-style:italic">;%eax = y</span>
+<span style="color:#0a0">movl</span>    <span style="color:#099">8</span>(%<span style="color:#0aa">ebp</span>), %<span style="color:#0aa">edx</span>     <span style="color:#aaa;font-style:italic">;%edx = x</span>
+<span style="color:#0a0">addl</span>    %<span style="color:#0aa">edx</span>, %<span style="color:#0aa">eax</span>        <span style="color:#aaa;font-style:italic">;%eax = %eax + %edx</span>
+<span style="color:#0a0">movl</span>    %<span style="color:#0aa">eax</span>, -<span style="color:#099">4</span>(%<span style="color:#0aa">ebp</span>)    <span style="color:#aaa;font-style:italic">;z = %eax</span>
+<span style="color:#0a0">movl</span>    -<span style="color:#099">4</span>(%<span style="color:#0aa">ebp</span>), %<span style="color:#0aa">eax</span>    <span style="color:#aaa;font-style:italic">;%eax = z</span>
+<span style="color:#0a0">leave</span>                     <span style="color:#aaa;font-style:italic">;%esp = %ebp; pop %ebp</span>
+<span style="color:#0a0">ret</span>                       <span style="color:#aaa;font-style:italic">;pop %eip; jump(%eip)</span>
+
+main:
+<span style="color:#0a0">pushl</span>   %<span style="color:#0aa">ebp</span>
+<span style="color:#0a0">movl</span>    %<span style="color:#0aa">esp</span>, %<span style="color:#0aa">ebp</span>
+<span style="color:#0a0">subl</span>    <span style="color:#00a">$</span><span style="color:#099">24</span>, %<span style="color:#0aa">esp</span>         <span style="color:#aaa;font-style:italic">;make space for stack</span>
+<span style="color:#0a0">movl</span>    <span style="color:#00a">$</span><span style="color:#099">1</span>, -<span style="color:#099">4</span>(%<span style="color:#0aa">ebp</span>)      <span style="color:#aaa;font-style:italic">;int a = 1;</span>
+<span style="color:#0a0">movl</span>    <span style="color:#00a">$</span><span style="color:#099">10</span>, -<span style="color:#099">8</span>(%<span style="color:#0aa">ebp</span>)     <span style="color:#aaa;font-style:italic">;int b = 10;</span>
+<span style="color:#0a0">movl</span>    -<span style="color:#099">8</span>(%<span style="color:#0aa">ebp</span>), %<span style="color:#0aa">eax</span>
+<span style="color:#0a0">movl</span>    %<span style="color:#0aa">eax</span>, <span style="color:#099">4</span>(%<span style="color:#0aa">esp</span>)     <span style="color:#aaa;font-style:italic">;y = b;</span>
+<span style="color:#0a0">movl</span>    -<span style="color:#099">4</span>(%<span style="color:#0aa">ebp</span>), %<span style="color:#0aa">eax</span>
+<span style="color:#0a0">movl</span>    %<span style="color:#0aa">eax</span>, (%<span style="color:#0aa">esp</span>)      <span style="color:#aaa;font-style:italic">;x = a;</span>
+<span style="color:#0a0">call</span>    <span style="color:#a00">_Z3sumii</span>          <span style="color:#aaa;font-style:italic">;push(eip); jump(sum);</span>
+<span style="color:#0a0">movl</span>    %<span style="color:#0aa">eax</span>, -<span style="color:#099">12</span>(%<span style="color:#0aa">ebp</span>)
+<span style="color:#0a0">movl</span>    <span style="color:#00a">$</span><span style="color:#099">0</span>, %<span style="color:#0aa">eax</span>          <span style="color:#aaa;font-style:italic">;return 0;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>如下图所示，代码主要发生在黄色与绿色部分所示的两个函数的栈帧上。<code>ebp</code>基指针寄存器与<code>esp</code>栈指针寄存器标识了栈底与栈顶位置。</p>
+<p>$L14$首先将当前<code>ebp</code>压栈，此时由于main函数为进程启动后执行的函数，<code>ebp</code>此时为0。</p>
+<p>$L15$设定<code>main</code>函数的<code>ebp</code>位置。</p>
+<p>$L16$将<code>esp</code>地址向下移动16，为局部变量与调用<code>sum</code>的形参开辟足够的空间。</p>
+<p>$L17-L22$为变量<code>a,b</code>以及<code>sum</code>的形参<code>x,y</code>赋值。</p>
+<p>$L23$执行<code>call</code>指令，将当前指令寄存器<code>eip</code>压栈，跳转至<code>sum</code>执行（<code>eip</code>指向<code>sum</code>第一条指令）。</p>
+<p>$L2$将当前<code>ebp</code>，即图中<code>ebp_main</code>压栈。</p>
+<p>$L3$设定<code>sum</code>函数的<code>ebp</code>位置，指向当前<code>esp</code>。</p>
+<p>$L4$开辟栈空间。</p>
+<p>$L5, L6$使用<code>ebp_sum + 8, ebp_sum + 12</code> 获得参数<code>x, y</code>的值。</p>
+<p>$L7-L9$完成加法运算，并将结果填充到<code>eax</code>。</p>
+<p>$L10$调用<code>leave</code>指令，回收<code>esp</code>至<code>ebp</code>位置，并将<code>ebp_main</code>出栈并赋值给<code>ebp</code>。</p>
+<p>$L11$调用<code>ret</code>指令，将调用<code>sum</code>前的指令地址<code>eip</code>出栈赋值给<code>eip</code>，至此图中黄色部分<code>main</code>函数的栈得以恢复。</p>
+<p>$L24$行将<code>sum</code>的运算结果<code>eax</code>赋值给<code>c</code>。</p>
+<p>$L25$行将返回值<code>0</code>赋值给<code>eax</code>，完成整个过程。</p>
+<figure>
+    <img src="/image/libco-coroutine/function-call-example.png"
+         alt="图3. sum.cpp函数栈" width="60%"/> <figcaption>
+            <p>图3. sum.cpp函数栈</p>
+        </figcaption>
+</figure>
+
+<p>通过上面的分析我们不难发现，对于运行时的函数来讲，<strong>参数、返回值地址、函数栈、寄存器</strong>四个部分组成了运行时的全部信息，通过这些信息我们可以恢复任意函数的执行现场，我们称之为<strong>协程的上下文(context)</strong>。</p>
+<h2 id="coctx_t上下文信息"><code>coctx_t</code>上下文信息</h2>
+<p>在libco中，使用如下定义的结构体<code>coctx_t</code>描述协程上下文，其中<code>ss_sp</code>与<code>ss_size</code>保存了参数、返回值地址、函数栈三部分内容，即图3中的红框部分，<code>regs</code>保存了32位/64位下的寄存器。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#00a">struct</span> <span style="color:#0a0;text-decoration:underline">coctx_t</span>
+{
+<span style="color:#4c8317">#if defined(__i386__)
+</span><span style="color:#4c8317"></span>  <span style="color:#0aa">void</span> *regs[ <span style="color:#099">8</span> ];    <span style="color:#aaa;font-style:italic">//详见coctx.cpp
+</span><span style="color:#aaa;font-style:italic"></span><span style="color:#4c8317">#else
+</span><span style="color:#4c8317"></span>  <span style="color:#0aa">void</span> *regs[ <span style="color:#099">14</span> ];   <span style="color:#aaa;font-style:italic">//详见coctx.cpp, R10, R11为callee saved register, 由被调用函数保存
+</span><span style="color:#aaa;font-style:italic"></span><span style="color:#4c8317">#endif
+</span><span style="color:#4c8317"></span>  size_t ss_size;     <span style="color:#aaa;font-style:italic">//协程栈剩余大小
+</span><span style="color:#aaa;font-style:italic"></span>  <span style="color:#0aa">char</span> *ss_sp;        <span style="color:#aaa;font-style:italic">//协程栈栈底地址
+</span><span style="color:#aaa;font-style:italic"></span>};
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="co_make上下文初始化"><code>co_make</code>上下文初始化</h2>
+<p>在libco中，使用如下的<code>coctx_make</code>为协程上下文进行初始的内容填充工作，</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#aaa;font-style:italic">/*
+</span><span style="color:#aaa;font-style:italic"> * @param
+</span><span style="color:#aaa;font-style:italic"> * ctx  :指向上下文结构体
+</span><span style="color:#aaa;font-style:italic"> * pfn  :指向调用函数
+</span><span style="color:#aaa;font-style:italic"> * s    :参数
+</span><span style="color:#aaa;font-style:italic"> * s1   :参数
+</span><span style="color:#aaa;font-style:italic"> */</span>
+<span style="color:#0aa">int</span> <span style="color:#0a0">coctx_make</span>(coctx_t* ctx, coctx_pfn_t pfn, <span style="color:#00a">const</span> <span style="color:#0aa">void</span>* s, <span style="color:#00a">const</span> <span style="color:#0aa">void</span>* s1) {
+  <span style="color:#aaa;font-style:italic">// make room for coctx_param
+</span><span style="color:#aaa;font-style:italic"></span>  <span style="color:#0aa">char</span>* sp = ctx-&gt;ss_sp + ctx-&gt;ss_size - <span style="color:#00a">sizeof</span>(coctx_param_t); <span style="color:#aaa;font-style:italic">//ss_sp内存为堆内存，将sp移动到高地址
+</span><span style="color:#aaa;font-style:italic"></span>  sp = (<span style="color:#0aa">char</span>*)((<span style="color:#0aa">unsigned</span> <span style="color:#0aa">long</span>)sp &amp; -<span style="color:#099">16L</span>);                       <span style="color:#aaa;font-style:italic">//i386要求栈起始地址按16字节对齐
+</span><span style="color:#aaa;font-style:italic"></span>
+  coctx_param_t* param = (coctx_param_t*)sp;
+  <span style="color:#0aa">void</span>** ret_addr = (<span style="color:#0aa">void</span>**)(sp - <span style="color:#00a">sizeof</span>(<span style="color:#0aa">void</span>*) * <span style="color:#099">2</span>);           <span style="color:#aaa;font-style:italic">//返回值地址
+</span><span style="color:#aaa;font-style:italic"></span>  *ret_addr = (<span style="color:#0aa">void</span>*)pfn;
+  param-&gt;s1 = s;
+  param-&gt;s2 = s1;
+
+  memset(ctx-&gt;regs, <span style="color:#099">0</span>, <span style="color:#00a">sizeof</span>(ctx-&gt;regs));
+
+  ctx-&gt;regs[kESP] = (<span style="color:#0aa">char</span>*)(sp) - <span style="color:#00a">sizeof</span>(<span style="color:#0aa">void</span>*) * <span style="color:#099">2</span>;
+  <span style="color:#00a">return</span> <span style="color:#099">0</span>;
+}
+</code></pre></td></tr></table>
+</div>
+</div><figure>
+    <img src="/image/libco-coroutine/co_make.png"
+         alt="图4. co_make初始化协程栈" width="60%"/> <figcaption>
+            <p>图4. co_make初始化协程栈</p>
+        </figcaption>
+</figure>
+
+<h2 id="co_swap上下文切换"><code>co_swap</code>上下文切换</h2>
+<h1 id="协程栈">协程栈</h1>
+<h1 id="调度机制">调度机制</h1>
+<h1 id="参考">参考</h1>
 
 </main>
 
