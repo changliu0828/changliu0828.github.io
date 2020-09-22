@@ -1,5 +1,5 @@
 ---
-title: "libco与协程"
+title: "libco源码笔记(1)协程与上下文切换"
 date: 2020-09-11T15:08:21+08:00
 toc: true
 categories:
@@ -8,7 +8,7 @@ tags:
   - libco
 ---
 
-# 前言
+本文结合libco总结协程相关的问题与解决方案。并附上我自己的[注释版本](https://github.com/changliu0828/libco)，建议配合阅读。
 
 # 回调地狱
 
@@ -207,8 +207,12 @@ $L21$的`ret`指令将`eip`，即函数`pfn`入口出栈，并跳转至`pfn`执�
 
 {{< figure src="/image/libco-coroutine/coctx_swap.png" width="90%" caption="图5. coctx_swap上下文切换">}}
 
-# 协程栈
+# 最后
 
-# 调度机制
+至此，我们集合libco源码介绍了协程中最核心的上下文切换部分。感谢你的阅读。如果你觉得本文有任何错误，亦或是你有任何疑虑和感想，请一定[让我知道](mailto:changliu0828@gmail.com)。
 
 # 参考
+
+1. [libco源码分析，csdn](https://blog.csdn.net/weixin_43705457/article/details/106863859)
+
+

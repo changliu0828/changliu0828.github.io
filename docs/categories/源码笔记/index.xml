@@ -6,18 +6,34 @@
     <description>Recent content in 源码笔记 on Chang Liu&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 11 Sep 2020 15:08:21 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 22 Sep 2020 16:18:17 +0800</lastBuildDate>
     
 	<atom:link href="http://changliu0828.github.io/categories/%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>libco与协程</title>
+      <title>libco源码笔记(2)主要结构与函数</title>
+      <link>http://changliu0828.github.io/post/libco-api/</link>
+      <pubDate>Tue, 22 Sep 2020 16:18:17 +0800</pubDate>
+      
+      <guid>http://changliu0828.github.io/post/libco-api/</guid>
+      <description>在之前的文章libco源码笔记(1)协程与上下文切换中，我们介绍了协程的基本概念以及libco中的上下文切换核心代码。本文结合一个示例，介绍libco提供的几个重要函数接口。
+libco主要结构体 首先我们介绍一些libco中的三个核心结构体，下图1中描述了三者的关系，
+coctx_t保存协程切换时所需的上下文信息，详尽的说明请参考libco源码笔记(1)协程与上下文切换，此处不再说明。
+stCoRoutine_t为协程主要结构体，包含单个协程所需一切信息，如协程启停状态，执行函数，上下文信息，共享栈信息等。
+stCoRoutineEnv_t为线程私有全局静态变量，包含全局协程环境信息，如协程调用栈，epoll句柄等。
+1  static __thread stCoRoutineEnv_t* gCoEnvPerThread = NULL; //协程运行环境 __thread:线程私有     图1. libco核心结构
+  1 2 3 4 5 6 7 8 9 10 11 12 13  # libco主要接口函数 ```cpp /* 协程创建接口 * @param * co :协程主结构体二级指针 * attr :协程可配置属性, 包括栈大小、共享栈地址 * pfn :协程调用函数 * arg :协程调用函数参数 * @return :0 */ int co_create( stCoRoutine_t **co,const stCoRoutineAttr_t *attr,void *(*routine)(void*),void *arg );   示例 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30  //example_test.</description>
+    </item>
+    
+    <item>
+      <title>libco源码笔记(1)协程与上下文切换</title>
       <link>http://changliu0828.github.io/post/libco-coroutine/</link>
       <pubDate>Fri, 11 Sep 2020 15:08:21 +0800</pubDate>
       
       <guid>http://changliu0828.github.io/post/libco-coroutine/</guid>
-      <description>前言 回调地狱 在正式开始探讨正题之前，容我们简单回顾下协程之所以产生的原因。
+      <description>本文结合libco总结协程相关的问题与解决方案。并附上我自己的注释版本，建议配合阅读。
+回调地狱 在正式开始探讨正题之前，容我们简单回顾下协程之所以产生的原因。
 起初，如下图(a)中所示，我们的系统中有源源不断的任务(图中的task)需要处理。为此我们编写了一个服务端程序。这个程序以单进程方式运行(图中的process)，并无限循环的尽可能获取任务（图中loop）。对于获取到的每个人物，调用处理函数 f() 完成具体处理逻辑。特别的，对于函数 f() 来讲，代码片段 g() 消耗了比较长的时间。但尽管如此，系统外部任务的产生频率还是比 f() 的运行时间低，即系统对任务的消费能力高于任务的生产能力，我们的服务运转良好。
 然而随着业务的发展，我们单位时间内接受的任务越来越多，(a)中的单进程单线程服务模式已经无法及时消费任务。为此，如下图(b)中所示，我们可以将功能较为独立，消耗资源较大的 g() 部分抽离为单独的进程。原进程使用异步方式 call_g() 调用g()，并注册回调函数 g_callback() 处理 g() 的返回。在编码时，我们需要将原有顺序的编程方式改为调用部分加回调部分的编程方式。
   图1

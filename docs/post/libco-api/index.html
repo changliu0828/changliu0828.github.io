@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>libco源码笔记(2)主要结构与函数 | Chang Liu&#39;s Blog</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <script src="https://kit.fontawesome.com/a0e5d04d0b.js" crossorigin="anonymous"></script>
+
+
+  </head>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+      <li><a href="/">主页</a></li>
+      
+      <li><a href="/categories/">分类</a></li>
+      
+      <li><a href="/tags/">标签</a></li>
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h2><span class="title">libco源码笔记(2)主要结构与函数</span></h2>
+
+<h3 class="date">2020/09/22</h3>
+</div>
+
+
+<aside class="toc">
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#libco主要结构体">libco主要结构体</a></li>
+    <li><a href="#示例">示例</a></li>
+  </ul>
+</nav>
+</aside>
+
+
+
+<main>
+<p>在之前的文章<a href="http://www.changliu.me/post/libco-coroutine/">libco源码笔记(1)协程与上下文切换</a>中，我们介绍了协程的基本概念以及libco中的上下文切换核心代码。本文结合一个示例，介绍libco提供的几个重要函数接口。</p>
+<h1 id="libco主要结构体">libco主要结构体</h1>
+<p>首先我们介绍一些libco中的三个核心结构体，下图1中描述了三者的关系，</p>
+<p><code>coctx_t</code>保存协程切换时所需的上下文信息，详尽的说明请参考<a href="http://www.changliu.me/post/libco-coroutine/">libco源码笔记(1)协程与上下文切换</a>，此处不再说明。</p>
+<p><code>stCoRoutine_t</code>为协程主要结构体，包含单个协程所需一切信息，如协程启停状态，执行函数，上下文信息，共享栈信息等。</p>
+<p><code>stCoRoutineEnv_t</code>为线程私有全局静态变量，包含全局协程环境信息，如协程调用栈，epoll句柄等。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#00a">static</span> __thread stCoRoutineEnv_t* gCoEnvPerThread = <span style="color:#0aa">NULL</span>;   <span style="color:#aaa;font-style:italic">//协程运行环境 __thread:线程私有
+</span></code></pre></td></tr></table>
+</div>
+</div><figure>
+    <img src="/image/libco-coroutine/co-core-struct.png"
+         alt="图1. libco核心结构" width="100%"/> <figcaption>
+            <p>图1. libco核心结构</p>
+        </figcaption>
+</figure>
+
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">
+# libco主要接口函数
+
+```cpp
+/*  协程创建接口
+ *  @param
+ *  co          :协程主结构体二级指针
+ *  attr        :协程可配置属性, 包括栈大小、共享栈地址
+ *  pfn         :协程调用函数
+ *  arg         :协程调用函数参数
+ *  @return     :0
+ */
+int   co_create( stCoRoutine_t **co,const stCoRoutineAttr_t *attr,void *(*routine)(void*),void *arg );
+</code></pre></td></tr></table>
+</div>
+</div><h1 id="示例">示例</h1>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#aaa;font-style:italic">//example_test.cpp
+</span><span style="color:#aaa;font-style:italic"></span><span style="color:#4c8317">#include</span> <span style="color:#4c8317">&lt;stdio.h&gt;</span><span style="color:#4c8317">
+</span><span style="color:#4c8317">#include</span> <span style="color:#4c8317">&lt;stdlib.h&gt;</span><span style="color:#4c8317">
+</span><span style="color:#4c8317">#include</span> <span style="color:#4c8317">&#34;co_routine.h&#34;</span><span style="color:#4c8317">
+</span><span style="color:#4c8317"></span>
+<span style="color:#0aa">void</span>* <span style="color:#0a0">f</span>(<span style="color:#0aa">void</span>* args) {
+    <span style="color:#00a">while</span> (<span style="color:#099">1</span>) {
+        printf(<span style="color:#a50">&#34;f</span><span style="color:#a50">\n</span><span style="color:#a50">&#34;</span>);
+        co_yield_ct();
+    }
+    <span style="color:#00a">return</span> <span style="color:#0aa">NULL</span>;
+}
+<span style="color:#0aa">void</span>* <span style="color:#0a0">g</span>(<span style="color:#0aa">void</span>* args) {
+    <span style="color:#00a">while</span> (<span style="color:#099">1</span>) {
+        printf(<span style="color:#a50">&#34;g</span><span style="color:#a50">\n</span><span style="color:#a50">&#34;</span>);
+        co_yield_ct();
+    }
+    <span style="color:#00a">return</span> <span style="color:#0aa">NULL</span>;
+}
+<span style="color:#0aa">int</span> <span style="color:#0a0">main</span>() {
+    stCoRoutine_t* co_f;
+    stCoRoutine_t* co_g;
+    co_create(&amp;co_f, <span style="color:#0aa">NULL</span>, f, <span style="color:#0aa">NULL</span>); 
+    co_create(&amp;co_g, <span style="color:#0aa">NULL</span>, g, <span style="color:#0aa">NULL</span>); 
+    <span style="color:#00a">while</span>(<span style="color:#099">1</span>) {
+        co_resume(co_f);
+        co_resume(co_g);
+    }
+    <span style="color:#00a">return</span> <span style="color:#099">0</span>;
+}
+</code></pre></td></tr></table>
+</div>
+</div>
+</main>
+
+<div class="post-comment">
+    
+</div>
+
+  <footer>
+  <script src="//yihui.name/js/math-code.js"></script>
+<script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+<script async src="//yihui.name/js/center-img.js"></script>
+
+  
+  <hr/>
+  © <a href="www.changliu.me">Chang Liu</a> 2020 | <a href="mailto:changliu0828@gmail.com">Contact</a>
+  
+  </footer>
+  </body>
+</html>
+

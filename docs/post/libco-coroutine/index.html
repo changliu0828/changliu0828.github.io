@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>libco与协程 | Chang Liu&#39;s Blog</title>
+    <title>libco源码笔记(1)协程与上下文切换 | Chang Liu&#39;s Blog</title>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/fonts.css" />
     <script src="https://kit.fontawesome.com/a0e5d04d0b.js" crossorigin="anonymous"></script>
@@ -26,7 +26,7 @@
     </nav>
 
 <div class="article-meta">
-<h2><span class="title">libco与协程</span></h2>
+<h2><span class="title">libco源码笔记(1)协程与上下文切换</span></h2>
 
 <h3 class="date">2020/09/11</h3>
 </div>
@@ -35,7 +35,6 @@
 <aside class="toc">
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#前言">前言</a></li>
     <li><a href="#回调地狱">回调地狱</a></li>
     <li><a href="#何为协程">何为协程</a></li>
     <li><a href="#协程的上下文与切换">协程的上下文与切换</a>
@@ -45,8 +44,7 @@
         <li><a href="#coctx_swap上下文切换"><code>coctx_swap</code>上下文切换</a></li>
       </ul>
     </li>
-    <li><a href="#协程栈">协程栈</a></li>
-    <li><a href="#调度机制">调度机制</a></li>
+    <li><a href="#最后">最后</a></li>
     <li><a href="#参考">参考</a></li>
   </ul>
 </nav>
@@ -55,7 +53,7 @@
 
 
 <main>
-<h1 id="前言">前言</h1>
+<p>本文结合libco总结协程相关的问题与解决方案。并附上我自己的<a href="https://github.com/changliu0828/libco">注释版本</a>，建议配合阅读。</p>
 <h1 id="回调地狱">回调地狱</h1>
 <p>在正式开始探讨正题之前，容我们简单回顾下协程之所以产生的原因。</p>
 <p>起初，如下图(a)中所示，我们的系统中有源源不断的任务(图中的task)需要处理。为此我们编写了一个服务端程序。这个程序以单进程方式运行(图中的process)，并无限循环的尽可能获取任务（图中loop）。对于获取到的每个人物，调用处理函数 <code>f()</code> 完成具体处理逻辑。特别的，对于函数 <code>f()</code> 来讲，代码片段 <code>g()</code> 消耗了比较长的时间。但尽管如此，系统外部任务的产生频率还是比 <code>f()</code> 的运行时间低，即系统对任务的消费能力高于任务的生产能力，我们的服务运转良好。</p>
@@ -351,9 +349,12 @@ coctx_swap:
         </figcaption>
 </figure>
 
-<h1 id="协程栈">协程栈</h1>
-<h1 id="调度机制">调度机制</h1>
+<h1 id="最后">最后</h1>
+<p>至此，我们集合libco源码介绍了协程中最核心的上下文切换部分。感谢你的阅读。如果你觉得本文有任何错误，亦或是你有任何疑虑和感想，请一定<a href="mailto:changliu0828@gmail.com">让我知道</a>。</p>
 <h1 id="参考">参考</h1>
+<ol>
+<li><a href="https://blog.csdn.net/weixin_43705457/article/details/106863859">libco源码分析，csdn</a></li>
+</ol>
 
 </main>
 
