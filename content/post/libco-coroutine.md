@@ -18,11 +18,11 @@ tags:
 
 然而随着业务的发展，我们单位时间内接受的任务越来越多，(a)中的单进程单线程服务模式已经无法及时消费任务。为此，如下图(b)中所示，我们可以将功能较为独立，消耗资源较大的 `g()` 部分抽离为单独的进程。原进程使用异步方式 `call_g()` 调用`g()`，并注册回调函数 `g_callback()` 处理 `g()` 的返回。在编码时，我们需要将原有顺序的编程方式改为调用部分加回调部分的编程方式。
 
-{{< figure src="/image/libco-coroutine/server-model.png" width="649" caption="图1">}}
+{{< figure src="/image/libco-coroutine/server-model.png" width="100%" caption="图1">}}
 
 虽然异步的编程方式提高了系统的吞吐量，但如下图展示的那样，完整的顺序执行代码片段被分隔成了若干代码片段。在代码相对复杂，需要远程调用较多的时候，代码的可维护性急剧下降，我们称这种现象为**回调地狱(callback hell)**。
 
-{{< figure src="/image/libco-coroutine/callback-hell.png" width="306" caption="图2. 同步与异步编程下的代码片段">}}
+{{< figure src="/image/libco-coroutine/callback-hell.png" width="50%" caption="图2. 同步与异步编程下的代码片段">}}
 
 # 何为协程
 
@@ -105,7 +105,7 @@ $L24$行将`sum`的运算结果`eax`赋值给`c`。
 
 $L25$行将返回值`0`赋值给`eax`，完成整个过程。
 
-{{< figure src="/image/libco-coroutine/function-call-example.png" width="370" caption="图3. sum.cpp函数栈">}}
+{{< figure src="/image/libco-coroutine/function-call-example.png" width="60%" caption="图3. sum.cpp函数栈">}}
 
 通过上面的分析我们不难发现，对于运行时的函数来讲，**参数、返回值地址、函数栈、寄存器**四个部分组成了运行时的全部信息，通过这些信息我们可以恢复任意函数的执行现场，我们称之为**协程的上下文(context)**。
 
@@ -128,7 +128,7 @@ struct coctx_t
 
 ## `co_make`上下文初始化
 
-在libco中，使用如下的`coctx_make`为协程上下文进行初始的内容填充工作，
+在libco中，使用如下的`coctx_make`在初次调用(`co_resume`)时，为协程上下文进行初始的内容填充工作，
 
 ```cpp
 /*
@@ -158,9 +158,9 @@ int coctx_make(coctx_t* ctx, coctx_pfn_t pfn, const void* s, const void* s1) {
 
 经过`co_make`填充后的协程栈如下图4所示。其中与我们上文中提到的函数调用栈不同的是，在参数与返回值地址之前，空了4字节(图中NULL)，这为之后的上下文切换做下准备。
 
-{{< figure src="/image/libco-coroutine/co_make.png" width="390" caption="图4. co_make初始化协程栈">}}
+{{< figure src="/image/libco-coroutine/co_make.png" width="60%" caption="图4. co_make初始化协程栈">}}
 
-## `co_swap`上下文切换
+## `coctx_swap`上下文切换
 
 ```cpp
 extern "C"
@@ -168,6 +168,9 @@ extern "C"
   extern void coctx_swap( coctx_t *,coctx_t* ) asm("coctx_swap");
 };
 ```
+
+libco通过`coctx_swap`函数实现协程的上下文切换，其接收两个`coctx_t *`作为参数，第一个为保存当前协程所用的上下文指针，第二个则是需要换出的上下文指针。
+
 ```nasm
 .globl coctx_swap
 coctx_swap:
@@ -192,6 +195,17 @@ coctx_swap:
   ret
 ```
 
+以下图5作为参照，调用`coctx_swap`前的栈如绿色所示，`call`指令将返回值地址压栈，
+
+$L3$时`esp`为图中位置，进入`coctx_swap`函数。
+
+$L3-L10$将寄存器值保存至第一个参数所指`coctx_t`内。
+
+$L12-L19$将第二个参数所指`coctx_t`内的信息读取至寄存器，恢复上下文现场。
+
+$L21$的`ret`指令将`eip`，即函数`pfn`入口出栈，并跳转至`pfn`执行。至此，黄色的栈构造成为调用pfn之前的栈空间（结合图3红框中黄色部分对比）。之前提到的预留的`NULL`正式此时为ret指令准备的。
+
+{{< figure src="/image/libco-coroutine/coctx_swap.png" width="90%" caption="图5. coctx_swap上下文切换">}}
 
 # 协程栈
 
