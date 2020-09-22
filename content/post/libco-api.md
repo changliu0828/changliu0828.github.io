@@ -27,6 +27,8 @@ static __thread stCoRoutineEnv_t* gCoEnvPerThread = NULL;   //协程运行环境
 
 {{< figure src="/image/libco-coroutine/co-core-struct.png" width="100%" caption="图1. libco核心结构">}}
 
+{{< figure src="/image/libco-coroutine/libco-uml.svg" width="100%" caption="图1. libco核心结构">}}
+
 ```
 
 # libco主要接口函数
