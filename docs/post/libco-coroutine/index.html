@@ -60,30 +60,16 @@
 <p>在正式开始探讨正题之前，容我们简单回顾下协程之所以产生的原因。</p>
 <p>起初，如下图(a)中所示，我们的系统中有源源不断的任务(图中的task)需要处理。为此我们编写了一个服务端程序。这个程序以单进程方式运行(图中的process)，并无限循环的尽可能获取任务（图中loop）。对于获取到的每个人物，调用处理函数 <code>f()</code> 完成具体处理逻辑。特别的，对于函数 <code>f()</code> 来讲，代码片段 <code>g()</code> 消耗了比较长的时间。但尽管如此，系统外部任务的产生频率还是比 <code>f()</code> 的运行时间低，即系统对任务的消费能力高于任务的生产能力，我们的服务运转良好。</p>
 <p>然而随着业务的发展，我们单位时间内接受的任务越来越多，(a)中的单进程单线程服务模式已经无法及时消费任务。为此，如下图(b)中所示，我们可以将功能较为独立，消耗资源较大的 <code>g()</code> 部分抽离为单独的进程。原进程使用异步方式 <code>call_g()</code> 调用<code>g()</code>，并注册回调函数 <code>g_callback()</code> 处理 <code>g()</code> 的返回。在编码时，我们需要将原有顺序的编程方式改为调用部分加回调部分的编程方式。</p>
-<p><figure>
+<figure>
     <img src="/image/libco-coroutine/server-model.svg"
          alt="图1" width="100%"/> <figcaption>
             <p>图1</p>
         </figcaption>
 </figure>
 
-<figure>
-    <img src="/image/libco-coroutine/server-model.png"
-         alt="图1" width="100%"/> <figcaption>
-            <p>图1</p>
-        </figcaption>
-</figure>
-
-<figure>
-    <img src="/image/libco-coroutine/server-model.jpg"
-         alt="图1" width="100%"/> <figcaption>
-            <p>图1</p>
-        </figcaption>
-</figure>
-</p>
 <p>虽然异步的编程方式提高了系统的吞吐量，但如下图展示的那样，完整的顺序执行代码片段被分隔成了若干代码片段。在代码相对复杂，需要远程调用较多的时候，代码的可维护性急剧下降，我们称这种现象为<strong>回调地狱(callback hell)</strong>。</p>
 <figure>
-    <img src="/image/libco-coroutine/callback-hell.png"
+    <img src="/image/libco-coroutine/callback-hell.svg"
          alt="图2. 同步与异步编程下的代码片段" width="50%"/> <figcaption>
             <p>图2. 同步与异步编程下的代码片段</p>
         </figcaption>
@@ -192,7 +178,7 @@ main:
 <p>$L24$行将<code>sum</code>的运算结果<code>eax</code>赋值给<code>c</code>。</p>
 <p>$L25$行将返回值<code>0</code>赋值给<code>eax</code>，完成整个过程。</p>
 <figure>
-    <img src="/image/libco-coroutine/function-call-example.png"
+    <img src="/image/libco-coroutine/function-call-example.svg"
          alt="图3. sum.cpp函数栈" width="60%"/> <figcaption>
             <p>图3. sum.cpp函数栈</p>
         </figcaption>
@@ -283,7 +269,7 @@ main:
 </div>
 </div><p>经过<code>co_make</code>填充后的协程栈如下图4所示。其中与我们上文中提到的函数调用栈不同的是，在参数与返回值地址之前，空了4字节(图中NULL)，这为之后的上下文切换做下准备。</p>
 <figure>
-    <img src="/image/libco-coroutine/co_make.png"
+    <img src="/image/libco-coroutine/co_make.svg"
          alt="图4. co_make初始化协程栈" width="60%"/> <figcaption>
             <p>图4. co_make初始化协程栈</p>
         </figcaption>
@@ -359,7 +345,7 @@ coctx_swap:
 <p>$L12-L19$将第二个参数所指<code>coctx_t</code>内的信息读取至寄存器，恢复上下文现场。</p>
 <p>$L21$的<code>ret</code>指令将<code>eip</code>，即函数<code>pfn</code>入口出栈，并跳转至<code>pfn</code>执行。至此，黄色的栈构造成为调用pfn之前的栈空间（结合图3红框中黄色部分对比）。之前提到的预留的<code>NULL</code>正式此时为ret指令准备的。</p>
 <figure>
-    <img src="/image/libco-coroutine/coctx_swap.png"
+    <img src="/image/libco-coroutine/coctx_swap.svg"
          alt="图5. coctx_swap上下文切换" width="90%"/> <figcaption>
             <p>图5. coctx_swap上下文切换</p>
         </figcaption>
