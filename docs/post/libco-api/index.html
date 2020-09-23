@@ -44,6 +44,8 @@
     </li>
     <li><a href="#libco主要接口函数">libco主要接口函数</a></li>
     <li><a href="#示例">示例</a></li>
+    <li><a href="#最后">最后</a></li>
+    <li><a href="#参考">参考</a></li>
   </ul>
 </nav>
 </aside>
@@ -51,7 +53,7 @@
 
 
 <main>
-<p>在之前的文章<a href="http://www.changliu.me/post/libco-coroutine/">libco源码笔记(1)协程与上下文切换</a>中，我们介绍了协程的基本概念以及libco中的上下文切换核心代码。本文结合一个示例，介绍libco提供的几个重要函数接口。</p>
+<p>在之前的文章<a href="http://www.changliu.me/post/libco-coroutine/">libco源码笔记(1)协程与上下文切换</a>中，我们介绍了协程的基本概念以及libco中的上下文切换核心代码。本文结合一个示例，介绍libco提供的几个重要函数接口。建议配合我自己的<a href="https://github.com/changliu0828/libco">注释版本</a>阅读。</p>
 <h1 id="libco主要结构体">libco主要结构体</h1>
 <p>首先我们介绍一些libco中的三个核心结构体，下图1中描述了三者的关系，</p>
 <h2 id="coctx_t"><code>coctx_t</code></h2>
@@ -78,15 +80,24 @@
 <h1 id="libco主要接口函数">libco主要接口函数</h1>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#aaa;font-style:italic">/*  协程创建接口
@@ -97,10 +108,114 @@
 </span><span style="color:#aaa;font-style:italic"> *  arg         :协程调用函数参数
 </span><span style="color:#aaa;font-style:italic"> *  @return     :0
 </span><span style="color:#aaa;font-style:italic"> */</span>
-<span style="color:#0aa">int</span>   <span style="color:#0a0">co_create</span>( stCoRoutine_t **co,<span style="color:#00a">const</span> stCoRoutineAttr_t *attr,<span style="color:#0aa">void</span> *(*routine)(<span style="color:#0aa">void</span>*),<span style="color:#0aa">void</span> *arg );
+<span style="color:#0aa">int</span> <span style="color:#0a0">co_create</span>( stCoRoutine_t **ppco,<span style="color:#00a">const</span> stCoRoutineAttr_t *attr,pfn_co_routine_t pfn,<span style="color:#0aa">void</span> *arg )
+{
+    <span style="color:#00a">if</span>( !co_get_curr_thread_env() ) 
+    {
+        co_init_curr_thread_env();      <span style="color:#aaa;font-style:italic">//初始化本线程环境，主协程才会调用
+</span><span style="color:#aaa;font-style:italic"></span>    }
+    stCoRoutine_t *co = co_create_env( co_get_curr_thread_env(), attr, pfn,arg );   <span style="color:#aaa;font-style:italic">//创建协程运行环境, 初始化协程数据
+</span><span style="color:#aaa;font-style:italic"></span>    *ppco = co;
+    <span style="color:#00a">return</span> <span style="color:#099">0</span>;
+}
 </code></pre></td></tr></table>
 </div>
-</div><h1 id="示例">示例</h1>
+</div><p><code>co_create</code>主要负责两件事情。首先，在当前线程没有初始化运行环境<code>stCoRoutineEnv_t</code>时，对其进行初始化，包括初始化协程调用栈，创建主协程并压栈等。其次，根据传入的配置参数<code>attr</code>创建协程，分配私有栈（设置共享栈）并返回句柄<code>co</code>。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#aaa;font-style:italic">/*  协程切回接口
+</span><span style="color:#aaa;font-style:italic"> *  @param
+</span><span style="color:#aaa;font-style:italic"> *  co          :协程主结构体指针
+</span><span style="color:#aaa;font-style:italic"> */</span>
+<span style="color:#0aa">void</span> <span style="color:#0a0">co_resume</span>( stCoRoutine_t *co )
+{
+    stCoRoutineEnv_t *env = co-&gt;env;
+    stCoRoutine_t *lpCurrRoutine = env-&gt;pCallStack[ env-&gt;iCallStackSize - <span style="color:#099">1</span> ];  <span style="color:#aaa;font-style:italic">//当前正在运行的协程
+</span><span style="color:#aaa;font-style:italic"></span>    <span style="color:#00a">if</span>( !co-&gt;cStart )                                                           <span style="color:#aaa;font-style:italic">//第一次进入
+</span><span style="color:#aaa;font-style:italic"></span>    {
+        coctx_make( &amp;co-&gt;ctx,(coctx_pfn_t)CoRoutineFunc,co,<span style="color:#099">0</span> );                 <span style="color:#aaa;font-style:italic">//在co-&gt;ctx中保存上下文(当前寄存器)
+</span><span style="color:#aaa;font-style:italic"></span>        co-&gt;cStart = <span style="color:#099">1</span>;                                                         <span style="color:#aaa;font-style:italic">//标记为已开始
+</span><span style="color:#aaa;font-style:italic"></span>    }
+    env-&gt;pCallStack[ env-&gt;iCallStackSize++ ] = co;                              <span style="color:#aaa;font-style:italic">//压入协程调用栈
+</span><span style="color:#aaa;font-style:italic"></span>    co_swap( lpCurrRoutine, co );                                               <span style="color:#aaa;font-style:italic">//切换
+</span><span style="color:#aaa;font-style:italic"></span>}
+</code></pre></td></tr></table>
+</div>
+</div><p><code>co_resume</code>负责切换至某一协程。在<code>co</code>没有启动时通过<code>coctx_make</code>初始化协程栈，并将协程压栈，并与当前协程进行上下文切换。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#0aa">void</span> <span style="color:#0a0">co_yield_env</span>( stCoRoutineEnv_t *env )
+{
+    
+    stCoRoutine_t *last = env-&gt;pCallStack[ env-&gt;iCallStackSize - <span style="color:#099">2</span> ];
+    stCoRoutine_t *curr = env-&gt;pCallStack[ env-&gt;iCallStackSize - <span style="color:#099">1</span> ];
+
+    env-&gt;iCallStackSize--;
+
+    co_swap( curr, last);
+}
+<span style="color:#aaa;font-style:italic">/* 当前协程切出接口
+</span><span style="color:#aaa;font-style:italic"> */</span>
+<span style="color:#0aa">void</span> <span style="color:#0a0">co_yield_ct</span>()
+{
+    co_yield_env( co_get_curr_thread_env() );
+}
+<span style="color:#aaa;font-style:italic">/*  协程切出接口
+</span><span style="color:#aaa;font-style:italic"> *  @param
+</span><span style="color:#aaa;font-style:italic"> *  co          :协程主结构体指针
+</span><span style="color:#aaa;font-style:italic"> */</span>
+<span style="color:#0aa">void</span> <span style="color:#0a0">co_yield</span>( stCoRoutine_t *co )
+{
+    co_yield_env( co-&gt;env );
+}
+</code></pre></td></tr></table>
+</div>
+</div><p><code>co_yield</code>系列函数负责当前线程让出CPU，将其出栈，并与栈上的前一个协程进行上下文切换。</p>
+<h1 id="示例">示例</h1>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
@@ -167,7 +282,31 @@
 }
 </code></pre></td></tr></table>
 </div>
+</div><p>使用上面提到的三个基本函数，我在这里写了一个小例子，程序创建了两个协程<code>f</code>和<code>g</code>，没个协程在打印自己的函数名后，让出CPU。主协程循环调用<code>resume</code>调用两个协程，程序的运行输出为循环打印</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">./example_test
+f
+g
+f
+...
+</code></pre></td></tr></table>
 </div>
+</div><h1 id="最后">最后</h1>
+<p>至此，我们了解了libco核心部分的相关函数与执行过程。感谢你的阅读。如果你你有任何疑虑和感想，或发现本文有任何错误，请一定<a href="mailto:changliu0828@gmail.com">让我知道</a>。</p>
+<h1 id="参考">参考</h1>
+<ol>
+<li><a href="https://blog.csdn.net/weixin_43705457/article/details/106863859">libco源码分析，csdn</a></li>
+<li><a href="http://purecpp.org/purecpp/static/64a819e99584452aab70a7f9c307717f.pdf">libco分享，李方源</a></li>
+</ol>
+
 </main>
 
 <div class="post-comment">

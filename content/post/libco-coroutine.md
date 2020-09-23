@@ -227,10 +227,10 @@ $L21$的`ret`指令将`eip`，即函数`pfn`入口出栈，并跳转至`pfn`执�
 
 # 最后
 
-至此，我们集合libco源码介绍了协程中最核心的上下文切换部分。感谢你的阅读。如果你觉得本文有任何错误，亦或是你有任何疑虑和感想，请一定[让我知道](mailto:changliu0828@gmail.com)。
+至此，我们结合libco源码介绍了协程中最核心的上下文切换部分。感谢你的阅读。如果你你有任何疑虑和感想，或发现本文有任何错误，请一定[让我知道](mailto:changliu0828@gmail.com)。
 
 # 参考
 
 1. [libco源码分析，csdn](https://blog.csdn.net/weixin_43705457/article/details/106863859)
-
+2. [libco分享，李方源](http://purecpp.org/purecpp/static/64a819e99584452aab70a7f9c307717f.pdf)
 
