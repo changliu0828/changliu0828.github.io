@@ -20,6 +20,7 @@ tags:
 
 {{< figure src="/image/libco-coroutine/server-model.svg" width="100%" caption="图1">}}
 {{< figure src="/image/libco-coroutine/server-model.png" width="100%" caption="图1">}}
+{{< figure src="/image/libco-coroutine/server-model.jpg" width="100%" caption="图1">}}
 
 虽然异步的编程方式提高了系统的吞吐量，但如下图展示的那样，完整的顺序执行代码片段被分隔成了若干代码片段。在代码相对复杂，需要远程调用较多的时候，代码的可维护性急剧下降，我们称这种现象为**回调地狱(callback hell)**。
 
