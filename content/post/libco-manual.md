@@ -1,5 +1,5 @@
 ---
-title: "libco源码笔记(2)主要结构与函数"
+title: "libco源码笔记(2)显式切换"
 date: 2020-09-22T16:18:17+08:00
 toc: true
 categories:
@@ -8,7 +8,7 @@ tags:
   - libco
 ---
 
-在之前的文章[libco源码笔记(1)协程与上下文切换](http://www.changliu.me/post/libco-coroutine/)中，我们介绍了协程的基本概念以及libco中的上下文切换核心代码。本文结合一个示例，介绍libco提供的几个重要函数接口。建议配合我自己的[注释版本](https://github.com/changliu0828/libco)阅读。
+在之前的文章[libco源码笔记(1)协程与上下文切换](http://www.changliu.me/post/libco-coroutine/)中，我们介绍了协程的基本概念以及libco中的上下文切换核心代码。本文libco提供的显式切换相关函数接口，与此相对的通过hook系统调用提供的自动切换机制在后续文章中介绍。建议配合我自己的[注释版本](https://github.com/changliu0828/libco)阅读本文。
 
 # libco主要结构体
 
@@ -30,10 +30,10 @@ static __thread stCoRoutineEnv_t* gCoEnvPerThread = NULL;   //协程运行环境
 
 线程私有全局静态变量，包含全局协程环境信息，如协程调用栈，epoll句柄等。其中`pCallStack`为当前线程中的协程调用栈，由于libco为非对称协程
 
-{{< figure src="/image/libco-api/co-core-struct.svg" width="100%" caption="图1. libco核心结构">}}
+{{< figure src="/image/libco-manual/co-core-struct.png" width="100%" caption="图1. libco核心结构">}}
 
 
-# libco主要接口函数
+# libco显示切换函数
 
 ```cpp
 /*  协程创建接口
@@ -152,9 +152,31 @@ g
 f
 ...
 ```
+
+# 协程池
+
+在实际应用中，为了避免为频繁创建销毁协程所带来的的开销。libco建议以协程池的方式使用$^{[2]}$。这里贴上我理解的使用方式，
+
+{{< figure src="/image/libco-manual/co-pool.png" width="70%" caption="图1. 协程池的使用">}}
+
+主协程持续接受IO事件，如果IO事件并没有绑定任何已有协程，即不是某个RPC回调（绿色部分），那么向协程池内申请一个协程，并切换至其完成相关逻辑。
+
+如果此协程需要远程调用，则需要在发起RPC后让出CPU，切换至主协程。等待该RPC回调的IO事件（红色部分），此时主协程切换至绑定的对应协程，完成相关处理逻辑，并向协程池子归还协程。
+
+在此我们需要特别注意的是，在RPC调用触发的协程`resume`后，栈上固有信息可能已经被修改，此时需要我们手动甄别，小心使用。例如下面的代码中，`t`就会取到一个过期的值
+
+```cpp
+time_t getCurrentTime() {
+    time_t t = now();
+    RPC();      //yield
+                //resume
+    return t;   //stale
+}
+```
+
 # 最后
 
-至此，我们了解了libco核心部分的相关函数与执行过程。感谢你的阅读。如果你你有任何疑虑和感想，或发现本文有任何错误，请一定[让我知道](mailto:changliu0828@gmail.com)。
+至此，我们了解了libco显式切换部分的相关函数与执行过程，并讨论了协程池的使用。感谢你的阅读。如果你你有任何疑虑和感想，或发现本文有任何错误，请一定[让我知道](mailto:changliu0828@gmail.com)。
 
 # 参考
 
