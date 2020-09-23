@@ -18,6 +18,7 @@ tags:
 
 然而随着业务的发展，我们单位时间内接受的任务越来越多，(a)中的单进程单线程服务模式已经无法及时消费任务。为此，如下图(b)中所示，我们可以将功能较为独立，消耗资源较大的 `g()` 部分抽离为单独的进程。原进程使用异步方式 `call_g()` 调用`g()`，并注册回调函数 `g_callback()` 处理 `g()` 的返回。在编码时，我们需要将原有顺序的编程方式改为调用部分加回调部分的编程方式。
 
+{{< figure src="/image/libco-coroutine/server-model.svg" width="100%" caption="图1">}}
 {{< figure src="/image/libco-coroutine/server-model.png" width="100%" caption="图1">}}
 
 虽然异步的编程方式提高了系统的吞吐量，但如下图展示的那样，完整的顺序执行代码片段被分隔成了若干代码片段。在代码相对复杂，需要远程调用较多的时候，代码的可维护性急剧下降，我们称这种现象为**回调地狱(callback hell)**。
@@ -206,6 +207,10 @@ $L12-L19$将第二个参数所指`coctx_t`内的信息读取至寄存器，恢�
 $L21$的`ret`指令将`eip`，即函数`pfn`入口出栈，并跳转至`pfn`执行。至此，黄色的栈构造成为调用pfn之前的栈空间（结合图3红框中黄色部分对比）。之前提到的预留的`NULL`正式此时为ret指令准备的。
 
 {{< figure src="/image/libco-coroutine/coctx_swap.png" width="90%" caption="图5. coctx_swap上下文切换">}}
+
+# 对称与非对称协程
+
+# stackless与stackfull
 
 # 最后
 

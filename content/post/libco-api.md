@@ -14,22 +14,24 @@ tags:
 
 首先我们介绍一些libco中的三个核心结构体，下图1中描述了三者的关系，
 
-`coctx_t`保存协程切换时所需的上下文信息，详尽的说明请参考[libco源码笔记(1)协程与上下文切换](http://www.changliu.me/post/libco-coroutine/)，此处不再说明。
+## `coctx_t`
 
-`stCoRoutine_t`为协程主要结构体，包含单个协程所需一切信息，如协程启停状态，执行函数，上下文信息，共享栈信息等。
+保存协程切换时所需的上下文信息，详尽的说明请参考[libco源码笔记(1)协程与上下文切换](http://www.changliu.me/post/libco-coroutine/)，此处不再说明。
 
+## `stCoRoutine_t`
 
-`stCoRoutineEnv_t`为线程私有全局静态变量，包含全局协程环境信息，如协程调用栈，epoll句柄等。
+协程主要结构体，包含单个协程的全部信息，如协程启停状态，执行函数，上下文信息，共享栈信息等。
+
+## `stCoRoutineEnv_t`
 
 ```cpp
 static __thread stCoRoutineEnv_t* gCoEnvPerThread = NULL;   //协程运行环境 __thread:线程私有
 ```
 
-{{< figure src="/image/libco-coroutine/co-core-struct.png" width="100%" caption="图1. libco核心结构">}}
+线程私有全局静态变量，包含全局协程环境信息，如协程调用栈，epoll句柄等。其中`pCallStack`为当前线程中的协程调用栈，由于libco为非对称协程
 
-{{< figure src="/image/libco-coroutine/libco-uml.svg" width="100%" caption="图1. libco核心结构">}}
+{{< figure src="/image/libco-api/co-core-struct.svg" width="100%" caption="图1. libco核心结构">}}
 
-```
 
 # libco主要接口函数
 
