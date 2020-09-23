@@ -217,7 +217,7 @@ $L21$的`ret`指令将`eip`，即函数`pfn`入口出栈，并跳转至`pfn`执�
 
 在实际应用中，由于对称协程的维护成本更高，很难维护调用链，故而非对称协程使用的更为普遍。本文介绍的libco就是一种非对称协程。
 
-{{< figure src="/image/libco-coroutine/asymmetric-symmetric-co.png" width="90%" caption="图5. 非对称/对称协程">}}
+{{< figure src="/image/libco-coroutine/asymmetric-symmetric-co.png" width="100%" caption="图5. 非对称/对称协程">}}
 
 # 协程栈
 
