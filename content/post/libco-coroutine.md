@@ -8,7 +8,7 @@ tags:
   - libco
 ---
 
-本文结合libco总结协程相关的问题与解决方案。并附上我自己的[注释版本](https://github.com/changliu0828/libco)，建议配合阅读。
+本文结合微信高性能开源协程库[libco](https://github.com/Tencent/libco)，总结了协程相关的问题与解决方案。libco源码注释不多，这里附上我自己的[注释版本](https://github.com/changliu0828/libco)，建议配合阅读。此外，文中的代码及解释均运行于x86-32位下，64位下的情况略有不同，篇幅有限不再赘述。
 
 # 回调地狱
 
