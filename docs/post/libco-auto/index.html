@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>libco源码笔记(3)自动切换 | Chang Liu&#39;s Blog</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <script src="https://kit.fontawesome.com/a0e5d04d0b.js" crossorigin="anonymous"></script>
+
+
+  </head>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+      <li><a href="/">主页</a></li>
+      
+      <li><a href="/categories/">分类</a></li>
+      
+      <li><a href="/tags/">标签</a></li>
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h2><span class="title">libco源码笔记(3)自动切换</span></h2>
+
+<h3 class="date">2020/09/23</h3>
+</div>
+
+
+<aside class="toc">
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#自动切换的背景">自动切换的背景</a></li>
+    <li><a href="#超时管理">超时管理</a></li>
+    <li><a href="#poll">poll</a></li>
+    <li><a href="#co_eventloop">co_eventloop</a></li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
+</aside>
+
+
+
+<main>
+<p>在之前的文章<a href="http://www.changliu.me/post/libco-manual/">libco源码笔记(2)显示切换</a>中，我们介绍了libco提供的显示协程切换接口，并讨论了协程池的使用。本文讨论libco提供的自动切换相关函数接口。建议配合我自己的<a href="https://github.com/changliu0828/libco">注释版本</a>阅读本文。</p>
+<h1 id="自动切换的背景">自动切换的背景</h1>
+<p>李方源的libco分享$^{[2]}$中讲到，使用libco之前，微信的大多的网络通信使用同步IO接口。为了快速改造现有业务代码，libco已hook系统调用的形式，提供了协程基础上的<code>poll</code>，<code>read</code>，<code>write</code>等原语。利用协程的特性，原来阻塞的系统调用可以达到非阻塞的效果。</p>
+<h1 id="超时管理">超时管理</h1>
+<p>libco为了对统一网络IO，条件变量需要超时管理的事件，实现了基于时间轮(timeing-wheel)的超时管理器。在介绍其对系统调用的hook前，容我们先铺垫一些关于这个超时管理器的实现。</p>
+<figure>
+    <img src="/image/libco-auto/timing-wheel.png"
+         alt="图1. 超时管理" width="100%"/> <figcaption>
+            <p>图1. 超时管理</p>
+        </figcaption>
+</figure>
+
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#aaa;font-style:italic">/* 在时间轮中插入新项
+</span><span style="color:#aaa;font-style:italic"> * @param 
+</span><span style="color:#aaa;font-style:italic"> * apTimeout :时间轮结构
+</span><span style="color:#aaa;font-style:italic"> * apItem    :新的超时项
+</span><span style="color:#aaa;font-style:italic"> * allNow    :当前事件(timestamp in ms)
+</span><span style="color:#aaa;font-style:italic"> * @return   :0成功, else失败行数
+</span><span style="color:#aaa;font-style:italic"> */</span>
+<span style="color:#0aa">int</span> <span style="color:#0a0">AddTimeout</span>( stTimeout_t *apTimeout,stTimeoutItem_t *apItem ,<span style="color:#0aa">unsigned</span> <span style="color:#0aa">long</span> <span style="color:#0aa">long</span> allNow );
+<span style="color:#aaa;font-style:italic">/* 在时间轮中取出所有超时项
+</span><span style="color:#aaa;font-style:italic"> * @param 
+</span><span style="color:#aaa;font-style:italic"> * apTimeout:时间轮结构
+</span><span style="color:#aaa;font-style:italic"> * allNow   :当前时间(timestamp in ms)
+</span><span style="color:#aaa;font-style:italic"> * apResult :超时事件结果链表
+</span><span style="color:#aaa;font-style:italic"> */</span>
+<span style="color:#00a">inline</span> <span style="color:#0aa">void</span> <span style="color:#0a0">TakeAllTimeout</span>( stTimeout_t *apTimeout,<span style="color:#0aa">unsigned</span> <span style="color:#0aa">long</span> <span style="color:#0aa">long</span> allNow,stTimeoutItemLink_t *apResult );
+</code></pre></td></tr></table>
+</div>
+</div><h1 id="poll">poll</h1>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#00a">struct</span> <span style="color:#0a0;text-decoration:underline">pollfd</span> {
+  <span style="color:#0aa">int</span>   fd;         <span style="color:#aaa;font-style:italic">/* file descriptor */</span>
+  <span style="color:#0aa">short</span> events;     <span style="color:#aaa;font-style:italic">/* requested events */</span>
+  <span style="color:#0aa">short</span> revents;    <span style="color:#aaa;font-style:italic">/* returned events */</span>
+};
+<span style="color:#0aa">int</span> <span style="color:#0a0">poll</span>(<span style="color:#00a">struct</span> <span style="color:#0a0;text-decoration:underline">pollfd</span> *fds, nfds_t nfds, <span style="color:#0aa">int</span> timeout);
+</code></pre></td></tr></table>
+</div>
+</div><p>原始的<code>poll</code>函数以<code>pollfd</code>数组的形式传入fd以及关注的事件<code>events</code>(读写等)，并返回相应的时间于<code>revents</code>。此外<code>poll</code>支持毫秒级别的超时设置，当<code>timeout</code>设置为正整数或-1(永久)时，线程会阻塞于poll直到有对应事件发生或超时。</p>
+<p>libco所hook后的poll可以在IO协程阻塞时让出上下文，切换至主协程。下面是其实现。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#0aa">int</span> <span style="color:#0a0">poll</span>(<span style="color:#00a">struct</span> <span style="color:#0a0;text-decoration:underline">pollfd</span> fds[], nfds_t nfds, <span style="color:#0aa">int</span> timeout)
+{
+  HOOK_SYS_FUNC( poll );
+
+  <span style="color:#00a">if</span> (!co_is_enable_sys_hook() || timeout == <span style="color:#099">0</span>) {         <span style="color:#aaa;font-style:italic">//如果没开启hook系统调用或超时时间为0, 调用原生poll
+</span><span style="color:#aaa;font-style:italic"></span>    <span style="color:#00a">return</span> g_sys_poll_func(fds, nfds, timeout);
+  }
+    <span style="color:#aaa;font-style:italic">//合并fds中相同项
+</span><span style="color:#aaa;font-style:italic"></span>  pollfd *fds_merge = <span style="color:#0aa">NULL</span>;
+  nfds_t nfds_merge = <span style="color:#099">0</span>;
+  std::map&lt;<span style="color:#0aa">int</span>, <span style="color:#0aa">int</span>&gt; m;  <span style="color:#aaa;font-style:italic">// fd --&gt; idx
+</span><span style="color:#aaa;font-style:italic"></span>  std::map&lt;<span style="color:#0aa">int</span>, <span style="color:#0aa">int</span>&gt;::iterator it;
+  <span style="color:#00a">if</span> (nfds &gt; <span style="color:#099">1</span>) {
+    fds_merge = (pollfd *)malloc(<span style="color:#00a">sizeof</span>(pollfd) * nfds);    <span style="color:#aaa;font-style:italic">//分配nfds个，合并后可能会有多余的
+</span><span style="color:#aaa;font-style:italic"></span>    <span style="color:#00a">for</span> (size_t i = <span style="color:#099">0</span>; i &lt; nfds; i++) {
+      <span style="color:#00a">if</span> ((it = m.find(fds[i].fd)) == m.end()) { 
+        fds_merge[nfds_merge] = fds[i];
+        m[fds[i].fd] = nfds_merge;
+        nfds_merge++;
+      } <span style="color:#00a">else</span> {                                    <span style="color:#aaa;font-style:italic">//存在相同项
+</span><span style="color:#aaa;font-style:italic"></span>        <span style="color:#0aa">int</span> j = it-&gt;second;
+        fds_merge[j].events |= fds[i].events;   <span style="color:#aaa;font-style:italic">// merge in j slot
+</span><span style="color:#aaa;font-style:italic"></span>      }
+    }
+  }
+
+  <span style="color:#0aa">int</span> ret = <span style="color:#099">0</span>;
+  <span style="color:#00a">if</span> (nfds_merge == nfds || nfds == <span style="color:#099">1</span>) {              <span style="color:#aaa;font-style:italic">//没有合并过
+</span><span style="color:#aaa;font-style:italic"></span>    ret = co_poll_inner(co_get_epoll_ct(), fds, nfds, timeout, g_sys_poll_func);
+  } <span style="color:#00a">else</span> {
+    ret = co_poll_inner(co_get_epoll_ct(), fds_merge, nfds_merge, timeout,
+        g_sys_poll_func);
+    <span style="color:#00a">if</span> (ret &gt; <span style="color:#099">0</span>) {                                  <span style="color:#aaa;font-style:italic">//将合并的还原
+</span><span style="color:#aaa;font-style:italic"></span>      <span style="color:#00a">for</span> (size_t i = <span style="color:#099">0</span>; i &lt; nfds; i++) {
+        it = m.find(fds[i].fd);
+        <span style="color:#00a">if</span> (it != m.end()) {
+          <span style="color:#0aa">int</span> j = it-&gt;second;
+          fds[i].revents = fds_merge[j].revents &amp; fds[i].events;
+        }
+      }
+    }
+  }
+  free(fds_merge);
+  <span style="color:#00a">return</span> ret;
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>其中，主要部分代码是处理传入<code>pollfd</code>数组中相同fd的事件合并和还原。代码中的核心部分为<code>co_poll_inner</code>。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp">
+</code></pre></td></tr></table>
+</div>
+</div><h1 id="co_eventloop">co_eventloop</h1>
+<h1 id="参考">参考</h1>
+<ol>
+<li><a href="https://blog.csdn.net/weixin_43705457/article/details/106863859">libco源码分析，csdn</a></li>
+<li><a href="http://purecpp.org/purecpp/static/64a819e99584452aab70a7f9c307717f.pdf">libco分享，李方源</a></li>
+</ol>
+
+</main>
+
+<div class="post-comment">
+    
+</div>
+
+  <footer>
+  <script src="//yihui.name/js/math-code.js"></script>
+<script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+<script async src="//yihui.name/js/center-img.js"></script>
+
+  
+  <hr/>
+  © <a href="www.changliu.me">Chang Liu</a> 2020 | <a href="mailto:changliu0828@gmail.com">Contact</a>
+  
+  </footer>
+  </body>
+</html>
+
