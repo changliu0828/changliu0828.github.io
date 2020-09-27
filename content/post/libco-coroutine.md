@@ -28,6 +28,8 @@ tags:
 
 那么如何解决回调地狱，在保持异步执行的情况下，将支离破碎的代码段恢复成我们所熟悉的顺序执行呢？我们知道c/c++的程序执行时，运行现场的几乎全部信息都是通过栈帧(stack frame)和寄存器的保存的，如果我们在远程调用阻塞时，人为的将程序执行时的上下文保存，让出CPU，并在远程调用返回后加载上下文，就可以在一个函数栈中完成异步过程。我们称这种机制为**协程(coroutine)**。与熟悉的进程/线程切换类似，协程是用户自发的上下文切换和管理机制，所以也常被称为“用户态线程”。
 
+{{< figure src="/image/libco-coroutine/co-lib.png" width="90%" caption="图3. 协程库的职责">}}
+
 # 协程的上下文与切换
 
 那么需要我们手动保存和加载的运行时“上下文”都包含哪些内容呢？以下面的 `main` 函数调用 `sum` 函数为例，
@@ -105,7 +107,7 @@ $L24$行将`sum`的运算结果`eax`赋值给`c`。
 
 $L25$行将返回值`0`赋值给`eax`，完成整个过程。
 
-{{< figure src="/image/libco-coroutine/function-call-example.png" width="60%" caption="图3. sum.cpp函数栈">}}
+{{< figure src="/image/libco-coroutine/function-call-example.png" width="60%" caption="图4. sum.cpp函数栈">}}
 
 通过上面的分析我们不难发现，对于运行时的函数来讲，**参数、返回值地址、函数栈、寄存器**四个部分组成了运行时的全部信息，通过这些信息我们可以恢复任意函数的执行现场，我们称之为**协程的上下文(context)**。
 
@@ -158,7 +160,7 @@ int coctx_make(coctx_t* ctx, coctx_pfn_t pfn, const void* s, const void* s1) {
 
 经过`co_make`填充后的协程栈如下图4所示。其中与我们上文中提到的函数调用栈不同的是，在参数与返回值地址之前，空了4字节(图中NULL)，这为之后的上下文切换做下准备。
 
-{{< figure src="/image/libco-coroutine/co_make.png" width="60%" caption="图4. co_make初始化协程栈">}}
+{{< figure src="/image/libco-coroutine/co_make.png" width="60%" caption="图5. co_make初始化协程栈">}}
 
 ## `coctx_swap`上下文切换
 
@@ -195,7 +197,7 @@ coctx_swap:
   ret
 ```
 
-以下图5作为参照，调用`coctx_swap`前的栈如绿色所示，`call`指令将返回值地址压栈，
+以下图作为参照，调用`coctx_swap`前的栈如绿色所示，`call`指令将返回值地址压栈，
 
 $L3$时`esp`为图中位置，进入`coctx_swap`函数。
 
@@ -205,11 +207,11 @@ $L12-L19$将第二个参数所指`coctx_t`内的信息读取至寄存器，恢�
 
 $L21$的`ret`指令将`eip`，即函数`pfn`入口出栈，并跳转至`pfn`执行。至此，黄色的栈构造成为调用pfn之前的栈空间（结合图3红框中黄色部分对比）。之前提到的预留的`NULL`正式此时为ret指令准备的。
 
-{{< figure src="/image/libco-coroutine/coctx_swap.png" width="90%" caption="图5. coctx_swap上下文切换">}}
+{{< figure src="/image/libco-coroutine/coctx_swap.png" width="90%" caption="图6. coctx_swap上下文切换">}}
 
 # 对称与非对称协程
 
-上文我们了解了两个协程是如何进行上下文切换的。对于各个协程的调度方式，如下图5所示，主要分为对称协程(symmetric)与非对称协程(asymmetric)两种方式。
+上文我们了解了两个协程是如何进行上下文切换的。对于各个协程的调度方式，如下图所示，主要分为对称协程(symmetric)与非对称协程(asymmetric)两种方式。
 
 对称协程中，各个协程平等运行，调用`transfer`在各个协程之间自由切换跳转。
 
@@ -217,7 +219,7 @@ $L21$的`ret`指令将`eip`，即函数`pfn`入口出栈，并跳转至`pfn`执�
 
 在实际应用中，由于对称协程的维护成本更高，很难维护调用链，故而非对称协程使用的更为普遍。本文介绍的libco就是一种非对称协程。
 
-{{< figure src="/image/libco-coroutine/symmetric-asymmetric-co.png" width="100%" caption="图5. 对称/非对称协程">}}
+{{< figure src="/image/libco-coroutine/symmetric-asymmetric-co.png" width="100%" caption="图7. 对称/非对称协程">}}
 
 # 私有栈与共享栈
 

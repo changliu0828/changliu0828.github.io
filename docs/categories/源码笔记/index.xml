@@ -18,10 +18,13 @@
       
       <guid>http://changliu0828.github.io/post/libco-auto/</guid>
       <description>在之前的文章libco源码笔记(2)显示切换中，我们介绍了libco提供的显示协程切换接口，并讨论了协程池的使用。本文讨论libco提供的自动切换相关函数接口。建议配合我自己的注释版本阅读本文。
-自动切换的背景 李方源的libco分享$^{[2]}$中讲到，使用libco之前，微信的大多的网络通信使用同步IO接口。为了快速改造现有业务代码，libco已hook系统调用的形式，提供了协程基础上的poll，read，write等原语。利用协程的特性，原来阻塞的系统调用可以达到非阻塞的效果。
-超时管理 libco为了对统一网络IO，条件变量需要超时管理的事件，实现了基于时间轮(timeing-wheel)的超时管理器。在介绍其对系统调用的hook前，容我们先铺垫一些关于这个超时管理器的实现。
-  图1. 超时管理
-  1 2 3 4 5 6 7 8 9 10 11 12 13 14 15  /* 在时间轮中插入新项 * @param * apTimeout :时间轮结构 * apItem :新的超时项 * allNow :当前事件(timestamp in ms) * @return :0成功, else失败行数 */ int AddTimeout( stTimeout_t *apTimeout,stTimeoutItem_t *apItem ,unsigned long long allNow ); /* 在时间轮中取出所有超时项 * @param * apTimeout:时间轮结构 * allNow :当前时间(timestamp in ms) * apResult :超时事件结果链表 */ inline void TakeAllTimeout( stTimeout_t *apTimeout,unsigned long long allNow,stTimeoutItemLink_t *apResult );   poll 1 2 3 4 5 6  struct pollfd { int fd; /* file descriptor */ short events; /* requested events */ short revents; /* returned events */ }; int poll(struct pollfd *fds, nfds_t nfds, int timeout);   原始的poll函数以pollfd数组的形式传入fd以及关注的事件events(读写等)，并返回相应的时间于revents。此外poll支持毫秒级别的超时设置，当timeout设置为正整数或-1(永久)时，线程会阻塞于poll直到有对应事件发生或超时。</description>
+自动切换的背景 李方源的libco分享$^{[2]}$中讲到，使用libco之前，微信的大多的网络通信使用同步IO接口。为了快速改造现有业务代码，libco以hook系统调用的形式，提供了协程基础上的poll，read，write等原语。利用协程的特性，原来阻塞的系统调用可以达到非阻塞的效果。
+超时管理 libco为了对统一网络IO，条件变量需要超时管理的事件，实现了基于时间轮(timing wheel)的超时管理器。在介绍其对系统调用的hook前，容我们先铺垫一些关于这个超时管理器的实现。
+如下图1所示，时间轮为图中深红色的轮状数组，数组的每一个单元我们称为一个槽(slot)。单个slot里存储一定时间内注册的事件列表（图中黄色链表）。在libco中，单个slot的精度为1毫秒，整个时间轮由60000个slot组成，对应的整个时间轮覆盖60秒的时间。libco中关于时间轮的接口函数主要是下面两个。
+AddTimeout通过计算当前时间allNow与时间轮起始时间ullStart的差，插入对应slot。特别注意的是当超时事件大于轮长60秒时，libco将这种事件插入到“最后一个&amp;quot;slot。
+TakeAllTimeout通过计算当前时间allNow与时间轮起始时间ullStart的差，得出对应slot，遍历从起始索引ullStartIdx所指slot到其的所有slot中的超时项并移动到结果链表apResult中。
+至此，我们看到通过时间轮，libco得以高效的完成对超时事件的管理。
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15  /* 在时间轮中插入新项 * @param * apTimeout :时间轮结构 * apItem :新的超时项 * allNow :当前事件(timestamp in ms) * @return :0成功, else失败行数 */ int AddTimeout( stTimeout_t *apTimeout,stTimeoutItem_t *apItem ,unsigned long long allNow ); /* 在时间轮中取出所有超时项 * @param * apTimeout:时间轮结构 * allNow :当前时间(timestamp in ms) * apResult :超时事件结果链表 */ inline void TakeAllTimeout( stTimeout_t *apTimeout,unsigned long long allNow,stTimeoutItemLink_t *apResult );     图1.</description>
     </item>
     
     <item>
@@ -53,7 +56,8 @@ stCoRoutineEnv_t 1  static __thread stCoRoutineEnv_t* gCoEnvPerThread = NULL; //
   虽然异步的编程方式提高了系统的吞吐量，减少了耦合度，但如下图展示的那样，完整的顺序执行代码片段被分隔成了若干代码片段。在代码相对复杂，需要远程调用较多的时候，代码的可维护性急剧下降，我们称这种现象为回调地狱(callback hell)。
   图2. 同步与异步编程下的代码片段
   何为协程 那么如何解决回调地狱，在保持异步执行的情况下，将支离破碎的代码段恢复成我们所熟悉的顺序执行呢？我们知道c/c++的程序执行时，运行现场的几乎全部信息都是通过栈帧(stack frame)和寄存器的保存的，如果我们在远程调用阻塞时，人为的将程序执行时的上下文保存，让出CPU，并在远程调用返回后加载上下文，就可以在一个函数栈中完成异步过程。我们称这种机制为协程(coroutine)。与熟悉的进程/线程切换类似，协程是用户自发的上下文切换和管理机制，所以也常被称为“用户态线程”。
-协程的上下文与切换 那么需要我们手动保存和加载的运行时“上下文”都包含哪些内容呢？以下面的 main 函数调用 sum 函数为例，
+  图3. 协程库的职责
+  协程的上下文与切换 那么需要我们手动保存和加载的运行时“上下文”都包含哪些内容呢？以下面的 main 函数调用 sum 函数为例，
 1 2 3 4 5 6 7 8 9 10  int sum(int x, int y) { int z = x + y; return z; } int main() { int a = 1; int b = 10; int c = sum(a, b); return 0; }   在使用  g++ -m32 -s sum.</description>
     </item>
     
