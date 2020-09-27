@@ -311,11 +311,11 @@ int co_poll_inner( stCoEpoll_t *ctx,struct pollfd fds[], nfds_t nfds, int timeou
 }
 ```
 
-代码中前半部分将fd封装为
+代码中前半部分将fd封装为 
 
 # 最后
 
-至此，我们介绍libco源码中自动切换的部分代码。感谢你的阅读。如果你你有任何疑虑和感想，或发现本文有任何错误，请一定[让我知道](mailto:changliu0828@gmail.com)。
+至此，我们介绍libco源码中自动切换的部分代码。感谢你的阅读。如果你有任何疑虑和感想，或发现本文有任何错误，请一定[让我知道](mailto:changliu0828@gmail.com)。
 
 
 # 参考
