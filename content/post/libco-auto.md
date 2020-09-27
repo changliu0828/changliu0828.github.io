@@ -311,7 +311,22 @@ int co_poll_inner( stCoEpoll_t *ctx,struct pollfd fds[], nfds_t nfds, int timeou
 }
 ```
 
-代码中前半部分将fd封装为 
+如下图所示，代码中前半部分$L1-L90$将fd封装为`stPoll_t`，并将其加入到时间轮超时管理器中。
+
+$L91$让出CPU，切出当前循环。
+
+$L92$之后是在事件循环触发后，调用与`L41`中的`OnPollProcessEvent`切换至对应协程后，进行对应的清理工作。
+
+```cpp
+void OnPollProcessEvent( stTimeoutItem_t * ap )
+{
+  stCoRoutine_t *co = (stCoRoutine_t*)ap->pArg;
+  co_resume( co );
+}
+```
+
+{{< figure src="/image/libco-auto/stCoEpoll_t.png" width="90%" caption="图2. poll相关结构">}}
+
 
 # 最后
 

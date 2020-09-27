@@ -592,7 +592,32 @@
 }
 </code></pre></td></tr></table>
 </div>
-</div><p>代码中前半部分将fd封装为</p>
+</div><p>如下图所示，代码中前半部分$L1-L90$将fd封装为<code>stPoll_t</code>，并将其加入到时间轮超时管理器中。</p>
+<p>$L91$让出CPU，切出当前循环。</p>
+<p>$L92$之后是在事件循环触发后，调用与<code>L41</code>中的<code>OnPollProcessEvent</code>切换至对应协程后，进行对应的清理工作。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#0aa">void</span> <span style="color:#0a0">OnPollProcessEvent</span>( stTimeoutItem_t * ap )
+{
+  stCoRoutine_t *co = (stCoRoutine_t*)ap-&gt;pArg;
+  co_resume( co );
+}
+</code></pre></td></tr></table>
+</div>
+</div><figure>
+    <img src="/image/libco-auto/stCoEpoll_t.png"
+         alt="图2. poll相关结构" width="90%"/> <figcaption>
+            <p>图2. poll相关结构</p>
+        </figcaption>
+</figure>
+
 <h1 id="最后">最后</h1>
 <p>至此，我们介绍libco源码中自动切换的部分代码。感谢你的阅读。如果你有任何疑虑和感想，或发现本文有任何错误，请一定<a href="mailto:changliu0828@gmail.com">让我知道</a>。</p>
 <h1 id="参考">参考</h1>
