@@ -10,6 +10,8 @@ tags:
 
 [Edsger W. Dijkstra](https://en.wikipedia.org/wiki/Edsger_W._Dijkstra)于1965年发表文章[Solution of a Problem in Concurrent Programming Control](https://www.di.ens.fr/~pouzet/cours/systeme/bib/dijkstra.pdf)，引出并发系统下的互斥(mutual exclusion)问题，自此开辟了分布式计算领域。Dijkstra在文中给出了基于共享存储原子性访问的解决方案只有十多行代码，但阅读起来较难以理解。在查阅若干资料后，总结了一种较为直观的解释方法，记录于此。
 
+<!--more-->
+
 # 问题
 
 考虑N个节点(进程)，每个都在运行一个无限循环的程序。每轮循环当中都存在一个临界区(critical section)。我们需要设计算法控制多个计算机中，同时只有一台可以进入其临界区，并需要满足下列条件，

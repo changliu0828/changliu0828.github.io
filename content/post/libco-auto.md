@@ -10,6 +10,7 @@ tags:
 
 在之前的文章[libco源码笔记(2)显示切换](http://www.changliu.me/post/libco-manual/)中，我们介绍了libco提供的显示协程切换接口，并讨论了协程池的使用。本文讨论libco提供的自动切换相关函数接口。建议配合我自己的[注释版本](https://github.com/changliu0828/libco)阅读本文。
 
+<!--more-->
 
 # 自动切换的背景
 

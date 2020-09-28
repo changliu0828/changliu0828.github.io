@@ -8,11 +8,10 @@ tags:
   - Bakery Algorithm 
 ---
 
-# Dijkstra互斥问题
-
 在之前的[文章](http://www.changliu.me/post/solution-of-a-problem-in-concurrent-programming-control/)中提到过Dijkstra于1965年提出的基于共享存储的临界区互斥访问问题。Dijkstra提出了基于对内存单元的原子性读写实现的方案。
-
 然而，Lamport指出Dijkstra的方案会因为节点在临界区内失效而导致系统死锁。在其于1974年发表的文章[A New Solution of Dijkstra's Concurrent Programming Problem](https://lamport.azurewebsites.net/pubs/bakery.pdf)中，Lamport提出了完全基于软件实现的解决方案，被称为“面包店算法”。
+
+<!--more-->
 
 # 面包店算法
 

@@ -17,10 +17,8 @@
       <pubDate>Sat, 05 Sep 2020 18:40:23 +0800</pubDate>
       
       <guid>http://changliu0828.github.io/post/a-new-solution-of-dijkstras-concurrent-programming-problem/</guid>
-      <description>Dijkstra互斥问题 在之前的文章中提到过Dijkstra于1965年提出的基于共享存储的临界区互斥访问问题。Dijkstra提出了基于对内存单元的原子性读写实现的方案。
-然而，Lamport指出Dijkstra的方案会因为节点在临界区内失效而导致系统死锁。在其于1974年发表的文章A New Solution of Dijkstra&amp;rsquo;s Concurrent Programming Problem中，Lamport提出了完全基于软件实现的解决方案，被称为“面包店算法”。
-面包店算法 ”面包店算法&amp;quot;模拟面包店内取号服务的模式，实现了先来先服务的的互斥访问。我们有如下说明，
- 如果不同节点对同一内存单元并发读写，只有写会正确执行，读可能会读到不确定值。 节点失效时，其立即跳转至其非临界区并挂起。其后一段时间内读取其内存会返回不确定值，最终所有的读会返回0。 使用初始值为0的两个数组choosing[1:N] 和 number[1:N]，其中N为节点数量。 number[i] 的取值没有上限。 代码中 maximum 函数读到各个变量的值的顺序没有要求。 代码 L3 中的比较运算 (a,b)&amp;lt;(c,d) 可以视为 if a &amp;lt; c or if a = c and b &amp;lt; d。  1 2 3 4 5 6 7 8 9 10 11 12 13 14  begin integer j; L1: choosing[i] := 1; number[i] := 1 + maximum(number[1], ... , number[N]); choosing[i] := 0; for j = 1 step 1 until N do begin L2: if choosing[j] !</description>
+      <description>&lt;p&gt;在之前的&lt;a href=&#34;http://www.changliu.me/post/solution-of-a-problem-in-concurrent-programming-control/&#34;&gt;文章&lt;/a&gt;中提到过Dijkstra于1965年提出的基于共享存储的临界区互斥访问问题。Dijkstra提出了基于对内存单元的原子性读写实现的方案。
+然而，Lamport指出Dijkstra的方案会因为节点在临界区内失效而导致系统死锁。在其于1974年发表的文章&lt;a href=&#34;https://lamport.azurewebsites.net/pubs/bakery.pdf&#34;&gt;A New Solution of Dijkstra&amp;rsquo;s Concurrent Programming Problem&lt;/a&gt;中，Lamport提出了完全基于软件实现的解决方案，被称为“面包店算法”。&lt;/p&gt;</description>
     </item>
     
   </channel>

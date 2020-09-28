@@ -10,6 +10,8 @@ tags:
 
 在之前的文章[libco源码笔记(1)协程与上下文切换](http://www.changliu.me/post/libco-coroutine/)中，我们介绍了协程的基本概念以及libco中的上下文切换核心代码。本文libco提供的显式切换相关函数接口，与此相对的通过hook系统调用提供的自动切换机制在后续文章中介绍。建议配合我自己的[注释版本](https://github.com/changliu0828/libco)阅读本文。
 
+<!--more-->
+
 # libco主要结构体
 
 首先我们介绍一些libco中的三个核心结构体，下图1中描述了三者的关系，

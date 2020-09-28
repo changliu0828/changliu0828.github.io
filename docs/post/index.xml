@@ -17,14 +17,7 @@
       <pubDate>Wed, 23 Sep 2020 16:28:30 +0800</pubDate>
       
       <guid>http://changliu0828.github.io/post/libco-auto/</guid>
-      <description>在之前的文章libco源码笔记(2)显示切换中，我们介绍了libco提供的显示协程切换接口，并讨论了协程池的使用。本文讨论libco提供的自动切换相关函数接口。建议配合我自己的注释版本阅读本文。
-自动切换的背景 李方源的libco分享$^{[2]}$中讲到，使用libco之前，微信的大多的网络通信使用同步IO接口。为了快速改造现有业务代码，libco以hook系统调用的形式，提供了协程基础上的poll，read，write等原语。利用协程的特性，原来阻塞的系统调用可以达到非阻塞的效果。
-超时管理 libco为了对统一网络IO，条件变量需要超时管理的事件，实现了基于时间轮(timing wheel)的超时管理器。在介绍其对系统调用的hook前，容我们先铺垫一些关于这个超时管理器的实现。
-如下图1所示，时间轮为图中深红色的轮状数组，数组的每一个单元我们称为一个槽(slot)。单个slot里存储一定时间内注册的事件列表（图中黄色链表）。在libco中，单个slot的精度为1毫秒，整个时间轮由60000个slot组成，对应的整个时间轮覆盖60秒的时间。libco中关于时间轮的接口函数主要是下面两个。
-AddTimeout通过计算当前时间allNow与时间轮起始时间ullStart的差，插入对应slot。特别注意的是当超时事件大于轮长60秒时，libco将这种事件插入到“最后一个&amp;quot;slot。
-TakeAllTimeout通过计算当前时间allNow与时间轮起始时间ullStart的差，得出对应slot，遍历从起始索引ullStartIdx所指slot到其的所有slot中的超时项并移动到结果链表apResult中。
-至此，我们看到通过时间轮，libco得以高效的完成对超时事件的管理。
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15  /* 在时间轮中插入新项 * @param * apTimeout :时间轮结构 * apItem :新的超时项 * allNow :当前事件(timestamp in ms) * @return :0成功, else失败行数 */ int AddTimeout( stTimeout_t *apTimeout,stTimeoutItem_t *apItem ,unsigned long long allNow ); /* 在时间轮中取出所有超时项 * @param * apTimeout:时间轮结构 * allNow :当前时间(timestamp in ms) * apResult :超时事件结果链表 */ inline void TakeAllTimeout( stTimeout_t *apTimeout,unsigned long long allNow,stTimeoutItemLink_t *apResult );     图1.</description>
+      <description>&lt;p&gt;在之前的文章&lt;a href=&#34;http://www.changliu.me/post/libco-manual/&#34;&gt;libco源码笔记(2)显示切换&lt;/a&gt;中，我们介绍了libco提供的显示协程切换接口，并讨论了协程池的使用。本文讨论libco提供的自动切换相关函数接口。建议配合我自己的&lt;a href=&#34;https://github.com/changliu0828/libco&#34;&gt;注释版本&lt;/a&gt;阅读本文。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -33,13 +26,7 @@ TakeAllTimeout通过计算当前时间allNow与时间轮起始时间ullStart的�
       <pubDate>Tue, 22 Sep 2020 16:18:17 +0800</pubDate>
       
       <guid>http://changliu0828.github.io/post/libco-manual/</guid>
-      <description>在之前的文章libco源码笔记(1)协程与上下文切换中，我们介绍了协程的基本概念以及libco中的上下文切换核心代码。本文libco提供的显式切换相关函数接口，与此相对的通过hook系统调用提供的自动切换机制在后续文章中介绍。建议配合我自己的注释版本阅读本文。
-libco主要结构体 首先我们介绍一些libco中的三个核心结构体，下图1中描述了三者的关系，
-coctx_t 保存协程切换时所需的上下文信息，详尽的说明请参考libco源码笔记(1)协程与上下文切换，此处不再说明。
-stCoRoutine_t 协程主要结构体，包含单个协程的全部信息，如协程启停状态，执行函数，上下文信息，共享栈信息等。
-stCoRoutineEnv_t 1  static __thread stCoRoutineEnv_t* gCoEnvPerThread = NULL; //协程运行环境 __thread:线程私有   线程私有全局静态变量，包含全局协程环境信息，如协程调用栈，epoll句柄等。其中pCallStack为当前线程中的协程调用栈，由于libco为非对称协程
-  图1. libco核心结构
-  libco显示切换函数 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18  /* 协程创建接口 * @param * co :协程主结构体二级指针 * attr :协程可配置属性, 包括栈大小、共享栈地址 * pfn :协程调用函数 * arg :协程调用函数参数 * @return :0 */ int co_create( stCoRoutine_t **ppco,const stCoRoutineAttr_t *attr,pfn_co_routine_t pfn,void *arg ) { if( !</description>
+      <description>&lt;p&gt;在之前的文章&lt;a href=&#34;http://www.changliu.me/post/libco-coroutine/&#34;&gt;libco源码笔记(1)协程与上下文切换&lt;/a&gt;中，我们介绍了协程的基本概念以及libco中的上下文切换核心代码。本文libco提供的显式切换相关函数接口，与此相对的通过hook系统调用提供的自动切换机制在后续文章中介绍。建议配合我自己的&lt;a href=&#34;https://github.com/changliu0828/libco&#34;&gt;注释版本&lt;/a&gt;阅读本文。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -48,17 +35,7 @@ stCoRoutineEnv_t 1  static __thread stCoRoutineEnv_t* gCoEnvPerThread = NULL; //
       <pubDate>Fri, 11 Sep 2020 15:08:21 +0800</pubDate>
       
       <guid>http://changliu0828.github.io/post/libco-coroutine/</guid>
-      <description>本文结合微信高性能开源协程库libco，总结了协程相关的问题与解决方案。libco源码注释不多，这里附上我自己的注释版本，建议配合阅读。此外，文中的代码及解释均运行于x86-32位下，64位下的情况略有不同，篇幅有限不再赘述。
-回调地狱 在正式开始探讨正题之前，容我们简单回顾下协程之所以产生的原因。
-起初，如下图1(a)中所示，我们的系统中有源源不断的任务(图中task)需要处理。为此我们编写了一个服务端程序。这个程序以单进程方式运行(图中process)，并不断获取任务（图中loop）。对于获取到的每个任务，调用处理函数 f() 完成具体处理逻辑。特别的，对于函数 f() 来讲，代码片段 g() 消耗了比较长的时间。但尽管如此，系统外部任务的产生频率还是比 f() 的运行时间低，即整个系统对任务的消费能力高于任务的生产能力，此时我们的服务运转正常。
-然而随着业务的发展，我们单位时间内接受的任务越来越多，(a)中的单进程服务模式已经无法及时消费任务。为此，如下图(b)中所示，我们可以将功能较为独立，消耗资源较大的 g() 部分抽离为单独的进程。原进程使用异步远程调用方式 call_g() 调用g()，并注册回调函数 g_callback() 处理 g() 的返回。在编码时，我们需要将原有顺序的编程方式改为调用部分加回调部分的编程方式。
-  图1
-  虽然异步的编程方式提高了系统的吞吐量，减少了耦合度，但如下图展示的那样，完整的顺序执行代码片段被分隔成了若干代码片段。在代码相对复杂，需要远程调用较多的时候，代码的可维护性急剧下降，我们称这种现象为回调地狱(callback hell)。
-  图2. 同步与异步编程下的代码片段
-  何为协程 那么如何解决回调地狱，在保持异步执行的情况下，将支离破碎的代码段恢复成我们所熟悉的顺序执行呢？我们知道c/c++的程序执行时，运行现场的几乎全部信息都是通过栈帧(stack frame)和寄存器的保存的，如果我们在远程调用阻塞时，人为的将程序执行时的上下文保存，让出CPU，并在远程调用返回后加载上下文，就可以在一个函数栈中完成异步过程。我们称这种机制为协程(coroutine)。与熟悉的进程/线程切换类似，协程是用户自发的上下文切换和管理机制，所以也常被称为“用户态线程”。
-  图3. 协程库的职责
-  协程的上下文与切换 那么需要我们手动保存和加载的运行时“上下文”都包含哪些内容呢？以下面的 main 函数调用 sum 函数为例，
-1 2 3 4 5 6 7 8 9 10  int sum(int x, int y) { int z = x + y; return z; } int main() { int a = 1; int b = 10; int c = sum(a, b); return 0; }   在使用  g++ -m32 -s sum.</description>
+      <description>&lt;p&gt;本文结合微信高性能开源协程库&lt;a href=&#34;https://github.com/Tencent/libco&#34;&gt;libco&lt;/a&gt;，总结了协程相关的问题与解决方案。libco源码注释不多，这里附上我自己的&lt;a href=&#34;https://github.com/changliu0828/libco&#34;&gt;注释版本&lt;/a&gt;，建议配合阅读。此外，文中的代码及解释均运行于x86-32位下，64位下的情况略有不同，篇幅有限不再赘述。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -67,10 +44,8 @@ stCoRoutineEnv_t 1  static __thread stCoRoutineEnv_t* gCoEnvPerThread = NULL; //
       <pubDate>Sat, 05 Sep 2020 18:40:23 +0800</pubDate>
       
       <guid>http://changliu0828.github.io/post/a-new-solution-of-dijkstras-concurrent-programming-problem/</guid>
-      <description>Dijkstra互斥问题 在之前的文章中提到过Dijkstra于1965年提出的基于共享存储的临界区互斥访问问题。Dijkstra提出了基于对内存单元的原子性读写实现的方案。
-然而，Lamport指出Dijkstra的方案会因为节点在临界区内失效而导致系统死锁。在其于1974年发表的文章A New Solution of Dijkstra&amp;rsquo;s Concurrent Programming Problem中，Lamport提出了完全基于软件实现的解决方案，被称为“面包店算法”。
-面包店算法 ”面包店算法&amp;quot;模拟面包店内取号服务的模式，实现了先来先服务的的互斥访问。我们有如下说明，
- 如果不同节点对同一内存单元并发读写，只有写会正确执行，读可能会读到不确定值。 节点失效时，其立即跳转至其非临界区并挂起。其后一段时间内读取其内存会返回不确定值，最终所有的读会返回0。 使用初始值为0的两个数组choosing[1:N] 和 number[1:N]，其中N为节点数量。 number[i] 的取值没有上限。 代码中 maximum 函数读到各个变量的值的顺序没有要求。 代码 L3 中的比较运算 (a,b)&amp;lt;(c,d) 可以视为 if a &amp;lt; c or if a = c and b &amp;lt; d。  1 2 3 4 5 6 7 8 9 10 11 12 13 14  begin integer j; L1: choosing[i] := 1; number[i] := 1 + maximum(number[1], ... , number[N]); choosing[i] := 0; for j = 1 step 1 until N do begin L2: if choosing[j] !</description>
+      <description>&lt;p&gt;在之前的&lt;a href=&#34;http://www.changliu.me/post/solution-of-a-problem-in-concurrent-programming-control/&#34;&gt;文章&lt;/a&gt;中提到过Dijkstra于1965年提出的基于共享存储的临界区互斥访问问题。Dijkstra提出了基于对内存单元的原子性读写实现的方案。
+然而，Lamport指出Dijkstra的方案会因为节点在临界区内失效而导致系统死锁。在其于1974年发表的文章&lt;a href=&#34;https://lamport.azurewebsites.net/pubs/bakery.pdf&#34;&gt;A New Solution of Dijkstra&amp;rsquo;s Concurrent Programming Problem&lt;/a&gt;中，Lamport提出了完全基于软件实现的解决方案，被称为“面包店算法”。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -79,13 +54,7 @@ stCoRoutineEnv_t 1  static __thread stCoRoutineEnv_t* gCoEnvPerThread = NULL; //
       <pubDate>Thu, 03 Sep 2020 19:48:34 +0800</pubDate>
       
       <guid>http://changliu0828.github.io/post/solution-of-a-problem-in-concurrent-programming-control/</guid>
-      <description>Edsger W. Dijkstra于1965年发表文章Solution of a Problem in Concurrent Programming Control，引出并发系统下的互斥(mutual exclusion)问题，自此开辟了分布式计算领域。Dijkstra在文中给出了基于共享存储原子性访问的解决方案只有十多行代码，但阅读起来较难以理解。在查阅若干资料后，总结了一种较为直观的解释方法，记录于此。
-问题 考虑N个节点(进程)，每个都在运行一个无限循环的程序。每轮循环当中都存在一个临界区(critical section)。我们需要设计算法控制多个计算机中，同时只有一台可以进入其临界区，并需要满足下列条件，
- 所有的节点是对称(symmetrical)的，即我们不能引入类似于“1号节点优先于2号节点”的静态优先级配置。 各个节点的运行速度可能不同，同一个节点在不同时刻的运行速度也可能不同。 任意节点在临界区外停止运行，不应引起系统的死锁。 如果多个节点想要访问临界区，必须在有限时间内决策出哪个节点优先访问。  各个节点之间可以通过共享存储(common store)通信，共享存储提供以字(word)为单位的原子性读写。
-当今现在，在基于共享内存通信的单机多进程上，我们可以很方便的使用基于TAS(Test&amp;amp;Set)或的CAS(Copy&amp;amp;Swap)实现的互斥锁mutex来实现临界区互斥访问。然而，在只有对内存单元原子读写的条件下，如何完成互斥访问呢？Dijkstra给出了他的解法。
-解法与证明 在共享存储上，Dijkstra使用了两个长度为N的布尔数组，和一个整数。
-1  Boolean array b, c[1:N]; integer K   其中，$k$ 满足 $1 \leqslant k \leqslant N$，$b[i]$ 和 $c[i]$ 只被节点 $i$ 修改，且初始值为true。对于第 $i$ 个节点$(1 \leqslant i \leqslant N)$，执行下面的代码
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16  integer j Li0: b[i] := false Li1: if k !</description>
+      <description>&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Edsger_W._Dijkstra&#34;&gt;Edsger W. Dijkstra&lt;/a&gt;于1965年发表文章&lt;a href=&#34;https://www.di.ens.fr/~pouzet/cours/systeme/bib/dijkstra.pdf&#34;&gt;Solution of a Problem in Concurrent Programming Control&lt;/a&gt;，引出并发系统下的互斥(mutual exclusion)问题，自此开辟了分布式计算领域。Dijkstra在文中给出了基于共享存储原子性访问的解决方案只有十多行代码，但阅读起来较难以理解。在查阅若干资料后，总结了一种较为直观的解释方法，记录于此。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -94,10 +63,7 @@ stCoRoutineEnv_t 1  static __thread stCoRoutineEnv_t* gCoEnvPerThread = NULL; //
       <pubDate>Fri, 28 Aug 2020 00:00:00 +0000</pubDate>
       
       <guid>http://changliu0828.github.io/post/cpp11-features/</guid>
-      <description>c++自1985年发行以来，以其高效、灵活的特性成为最成功的高级编程语言之一。2011年，距离上一个c++标准c++03发布的8年后，c++委员会吸取了现代编程语言的若干特性，发布了新的c++11标准，使得古朴的c++得以跻身现代编程语言的行列。本文挑选了部分c++11引入的新特性进行说明，阐述其缘由，使用以及注意事项。如果你需要查看完整特性与编译器支持请参考这里$^{[1]}$。
-部分特性与示例 1. 右值引用(rvalue references) 在C语言中，左值与右值原是极为简单的概念——凡是既可以出现在赋值语句两边的称为左值，只能出现在赋值语句右边的称为右值。例如下面的代码中，a和b是左值，42和a + b是右值。如果右值出现在赋值语句左边，则会如你所熟知的一样，产生一个编译错误。
-1 2 3 4  int a = 42; int b = a; 42 = a + b; //compile error a + b = a; //compile error   另一种区分左值与右值的方法是，左值是哪些能被&amp;amp;操作符取到地址的值，右值是通过左值运算得出的临时结果或一些字面常量。把上面的代码编译成汇编语言就一目了然了。下面的代码中左值a和b都在栈上分配了空间，分别是-4(%rbp)和-8(%rbp)，而右值42是一个立即数，a + b则是addl的两个参数。
-1 2 3 4 5  movl $42, -4(%rbp) ;int a = 42; movl -4(%rbp), %eax movl %eax, -8(%rbp) movl -8(%rbp), %eax ;int b = a addl %eax, -4(rbp); ;a = a + b   谈过了“右值”，我们来讨论下”引用“。使用引用是提高程序运行效率的常用手段，而在只提供左值引用的C++03时代，在某些场景下的引用并没有那么“好用”。例如下面的代码中，由于无法传递右值Data()的引用，我们不得不使用3行丑陋的代码来完成一个简单的工作。</description>
+      <description>&lt;p&gt;c++自1985年发行以来，以其高效、灵活的特性成为最成功的高级编程语言之一。2011年，距离上一个c++标准c++03发布的8年后，c++委员会吸取了现代编程语言的若干特性，发布了新的c++11标准，使得古朴的c++得以跻身现代编程语言的行列。本文挑选了部分c++11引入的新特性进行说明，阐述其缘由，使用以及注意事项。如果你需要查看完整特性与编译器支持请参考&lt;a href=&#34;https://en.cppreference.com/w/cpp/compiler_support&#34;&gt;这里$^{[1]}$&lt;/a&gt;。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -106,20 +72,7 @@ stCoRoutineEnv_t 1  static __thread stCoRoutineEnv_t* gCoEnvPerThread = NULL; //
       <pubDate>Thu, 14 Feb 2019 00:00:00 +0000</pubDate>
       
       <guid>http://changliu0828.github.io/post/friend-recommendation/</guid>
-      <description>玩过类似魔兽世界这种网游的朋友，应该都有组团刷副本的经历。然而有些时候我们会发现，虽然加了很多游戏好友，但自己想刷副本时经常会缺“奶”，缺“T”。能不能根据玩家在线的时间段推荐相似的好友呢？
-思考 推荐的本质是排序。给用户推荐用户，就是要找到一个相似度评估函数来衡量两个用户的在线时间段是否相似。然后把目标玩家与所有玩家的相似度一一计算，并按序推荐。
-在介绍我的做法前，列三个遇到的问题：
- 如何表示每个玩家的在线习惯，新玩家怎么办？ 如何设计相似度评估函数？ 系统如何支持千万以上量级的玩家？  如果是你，如何解决上面的问题。
-我的做法 在线向量 使用一个24维向量描述用户24个小时的在线习惯，每一维表示玩家在此时刻内在线的期望，称为在线向量。
-如下图，假设我们有一个玩家A，他某天在12:00到13:00之间上线了一会，晚上在20点过也上线了一会。
-我们如果粗略的认为A在12:00-13:00，20:00-21:00之间和的在线概率为1，就得到了下图中的在线向量。
-如果从长期来看，将一段时间内每天的时间向量取平均值，就得到了这段时间的平均向量。下图中的绿色方框是玩家A经过四天的观察得到的在线向量，即
-$$ V_A = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0.25, 0, 0, 0, 0, 0, 0, 0.25, 0, 0, 0) $$
-使用在线向量，我们可以粗略刻画玩家在某个时间点在线的期望。此外，在线向量的norm也在一定程度上刻画了用户的活跃情况，对于频繁上线的用户，其在线向量的norm会大于不常上线的用户。我们可以利用这点，尽量给推荐更加活跃的用户作为好友。
-在线相似度 对于两个用户之间的在线相似度，我们使用两人的在线向量的內积表示。这个內积可以理解为两个玩家在一天中“相遇”的期望。
-$$ S_{AB} = V_A \cdot V_B $$
-假设我们有3个用户，
-$$ \begin{aligned} V_A &amp;amp; = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.</description>
+      <description>&lt;p&gt;玩过类似魔兽世界这种网游的朋友，应该都有组团刷副本的经历。然而有些时候我们会发现，虽然加了很多游戏好友，但自己想刷副本时经常会缺“奶”，缺“T”。能不能根据玩家在线的时间段偏好推荐相似的好友呢？&lt;/p&gt;</description>
     </item>
     
   </channel>
