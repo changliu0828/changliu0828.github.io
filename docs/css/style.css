@@ -76,10 +76,10 @@ a:visited {
  }
 
 .post-list a { text-decoration: none; }
-.post-list ul { list-style-type: none; }
+ul.post-list { list-style-type: none; }
 .categories {
   display: inline-block;
-  width: 7.0em;
+  width: 5.0em;
 }
 
 
