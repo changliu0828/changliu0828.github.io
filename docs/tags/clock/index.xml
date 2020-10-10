@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Clock on Chang Liu&#39;s Blog</title>
+    <link>http://changliu0828.github.io/tags/clock/</link>
+    <description>Recent content in Clock on Chang Liu&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 06 Oct 2020 10:02:07 +0800</lastBuildDate>
+    
+	<atom:link href="http://changliu0828.github.io/tags/clock/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Time, Clocks, and the Ordering of Events in a Distributed System, Lamport, 1978</title>
+      <link>http://changliu0828.github.io/post/time-clocks-and-the-ordering-of-events-in-a-distributed-system/</link>
+      <pubDate>Tue, 06 Oct 2020 10:02:07 +0800</pubDate>
+      
+      <guid>http://changliu0828.github.io/post/time-clocks-and-the-ordering-of-events-in-a-distributed-system/</guid>
+      <description>&lt;p&gt;本篇文章总结学习了Lamport于1978年发表在 &lt;em&gt;Communications of the ACM&lt;/em&gt; 上的论文 &lt;a href=&#34;https://lamport.azurewebsites.net/pubs/time-clocks.pdf&#34;&gt;Time, Clocks, and the Ordering of Events in a Distributed System&lt;/a&gt;，文章获得了2000年 &lt;em&gt;PODC Influential Paper Award&lt;/em&gt;，2007年 &lt;em&gt;SIGOPS Hall of Fame Award&lt;/em&gt;。在这篇文章中，Lamport提出了“Happen Before”，“逻辑时钟”，“物理时钟”，“State Machine”等重要概念与算法，是分布式领域不能不读的经典论文。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

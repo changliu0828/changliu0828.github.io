@@ -75,7 +75,7 @@ a:visited {
   padding-left: 12px;
  }
 
-.post-list a { text-decoration: none; }
+li.post-list a { text-decoration: none; }
 ul.post-list { list-style-type: none; }
 .categories {
   display: inline-block;

@@ -4,12 +4,47 @@
   
   <url>
     <loc>http://changliu0828.github.io/categories/</loc>
-    <lastmod>2020-09-23T16:28:30+08:00</lastmod>
+    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://changliu0828.github.io/tags/clock/</loc>
+    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://changliu0828.github.io/tags/distributed-system/</loc>
+    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
   </url>
   
   <url>
     <loc>http://changliu0828.github.io/</loc>
-    <lastmod>2020-09-23T16:28:30+08:00</lastmod>
+    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://changliu0828.github.io/post/</loc>
+    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://changliu0828.github.io/tags/state-machine/</loc>
+    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://changliu0828.github.io/tags/</loc>
+    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://changliu0828.github.io/post/time-clocks-and-the-ordering-of-events-in-a-distributed-system/</loc>
+    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://changliu0828.github.io/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/</loc>
+    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
   </url>
   
   <url>
@@ -19,16 +54,6 @@
   
   <url>
     <loc>http://changliu0828.github.io/post/libco-auto/</loc>
-    <lastmod>2020-09-23T16:28:30+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://changliu0828.github.io/post/</loc>
-    <lastmod>2020-09-23T16:28:30+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://changliu0828.github.io/tags/</loc>
     <lastmod>2020-09-23T16:28:30+08:00</lastmod>
   </url>
   
@@ -49,16 +74,6 @@
   
   <url>
     <loc>http://changliu0828.github.io/tags/bakery-algorithm/</loc>
-    <lastmod>2020-09-05T18:40:23+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://changliu0828.github.io/tags/distributed-system/</loc>
-    <lastmod>2020-09-05T18:40:23+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://changliu0828.github.io/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/</loc>
     <lastmod>2020-09-05T18:40:23+08:00</lastmod>
   </url>
   
