@@ -97,11 +97,26 @@
 <h2 id="全序关系的应用互斥访问">全序关系的应用：互斥访问</h2>
 <p>TODO</p>
 <h1 id="6-物理时钟">6. 物理时钟</h1>
-<p><strong>Strong Clock Condition.</strong> 对于 $\varphi$ 中的任意事件 $a, b$：如果$ a \rightarrow b$ 则 $C \langle a \rangle &lt; C \langle b \rangle$。</p>
+<p>在全序关系下，由于系统之外的一些事件，使得我们有时会遇到一些反常行为。</p>
+<p>考虑下面这种情况，某人在节点A上触发了事件A，随后打电话给另一个人。此人接到电话后在节点B上触发事件B。由于整个系统对于系统之外的事件“打电话”毫不知情，则有可能出现 $B \Rightarrow A$ 的情况。</p>
+<p>我们可以定义系统中的所有事件集合为 $\varphi$。系统中的事件与外部事件的合集为 $\underline{\varphi}$。$\underline{\rightarrow}$ 为 $\underline{\varphi}$ 上的 happened before 关系。在上面的例子中，我们有 $A \underline{\rightarrow} B$，但 $A \nrightarrow B$。</p>
+<p>显然这里没有任何算法能够不利用任何外部信息，仅凭 $\varphi$ 就能保证 $\underline{\rightarrow}$ 关系。在此，为了能够实现$A \rightarrow B$，有如下两种方法，</p>
+<ol>
+<li>显式的引入外部信息。例如 $A$ 事件发生的逻辑时间为 $T_A$，在接到电话后，显式的告知系统 $B$ 的发生时间应大于 $T_A$</li>
+<li>构建满足如下<strong>Strong Clock Condition</strong> 的系统。</li>
+</ol>
+<p><strong>Strong Clock Condition.</strong> 对于 $\varphi$ 中的任意事件 $a, b$：如果$ a \underline{\rightarrow} b$ 则 $C \langle a \rangle &lt; C \langle b \rangle$。</p>
+<p>下面介绍如何实现满足<strong>Strong Clock Condition</strong>的物理时钟实现。</p>
+<p>令 $C_i(t)$ 表示时钟 $C_i$ 在物理时间 $t$ 读到的读数。在此，为了数学上的方便起见，我们认为 $C_i$ 对于 $t$ 是连续可微的。则 $dC_i(t)/dt$ 表示时钟在时间 $t$ 运行的速率。</p>
+<p>为了使 $C_i$ 的运行速率与真实物理时钟相近，对于所有的 $t$，我们必须使得 $dC_i(t)/dt \approx 1$。更严谨的将，我们需要满足如下条件，</p>
 <ul>
-<li>PC1. 存在一个常数 $\kappa \ll 1$，对于所有的 $i$ 有 $| dC_i(t)/dt - 1 | &lt; \kappa$。对于典型的晶控时钟(crystal controlled clock)，$\kappa \leq 10^{-6}$。</li>
-<li>PC2. 对于所有的 $i, j$：$|C_i(t) - C_j(t)| &lt; \varepsilon$。</li>
+<li>PC1. 存在一个常数 $\kappa \ll 1$，对于所有的 $i$ ，有 $| dC_i(t)/dt - 1 | &lt; \kappa$。对于典型的晶控时钟(crystal controlled clock)，$\kappa \leq 10^{-6}$。</li>
+<li>PC2. 对于所有的 $i, j$：$|C_i(t) - C_j(t)| &lt; \varepsilon$。直观来讲即 Fig2 中的单条 tick line 高度差不能太大。</li>
 </ul>
+<p>对于 PC2，由于累计误差（accumulated error）的存在，两个完全独立运行的时钟必然会误差越来越大。因此我们需要某种算法对不同节点上的时钟进行对时。</p>
+<p>首先我们假设我们的时钟满足<strong>Clock Condition.</strong>，这样我们只需考虑在 $\underline{\varphi}$ 中 $a \nrightarrow b$ 的情况。不难发现，此时 $a$ 与 $b$ 必然发生在不同的节点上。</p>
+<p>令 $\mu$ 为节点间通信的最小时延，即事件 $a$ 发生于物理时间 $t$，事件 $b$ 发生于另一节点。若 $ a\underline{\rightarrow} b$，则 $b$ 最早发生于 $t + \mu$。我们通常可以用节点间的最小距离除以光速来设定$\mu$。</p>
+<p>为了避免上文中的反常情况，我们必须保证对于任意的 $i, j$ 和 $t$ ，有 $C_i(t + \mu) - C_j(t) &gt; 0$。</p>
 </main>
 
 <div class="post-comment">
