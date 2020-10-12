@@ -36,7 +36,7 @@ tags:
 
 为了直观的描述这一关系，Lamport引入了如下图所示的“时空图”，图中垂直方向自下而上为时间发生顺序，水平方向为空间上的不同节点。图中的黑色圆点表示事件，波浪线箭头表示通信消息。我们可以找到图中的若干对“happened before”关系，例如 $p_1 \rightarrow r_4$，其由 $ p_1 \rightarrow q_2 \rightarrow q_4 \rightarrow r_3 \rightarrow r_4$ 推导而来。
 
-图中亦有若干并发的事件，例如 $p_3$ 和 $q_3$，虽然在图中我们能看到 $p_3$ 发生的物理时间(physical time)晚于 $q_3$，但对于 $p,q$ 两节点来说他们并不知道谁先谁后。
+图中亦有若干并发的事件，例如 $p_3$ 和 $q_3$，虽然在图中我们能看到 $p_3$ 发生的物理时间(physical time)晚于 $q_3$，但对于 $P, Q$ 两节点来说他们并不知道谁先谁后。
 
 {{< figure src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/Fig1.jpg" width="70%" caption="图1. space-time diagram">}}
 
