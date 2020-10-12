@@ -2,6 +2,7 @@
 title: c++11特性简介 
 date: '2020-08-28'
 toc : true
+comments: true
 categories:
   - 总结 
 tags:
