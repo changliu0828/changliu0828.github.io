@@ -120,9 +120,11 @@
 <p>对于一条发送于物理时间 $t$ ，接收于物理时间 $t'$ 的消息 $m$。我们定义消息的总延迟（total delay） $ v_m = t&rsquo; - t$。接受消息的节点当然不知道 $v_m$ 的值，但是它可以知道这条消息的最小延迟（minimum delay） $\mu_m$， $\mu_m \geq 0$ 且 $\mu_m \leq v_m$。我们称 $\xi_m = v_m - \mu_m$ 为不可预测延迟（unpredictable delay）。</p>
 <p>对于单个节点上的物理时钟算法的实现，我们有如下的实现规则（Implementation rule）：</p>
 <ul>
-<li>IR1. 每个节点 $P_i$ 在物理时间 $t$ 没有收到任何消息，那么 $C_i$ 在 $t$ 时刻可微，且 $dC_i(t)/dt &gt; 0$。</li>
-<li>IR2. (a) 如果 $P_i$ 在物理时间 $t$ 发送消息 $m$ ，那么 $m$ 中包含时间戳 $T_m=C_i(t) $。(b) 当在物理时间 $t'$ 收到消息 $m$ 时，进程 $P_j$ 设置当前时间 $C_j(t&rsquo;) = max(C_j(t&rsquo; - 0), T_m + \mu_m)$。</li>
+<li>IR1&rsquo;. 每个节点 $P_i$ 在物理时间 $t$ 没有收到任何消息，那么 $C_i$ 在 $t$ 时刻可微，且 $dC_i(t)/dt &gt; 0$。</li>
+<li>IR2&rsquo;. (a) 如果 $P_i$ 在物理时间 $t$ 发送消息 $m$ ，那么 $m$ 中包含时间戳 $T_m=C_i(t) $。(b) 当在物理时间 $t'$ 收到消息 $m$ 时，进程 $P_j$ 设置当前时间 $C_j(t&rsquo;) = max(C_j(t&rsquo; - 0), T_m + \mu_m)$。其中$C_j(t&rsquo; - 0) = \underset{\delta \rightarrow 0}{ lim }C_j(t&rsquo;-|\delta|)$。</li>
 </ul>
+<p>为了满足如上的实现规则，我们令 $\tau$ 为两个节点之间的最低通信间隔，即对于任意时间 $t$ 到 $t + \tau$，$P_i$ 至少应该发送一条消息给 $P_j$。</p>
+<p>定理：假设系统为一个遵循IR1&rsquo;.和IR2&rsquo;.，且直径为 $d$ 的强连通图。对于任意的消息 $m$，总有$\mu_m \leq \mu$，其中$\mu$ 为某个特定常数。 (a) PC1 总是成立。 (b) 存在常数 $\tau$ 和 $\xi$，系统中每条边上，每$\tau$秒，就会转发一条不可预测延迟最大为 $\xi$ 的消息。则PC2. 满足于，对于所有的 $t\gtrapprox t_0 + \tau d$，$\epsilon \approx d(2\kappa\tau + \xi)$，假设$\mu + \xi \ll \tau$。</p>
 </main>
 
 <div class="post-comment">
