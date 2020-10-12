@@ -58,7 +58,7 @@ tags:
 
 {{< figure src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/Fig3.png" width="70%" caption="图3">}}
 
-对于单个节点上的函数`C`的实现，我们有如下的实现规则（Implementation rule）：
+对于单个节点上的逻辑时钟算法的实现，我们有如下的实现规则（Implementation rule）：
 
 + IR1. 每个节点 $P_i$ 在任意连续的两个事件之间都要增加 $C_i$ 。
 + IR2. (a) 如果事件 $a$ 表示节点 $P_i$ 发送消息 $m$ ，那么 $m$ 中包含时间戳 $T_m=C_i \langle a \rangle $。(b) 当收到消息 $m$ 时，进程 $P_j$ 设置当前时间 $C_j$ 为 $ C_j'$，使得 $C_j' >= C_j$ 且 $C_j' > Tm$ 。
@@ -100,12 +100,19 @@ TODO
 
 
  + PC1. 存在一个常数 $\kappa \ll 1$，对于所有的 $i$ ，有 $| dC_i(t)/dt - 1 | < \kappa$。对于典型的晶控时钟(crystal controlled clock)，$\kappa \leq 10^{-6}$。
- + PC2. 对于所有的 $i, j$：$|C_i(t) - C_j(t)| < \varepsilon$。直观来讲即 Fig2 中的单条 tick line 高度差不能太大。 
+ + PC2. 对于所有的 $i, j$：$|C_i(t) - C_j(t)| < \epsilon$。直观来讲即 Fig2 中的单条 tick line 高度差不能太大。 
 
 对于 PC2，由于累计误差（accumulated error）的存在，两个完全独立运行的时钟必然会误差越来越大。因此我们需要某种算法对不同节点上的时钟进行对时。
 
 首先我们假设我们的时钟满足**Clock Condition.**，这样我们只需考虑在 $\underline{\varphi}$ 中 $a \nrightarrow b$ 的情况。不难发现，此时 $a$ 与 $b$ 必然发生在不同的节点上。
 
-令 $\mu$ 为节点间通信的最小时延，即事件 $a$ 发生于物理时间 $t$，事件 $b$ 发生于另一节点。若 $ a\underline{\rightarrow} b$，则 $b$ 最早发生于 $t + \mu$。我们通常可以用节点间的最小距离除以光速来设定$\mu$。
+令 $\mu$ 小于节点间的最小通信时延。即事件 $a$ 发生于物理时间 $t$，事件 $b$ 发生于另一节点。若 $ a\underline{\rightarrow} b$，则 $b$ 最早发生于 $t + \mu$。通常我们可以设定 $\mu$ 为节点间的最小距离除以光速。
 
-为了避免上文中的反常情况，我们必须保证对于任意的 $i, j$ 和 $t$ ，有 $C_i(t + \mu) - C_j(t) > 0$。 
+为了避免上文中的反常情况，我们必须保证对于任意的 $i, j$ 和 $t$ ，有 $C_i(t + \mu) - C_j(t) > 0$。通过PC1. 我们有 $C_i(t + \mu) - C_j(t) > (1- \kappa)\mu$。结合PC2. 我们可以推导出如果 $\epsilon/(1 - \kappa) \leq \mu$， 则能够保证 $C_i(t + \mu) - C_j(t) > 0$，从而保证**Strong Clock Condition**。
+
+对于一条发送于物理时间 $t$ ，接收于物理时间 $t'$ 的消息 $m$。我们定义消息的总延迟（total delay） $ v_m = t' - t$。接受消息的节点当然不知道 $v_m$ 的值，但是它可以知道这条消息的最小延迟（minimum delay） $\mu_m$， $\mu_m \geq 0$ 且 $\mu_m \leq v_m$。我们称 $\xi_m = v_m - \mu_m$ 为不可预测延迟（unpredictable delay）。
+
+对于单个节点上的物理时钟算法的实现，我们有如下的实现规则（Implementation rule）：
+
++ IR1. 每个节点 $P_i$ 在物理时间 $t$ 没有收到任何消息，那么 $C_i$ 在 $t$ 时刻可微，且 $dC_i(t)/dt > 0$。
++ IR2. (a) 如果 $P_i$ 在物理时间 $t$ 发送消息 $m$ ，那么 $m$ 中包含时间戳 $T_m=C_i(t) $。(b) 当在物理时间 $t'$ 收到消息 $m$ 时，进程 $P_j$ 设置当前时间 $C_j(t') = max(C_j(t' - 0), T_m + \mu_m)$。
