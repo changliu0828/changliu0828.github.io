@@ -1,8 +1,9 @@
 ---
 title: "Time, Clocks, and the Ordering of Events in a Distributed System, Lamport, 1978"
 date: 2020-10-06T10:02:07+08:00
+toc: true
 categories:
-  - 论文笔记 
+  - 论文笔记
 tags:
   - Distributed System 
   - Clock
@@ -73,11 +74,10 @@ tags:
 
 这里由 **Clock Condition.** 我们可以看到，凡是满足偏序关系$\rightarrow$的，一定也满足全序关系$\Rightarrow$。
 
-## 全序关系的应用：互斥访问
-
-TODO
 
 # 6. 物理时钟
+
+## 6.1 系统之外
 
 在全序关系下，由于系统之外的一些事件，使得我们有时会遇到一些反常行为。
 
@@ -85,14 +85,16 @@ TODO
 
 我们可以定义系统中的所有事件集合为 $\varphi$。系统中的事件与外部事件的合集为 $\underline{\varphi}$。$\underline{\rightarrow}$ 为 $\underline{\varphi}$ 上的 happened before 关系。在上面的例子中，我们有 $A \underline{\rightarrow} B$，但 $A \nrightarrow B$。
 
-显然这里没有任何算法能够不利用任何外部信息，仅凭 $\varphi$ 就能保证 $\underline{\rightarrow}$ 关系。在此，为了能够实现$A \rightarrow B$，有如下两种方法，
+显然没有任何算法能够不利用外部信息，仅凭 $\varphi$ 就能保证 $\underline{\rightarrow}$ 关系。在此，为了能够确保$A \rightarrow B$，有如下两种方案，
 
-1. 显式的引入外部信息。例如 $A$ 事件发生的逻辑时间为 $T_A$，在接到电话后，显式的告知系统 $B$ 的发生时间应大于 $T_A$
+1. 显式的引入外部信息。例如 $A$ 事件发生的逻辑时间为 $T_A$，在接到电话后，显式的告知系统 $B$ 的发生时间应大于 $T_A$。
 2. 构建满足如下**Strong Clock Condition** 的系统。
 
 **Strong Clock Condition.** 对于 $\varphi$ 中的任意事件 $a, b$：如果$ a \underline{\rightarrow} b$ 则 $C \langle a \rangle < C \langle b \rangle$。
 
-下面介绍如何实现满足**Strong Clock Condition**的物理时钟实现。
+显然相较于方案1，**Strong Clock Condition**才是我们希望的方案。下面具体介绍如何实现满足**Strong Clock Condition**的物理时钟。
+
+## 6.2 物理时钟实现
 
 令 $C_i(t)$ 表示时钟 $C_i$ 在物理时间 $t$ 读到的读数。在此，为了数学上的方便起见，我们认为 $C_i$ 对于 $t$ 是连续可微的。则 $dC_i(t)/dt$ 表示时钟在时间 $t$ 运行的速率。
 
@@ -119,4 +121,10 @@ TODO
 
 为了满足如上的实现规则，我们令 $\tau$ 为两个节点之间的最低通信间隔，即对于任意时间 $t$ 到 $t + \tau$，$P_i$ 至少应该发送一条消息给 $P_j$。
 
-定理：假设系统为一个遵循IR1'.和IR2'.，且直径为 $d$ 的强连通图。对于任意的消息 $m$，总有$\mu_m \leq \mu$，其中$\mu$ 为某个特定常数。 (a) PC1 总是成立。 (b) 存在常数 $\tau$ 和 $\xi$，系统中每条边上，每$\tau$秒，就会转发一条不可预测延迟最大为 $\xi$ 的消息。则PC2. 满足于，对于所有的 $t\gtrapprox t_0 + \tau d$，$\epsilon \approx d(2\kappa\tau + \xi)$，假设$\mu + \xi \ll \tau$。
+**定理**：假设系统为一个遵循IR1'.和IR2'.，且直径为 $d$ 的强连通图。对于任意的消息 $m$，总有$\mu_m \leq \mu$，其中$\mu$ 为某个特定常数。 (a) PC1 总是成立。 (b) 存在常数 $\tau$ 和 $\xi$，系统中每条边上，每$\tau$秒，就会转发一条不可预测延迟最大为 $\xi$ 的消息。则PC2. 满足于，对于所有的 $t\gtrapprox t_0 + \tau d$，$\epsilon \approx d(2\kappa\tau + \xi)$，假设$\mu + \xi \ll \tau$。其证明见于[附录7.2](#72物理时钟定理证明)。
+
+# 7.附录
+
+## 7.1 全序关系的应用：互斥访问
+
+## 7.2 物理时钟定理证明

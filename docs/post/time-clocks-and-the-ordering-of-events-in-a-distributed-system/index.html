@@ -32,6 +32,30 @@
 </div>
 
 
+<aside class="toc">
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-时间是什么">1. 时间是什么</a></li>
+    <li><a href="#2-分布式系统">2. 分布式系统</a></li>
+    <li><a href="#3-happened-before-偏序关系">3. Happened Before 偏序关系</a></li>
+    <li><a href="#4-逻辑时钟">4. 逻辑时钟</a></li>
+    <li><a href="#5-全序关系">5. 全序关系</a></li>
+    <li><a href="#6-物理时钟">6. 物理时钟</a>
+      <ul>
+        <li><a href="#61-系统之外">6.1 系统之外</a></li>
+        <li><a href="#62-物理时钟实现">6.2 物理时钟实现</a></li>
+      </ul>
+    </li>
+    <li><a href="#7附录">7.附录</a>
+      <ul>
+        <li><a href="#71-全序关系的应用互斥访问">7.1 全序关系的应用：互斥访问</a></li>
+        <li><a href="#72-物理时钟定理证明">7.2 物理时钟定理证明</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+</aside>
+
 
 
 <main>
@@ -94,19 +118,19 @@
 <p>利用逻辑时钟，我们对整个系统中的事件进行全序(total order)排序。我们首先根据事件发生的时间对其排序。对于发生时间相同的事件，我们引入对于所有节点的预定顺序 $\prec$，这里的顺序可以是根据 id 排序等任意规则。</p>
 <p>更加严谨的说，我们定义全序关系 $\Rightarrow$。对于发生在节点 $P_i$ 的事件 $a$ 和发生在节点 $P_j$ 的事件 $b$，有 $ a \Rightarrow b $ 当且仅当 (i) $ C_i \langle a \rangle &lt; C_j \langle b \rangle $ 或 (ii) $C_i \langle a \rangle = C_j \langle b \rangle$且$P_i \prec P_j$。</p>
 <p>这里由 <strong>Clock Condition.</strong> 我们可以看到，凡是满足偏序关系$\rightarrow$的，一定也满足全序关系$\Rightarrow$。</p>
-<h2 id="全序关系的应用互斥访问">全序关系的应用：互斥访问</h2>
-<p>TODO</p>
 <h1 id="6-物理时钟">6. 物理时钟</h1>
+<h2 id="61-系统之外">6.1 系统之外</h2>
 <p>在全序关系下，由于系统之外的一些事件，使得我们有时会遇到一些反常行为。</p>
 <p>考虑下面这种情况，某人在节点A上触发了事件A，随后打电话给另一个人。此人接到电话后在节点B上触发事件B。由于整个系统对于系统之外的事件“打电话”毫不知情，则有可能出现 $B \Rightarrow A$ 的情况。</p>
 <p>我们可以定义系统中的所有事件集合为 $\varphi$。系统中的事件与外部事件的合集为 $\underline{\varphi}$。$\underline{\rightarrow}$ 为 $\underline{\varphi}$ 上的 happened before 关系。在上面的例子中，我们有 $A \underline{\rightarrow} B$，但 $A \nrightarrow B$。</p>
-<p>显然这里没有任何算法能够不利用任何外部信息，仅凭 $\varphi$ 就能保证 $\underline{\rightarrow}$ 关系。在此，为了能够实现$A \rightarrow B$，有如下两种方法，</p>
+<p>显然没有任何算法能够不利用外部信息，仅凭 $\varphi$ 就能保证 $\underline{\rightarrow}$ 关系。在此，为了能够确保$A \rightarrow B$，有如下两种方案，</p>
 <ol>
-<li>显式的引入外部信息。例如 $A$ 事件发生的逻辑时间为 $T_A$，在接到电话后，显式的告知系统 $B$ 的发生时间应大于 $T_A$</li>
+<li>显式的引入外部信息。例如 $A$ 事件发生的逻辑时间为 $T_A$，在接到电话后，显式的告知系统 $B$ 的发生时间应大于 $T_A$。</li>
 <li>构建满足如下<strong>Strong Clock Condition</strong> 的系统。</li>
 </ol>
 <p><strong>Strong Clock Condition.</strong> 对于 $\varphi$ 中的任意事件 $a, b$：如果$ a \underline{\rightarrow} b$ 则 $C \langle a \rangle &lt; C \langle b \rangle$。</p>
-<p>下面介绍如何实现满足<strong>Strong Clock Condition</strong>的物理时钟实现。</p>
+<p>显然相较于方案1，<strong>Strong Clock Condition</strong>才是我们希望的方案。下面具体介绍如何实现满足<strong>Strong Clock Condition</strong>的物理时钟。</p>
+<h2 id="62-物理时钟实现">6.2 物理时钟实现</h2>
 <p>令 $C_i(t)$ 表示时钟 $C_i$ 在物理时间 $t$ 读到的读数。在此，为了数学上的方便起见，我们认为 $C_i$ 对于 $t$ 是连续可微的。则 $dC_i(t)/dt$ 表示时钟在时间 $t$ 运行的速率。</p>
 <p>为了使 $C_i$ 的运行速率与真实物理时钟相近，对于所有的 $t$，我们必须使得 $dC_i(t)/dt \approx 1$。更严谨的将，我们需要满足如下条件，</p>
 <ul>
@@ -124,7 +148,10 @@
 <li>IR2&rsquo;. (a) 如果 $P_i$ 在物理时间 $t$ 发送消息 $m$ ，那么 $m$ 中包含时间戳 $T_m=C_i(t) $。(b) 当在物理时间 $t'$ 收到消息 $m$ 时，进程 $P_j$ 设置当前时间 $C_j(t&rsquo;) = max(C_j(t&rsquo; - 0), T_m + \mu_m)$。其中$C_j(t&rsquo; - 0) = \underset{\delta \rightarrow 0}{ lim }C_j(t&rsquo;-|\delta|)$。</li>
 </ul>
 <p>为了满足如上的实现规则，我们令 $\tau$ 为两个节点之间的最低通信间隔，即对于任意时间 $t$ 到 $t + \tau$，$P_i$ 至少应该发送一条消息给 $P_j$。</p>
-<p>定理：假设系统为一个遵循IR1&rsquo;.和IR2&rsquo;.，且直径为 $d$ 的强连通图。对于任意的消息 $m$，总有$\mu_m \leq \mu$，其中$\mu$ 为某个特定常数。 (a) PC1 总是成立。 (b) 存在常数 $\tau$ 和 $\xi$，系统中每条边上，每$\tau$秒，就会转发一条不可预测延迟最大为 $\xi$ 的消息。则PC2. 满足于，对于所有的 $t\gtrapprox t_0 + \tau d$，$\epsilon \approx d(2\kappa\tau + \xi)$，假设$\mu + \xi \ll \tau$。</p>
+<p><strong>定理</strong>：假设系统为一个遵循IR1&rsquo;.和IR2&rsquo;.，且直径为 $d$ 的强连通图。对于任意的消息 $m$，总有$\mu_m \leq \mu$，其中$\mu$ 为某个特定常数。 (a) PC1 总是成立。 (b) 存在常数 $\tau$ 和 $\xi$，系统中每条边上，每$\tau$秒，就会转发一条不可预测延迟最大为 $\xi$ 的消息。则PC2. 满足于，对于所有的 $t\gtrapprox t_0 + \tau d$，$\epsilon \approx d(2\kappa\tau + \xi)$，假设$\mu + \xi \ll \tau$。其证明见于<a href="#72%E7%89%A9%E7%90%86%E6%97%B6%E9%92%9F%E5%AE%9A%E7%90%86%E8%AF%81%E6%98%8E">附录7.2</a>。</p>
+<h1 id="7附录">7.附录</h1>
+<h2 id="71-全序关系的应用互斥访问">7.1 全序关系的应用：互斥访问</h2>
+<h2 id="72-物理时钟定理证明">7.2 物理时钟定理证明</h2>
 </main>
 
 <div class="post-comment">
