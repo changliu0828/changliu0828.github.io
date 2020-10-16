@@ -86,7 +86,7 @@ tags:
 + IR1. 每个节点 $P_i$ 在任意连续的两个事件之间都要增加 $C_i$ 。
 + IR2. (a) 如果事件 $a$ 表示节点 $P_i$ 发送消息 $m$ ，那么 $m$ 中包含时间戳 $T_m=C_i \langle a \rangle $。(b) 当收到消息 $m$ 时，进程 $P_j$ 设置当前时间 $C_j$ 为 $ C_j'$，使得 $C_j' >= C_j$ 且 $C_j' > Tm$ 。
 
-在实践中，当我们收到某条消息后，应当先执行 IR2 修改时间，再执行具体事件，从而保证**Clock Condition**。
+在实践中，当我们收到某条消息后，应当先执行 IR2 修改时间，再执行具体事件，从而保证 **Clock Condition**。
 
 # 6. 全序关系
 
@@ -96,6 +96,7 @@ tags:
 
 这里由 **Clock Condition** 我们可以看到，凡是满足偏序关系 $\rightarrow$ 的，一定也满足全序关系 $\Rightarrow$。
 
+{{< figure src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/partial-total.png" width="40%" caption="图4. 偏序与全序关系">}}
 
 # 7. 物理时钟
 
@@ -120,10 +121,13 @@ tags:
 
 令 $C_i(t)$ 表示时钟 $C_i$ 在物理时间 $t$ 读到的读数。在此，为了数学上的方便起见，我们认为 $C_i$ 对于 $t$ 是连续可微的。则 $dC_i(t)/dt$ 表示时钟在时间 $t$ 运行的速率。
 
-为了使 $C_i$ 的运行速率与真实物理时钟相近，对于所有的 $t$，我们必须使得 $dC_i(t)/dt \approx 1$。更严谨的将，我们需要满足如下条件，
+为了使 $C_i$ 的运行速率与真实物理时钟相近，对于所有的 $t$，我们必须使得 $dC_i(t)/dt \approx 1$。更严谨的讲，我们需要满足如下条件，
 
 
  + PC1. 存在一个常数 $\kappa \ll 1$，对于所有的 $i$ ，有 $| dC_i(t)/dt - 1 | < \kappa$。对于典型的晶控时钟(crystal controlled clock)，$\kappa \leq 10^{-6}$。
+
+ 除了保证单个时钟运行准确之外，各个时钟之间的误差也不能太大。它们必须保证实时同步，进而确保对于所有的 $i,j,t$，有 $C_i(t) \approx C_j(t)$
+
  + PC2. 对于所有的 $i, j$：$|C_i(t) - C_j(t)| < \epsilon$。直观来讲即 Fig2 中的单条 tick line 高度差不能太大。 
 
 对于 PC2，由于累计误差（accumulated error）的存在，两个完全独立运行的时钟必然会误差越来越大。因此我们需要某种算法对不同节点上的时钟进行对时。
