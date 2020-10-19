@@ -44,13 +44,20 @@
     <li><a href="#7-物理时钟">7. 物理时钟</a>
       <ul>
         <li><a href="#71-系统之外">7.1 系统之外</a></li>
-        <li><a href="#72-物理时钟实现">7.2 物理时钟实现</a></li>
+        <li><a href="#72-物理时钟实现">7.2 物理时钟实现</a>
+          <ul>
+            <li><a href="#721-物理时钟算法">7.2.1 物理时钟算法</a></li>
+            <li><a href="#721-物理时钟算法证明">7.2.1 物理时钟算法证明</a></li>
+          </ul>
+        </li>
       </ul>
     </li>
     <li><a href="#8附录">8.附录</a>
       <ul>
         <li><a href="#81-全序关系的应用互斥访问">8.1 全序关系的应用：互斥访问</a></li>
-        <li><a href="#82-物理时钟定理证明">8.2 物理时钟定理证明</a></li>
+        <li><a href="#82-推导">8.2 推导</a></li>
+        <li><a href="#83-推导">8.3 推导</a></li>
+        <li><a href="#84-定理证明">8.4 定理证明</a></li>
       </ul>
     </li>
   </ul>
@@ -157,30 +164,44 @@
 <p><strong>Strong Clock Condition.</strong> 对于 $\varphi$ 中的任意事件 $a, b$：如果$ a \underline{\rightarrow} b$ 则 $C \langle a \rangle &lt; C \langle b \rangle$。</p>
 <p>显然相较于方案1，<strong>Strong Clock Condition</strong>才是我们希望的方案。下面具体介绍如何实现满足<strong>Strong Clock Condition</strong>的物理时钟。</p>
 <h2 id="72-物理时钟实现">7.2 物理时钟实现</h2>
-<p>令 $C_i(t)$ 表示时钟 $C_i$ 在物理时间 $t$ 读到的读数。在此，为了数学上的方便起见，我们认为 $C_i$ 对于 $t$ 是连续可微的。则 $dC_i(t)/dt$ 表示时钟在时间 $t$ 运行的速率。</p>
+<p>令 $C_i(t)$ 表示时钟 $C_i$ 在物理时间 $t$ 读到的读数。为了数学上的方便起见，在此我们认为 $C_i$ 对于 $t$ 是连续可微的，$dC_i(t)/dt$ 表示时钟在时间 $t$ 运行的速率。</p>
 <p>为了使 $C_i$ 的运行速率与真实物理时钟相近，对于所有的 $t$，我们必须使得 $dC_i(t)/dt \approx 1$。更严谨的讲，我们需要满足如下条件，</p>
 <ul>
 <li>PC1. 存在一个常数 $\kappa \ll 1$，对于所有的 $i$ ，有 $| dC_i(t)/dt - 1 | &lt; \kappa$。对于典型的晶控时钟(crystal controlled clock)，$\kappa \leq 10^{-6}$。</li>
 </ul>
-<p>除了保证单个时钟运行准确之外，各个时钟之间的误差也不能太大。它们必须保证实时同步，进而确保对于所有的 $i,j,t$，有 $C_i(t) \approx C_j(t)$</p>
+<p>除了保证单个时钟运行准确之外，各个时钟之间也需要保持同步，即所有的 $i,j,t$，有 $C_i(t) \approx C_j(t)$</p>
 <ul>
-<li>PC2. 对于所有的 $i, j$：$|C_i(t) - C_j(t)| &lt; \epsilon$。直观来讲即 Fig2 中的单条 tick line 高度差不能太大。</li>
+<li>PC2. 对于所有的 $i, j$：$|C_i(t) - C_j(t)| &lt; \epsilon$。直观来讲即图2中的单条 tick line 高度差不能太大。</li>
 </ul>
 <p>对于 PC2，由于累计误差（accumulated error）的存在，两个完全独立运行的时钟必然会误差越来越大。因此我们需要某种算法对不同节点上的时钟进行对时。</p>
 <p>首先我们假设我们的时钟满足<strong>Clock Condition.</strong>，这样我们只需考虑在 $\underline{\varphi}$ 中 $a \nrightarrow b$ 的情况。不难发现，此时 $a$ 与 $b$ 必然发生在不同的节点上。</p>
-<p>令 $\mu$ 小于节点间的最小通信时延。即事件 $a$ 发生于物理时间 $t$，事件 $b$ 发生于另一节点。若 $ a\underline{\rightarrow} b$，则 $b$ 最早发生于 $t + \mu$。通常我们可以设定 $\mu$ 为节点间的最小距离除以光速。</p>
-<p>为了避免上文中的反常情况，我们必须保证对于任意的 $i, j$ 和 $t$ ，有 $C_i(t + \mu) - C_j(t) &gt; 0$。通过PC1. 我们有 $C_i(t + \mu) - C_j(t) &gt; (1- \kappa)\mu$。结合PC2. 我们可以推导出如果 $\epsilon/(1 - \kappa) \leq \mu$， 则能够保证 $C_i(t + \mu) - C_j(t) &gt; 0$，从而保证<strong>Strong Clock Condition</strong>。</p>
+<p>令 $\mu$ 小于节点间的最小通信时延。即事件 $a$ 发生于物理时间 $t$，事件 $b$ 发生于另一节点，若 $ a\underline{\rightarrow} b$，则 $b$ 最早发生于 $t + \mu$。通常我们可以设定 $\mu$ 为节点间的最小距离除以光速。</p>
+<p>为了避免上文中的反常情况，我们必须保证对于任意的 $i, j$ 和 $t$ ，有 $C_i(t + \mu) - C_j(t) &gt; 0$。</p>
+<p>结合PC1. 有 $C_i(t + \mu) - C_i(t) &gt; (1- \kappa)\mu$，详细推导见附录8.2。</p>
+<p>结合PC2. 有需保证 $ -\epsilon \geq -\mu(1 - k)$，则需有 $\epsilon/(1 - \kappa) \leq \mu$，详细推导见附录8.3。</p>
+<h3 id="721-物理时钟算法">7.2.1 物理时钟算法</h3>
+<p>下面介绍具体的的算法实现，从而保证上面的公式与PC1，PC2成立。</p>
 <p>对于一条发送于物理时间 $t$ ，接收于物理时间 $t'$ 的消息 $m$。我们定义消息的总延迟（total delay） $ v_m = t&rsquo; - t$。接受消息的节点当然不知道 $v_m$ 的值，但是它可以知道这条消息的最小延迟（minimum delay） $\mu_m$， $\mu_m \geq 0$ 且 $\mu_m \leq v_m$。我们称 $\xi_m = v_m - \mu_m$ 为不可预测延迟（unpredictable delay）。</p>
-<p>对于单个节点上的物理时钟算法的实现，我们有如下的实现规则（Implementation rule）：</p>
+<p>对于单个节点上的物理时钟算法的实现，我们有如下的实现规则（Implementation Rule）：</p>
 <ul>
 <li>IR1&rsquo;. 每个节点 $P_i$ 在物理时间 $t$ 没有收到任何消息，那么 $C_i$ 在 $t$ 时刻可微，且 $dC_i(t)/dt &gt; 0$。</li>
 <li>IR2&rsquo;. (a) 如果 $P_i$ 在物理时间 $t$ 发送消息 $m$ ，那么 $m$ 中包含时间戳 $T_m=C_i(t) $。(b) 当在物理时间 $t'$ 收到消息 $m$ 时，进程 $P_j$ 设置当前时间 $C_j(t&rsquo;) = max(C_j(t&rsquo; - 0), T_m + \mu_m)$。其中$C_j(t&rsquo; - 0) = \underset{\delta \rightarrow 0}{ lim }C_j(t&rsquo;-|\delta|)$。</li>
 </ul>
-<p>为了满足如上的实现规则，我们令 $\tau$ 为两个节点之间的最低通信间隔，即对于任意时间 $t$ 到 $t + \tau$，$P_i$ 至少应该发送一条消息给 $P_j$。</p>
-<p><strong>定理</strong>：假设系统为一个遵循IR1&rsquo;.和IR2&rsquo;.，且直径为 $d$ 的强连通图。对于任意的消息 $m$，总有$\mu_m \leq \mu$，其中$\mu$ 为某个特定常数。 (a) PC1 总是成立。 (b) 存在常数 $\tau$ 和 $\xi$，系统中每条边上，每$\tau$秒，就会转发一条不可预测延迟最大为 $\xi$ 的消息。则PC2. 满足于，对于所有的 $t\gtrapprox t_0 + \tau d$，$\epsilon \approx d(2\kappa\tau + \xi)$，假设$\mu + \xi \ll \tau$。其证明见于<a href="#82%E7%89%A9%E7%90%86%E6%97%B6%E9%92%9F%E5%AE%9A%E7%90%86%E8%AF%81%E6%98%8E">附录8.2</a>。</p>
+<h3 id="721-物理时钟算法证明">7.2.1 物理时钟算法证明</h3>
+<p>现在我们证明上述的实现规则可以确保满足PC2。</p>
+<p>将整个系统视为一个有向图，图中的点为各个节点，$P_i$ 到 $P_j$ 的有向边视为其消息链路。</p>
+<p>令 $d$ 为有向图的直径(longest shortest path)。$\tau$ 为两个节点之间的最低通信间隔，即任意时间 $t$ 到 $t + \tau$之间，$P_i$ 至少应该发送一条消息给 $P_j$。下面的定理给出系统启动后，至多多久系统会达成满足PC2的时间同步。</p>
+<p><strong>定理</strong>：假设系统为一个遵循IR1&rsquo;和IR2&rsquo;，且直径为 $d$ 的强连通图。对于任意的消息 $m$，$\mu_m \leq \mu$，其中$\mu$ 为某个特定常数，且对于所有 $t \geq t_0$。 (a) PC1 总是成立。 (b) 存在常数 $\tau$ 和 $\xi$，在系统中每条边上，每$\tau$秒会转发一条不可预测延迟最大为 $\xi$ 的消息。则PC2 满足于，对于所有的 $t\gtrapprox t_0 + \tau d$，$\epsilon \approx d(2\kappa\tau + \xi)$，$\mu + \xi \ll \tau$。其证明见于附录8.4。</p>
 <h1 id="8附录">8.附录</h1>
 <h2 id="81-全序关系的应用互斥访问">8.1 全序关系的应用：互斥访问</h2>
-<h2 id="82-物理时钟定理证明">8.2 物理时钟定理证明</h2>
+<h2 id="82-推导">8.2 推导</h2>
+<p>由PC1有 $\left | \frac{C_i(t+\mu) - C_i(t)}{\mu}  &lt; \kappa \right |$，则有 $(1 - \kappa)\mu &lt; C_i(t+\mu) - C_i(t) &lt; (1 + \kappa)\mu$ 。</p>
+<h2 id="83-推导">8.3 推导</h2>
+<p>继8.2有，$C_i(t) + \mu(1-k) &lt; C_i(t+\mu)$。</p>
+<p>故要使得 $C_i(t + \mu) - C_j(t) &gt; 0$，则需有 $C_i(t) - C_j(t) &gt; -\mu(1 - k)$。</p>
+<p>由PC2有，$C_i(t) - C_j(t) &lt; -\epsilon$。</p>
+<p>故而得，$ \epsilon \leq \mu(1 - k)$。</p>
+<h2 id="84-定理证明">8.4 定理证明</h2>
 </main>
 
 <div class="post-comment">
