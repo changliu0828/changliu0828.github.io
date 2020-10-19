@@ -55,8 +55,8 @@
     <li><a href="#8附录">8.附录</a>
       <ul>
         <li><a href="#81-全序关系的应用互斥访问">8.1 全序关系的应用：互斥访问</a></li>
-        <li><a href="#82-推导">8.2 推导</a></li>
-        <li><a href="#83-推导">8.3 推导</a></li>
+        <li><a href="#82-pc1-推导">8.2 PC1 推导</a></li>
+        <li><a href="#83-pc2-推导">8.3 PC2 推导</a></li>
         <li><a href="#84-定理证明">8.4 定理证明</a></li>
       </ul>
     </li>
@@ -195,18 +195,18 @@
 <h1 id="8附录">8.附录</h1>
 <h2 id="81-全序关系的应用互斥访问">8.1 全序关系的应用：互斥访问</h2>
 <p>TBD</p>
-<h2 id="82-推导">8.2 推导</h2>
+<h2 id="82-pc1-推导">8.2 PC1 推导</h2>
 <p>由PC1有 $\left | \frac{C_i(t+\mu) - C_i(t)}{\mu}  &lt; \kappa \right |$，则有 $(1 - \kappa)\mu &lt; C_i(t+\mu) - C_i(t) &lt; (1 + \kappa)\mu$ 。</p>
-<h2 id="83-推导">8.3 推导</h2>
+<h2 id="83-pc2-推导">8.3 PC2 推导</h2>
 <p>继8.2有，$C_i(t) + \mu(1-k) &lt; C_i(t+\mu)$。</p>
 <p>故要使得 $C_i(t + \mu) - C_j(t) &gt; 0$，则需有 $C_i(t) - C_j(t) &gt; -\mu(1 - k)$。</p>
 <p>由PC2有，$C_i(t) - C_j(t) &lt; -\epsilon$。</p>
 <p>故而得，$ \epsilon \leq \mu(1 - k)$。</p>
 <h2 id="84-定理证明">8.4 定理证明</h2>
 <p>对于任意的 $i$ 和 $t$，我们定义 $C_i^t$ 为一时钟，在时刻 $t$ 设定为 $C_i$ 并与 $C_i$ 运行速率相同，且永不被重置。换言之，</p>
-<p>$$ C_i^t = C_i(t) + \int_{t}^{t&rsquo;}[dC_i(t)/dt]dt \qquad (1)$$</p>
+<p>$$ C_i^t = C_i(t) + \int_{t}^{t&rsquo;}[dC_i(t)/dt]dt \tag{1}$$</p>
 <p>对于所有的 $t&rsquo; \geq t$，我们注意到</p>
-<p>$$ C_i(t’) \geq C_i^t(t&rsquo;) \qquad (2)$$</p>
+<p>$$ C_i(t’) \geq C_i^t(t&rsquo;) \tag{2}$$</p>
 <p>假设 $P_1$ 在时刻 $t_1$ 发送消息给 $P_2$，$P_2$ 接收于时刻 $t_2$，不可预测延迟 $\leq \xi$，$ t_0 \leq t_1 \leq t_2$。则对于所有的 $t \geq t_2$，我们有</p>
 <p>$$
 \begin{aligned}
@@ -216,7 +216,22 @@
 &amp; \geq C_1(t_1) + (1 - \kappa)(t - t_1) - \xi
 \end{aligned}
 $$</p>
-<p>因此，利用这些假设，我们可以得到，对于所有的$t \geq t2$，有 $C_2^{t_2}(t) \geq C_1(t_1) + (1 - \kappa)(t - t_1) - \xi$。</p>
+<p>因此，利用这些假设，我们可以得到，对于所有的$t \geq t2$，有</p>
+<p>$$
+C_2^{t_2}(t) \geq C_1(t_1) + (1 - \kappa)(t - t_1) - \xi \tag{3}
+$$</p>
+<p>现在假设对于 $i =1,&hellip;,n$，我们有$ t_i \leq t_i&rsquo; &lt; t_{i+1}, t_0 \leq t_1$。在 $t_i'$时，$P_i$ 发送一条消息给 $P_{i+1}$，该消息接收于 $t_{i+1}$，其不可预测延迟小于 $\xi$。反复应用等式(3)可以得到，对于 $t \geq t_{n+1}$，</p>
+<p>$$
+C_{n+1}^{t_{n+1}} \geq C_1(t_1&rsquo;) + (1 - \kappa)(t - t_1&rsquo;) - n\xi \tag{4}
+$$</p>
+<p>通过 PC1, IR1&rsquo;, IR2&rsquo;我们可以推导出，</p>
+<p>$$
+C_1(t_1&rsquo;) \geq c_1(t_1) + (1 - \kappa)(t_1&rsquo; - t_1)
+$$</p>
+<p>再结合(4)与(2)，我们可以得到，对于 $t \geq t_{n+1}$，有</p>
+<p>$$
+C_{n+1}(t) \geq C_1(t_1) + (1 - \kappa)(t - t_1) - n\xi \tag{5}
+$$</p>
 <p>TBD</p>
 </main>
 
