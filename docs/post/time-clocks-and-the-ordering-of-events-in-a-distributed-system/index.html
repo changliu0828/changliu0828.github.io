@@ -194,6 +194,7 @@
 <p><strong>定理</strong>：假设系统为一个遵循IR1&rsquo;和IR2&rsquo;，且直径为 $d$ 的强连通图。对于任意的消息 $m$，$\mu_m \leq \mu$，其中$\mu$ 为某个特定常数，且对于所有 $t \geq t_0$。 (a) PC1 总是成立。 (b) 存在常数 $\tau$ 和 $\xi$，在系统中每条边上，每$\tau$秒会转发一条不可预测延迟最大为 $\xi$ 的消息。则PC2 满足于，对于所有的 $t\gtrapprox t_0 + \tau d$，$\epsilon \approx d(2\kappa\tau + \xi)$，$\mu + \xi \ll \tau$。其证明见于附录8.4。</p>
 <h1 id="8附录">8.附录</h1>
 <h2 id="81-全序关系的应用互斥访问">8.1 全序关系的应用：互斥访问</h2>
+<p>TBD</p>
 <h2 id="82-推导">8.2 推导</h2>
 <p>由PC1有 $\left | \frac{C_i(t+\mu) - C_i(t)}{\mu}  &lt; \kappa \right |$，则有 $(1 - \kappa)\mu &lt; C_i(t+\mu) - C_i(t) &lt; (1 + \kappa)\mu$ 。</p>
 <h2 id="83-推导">8.3 推导</h2>
@@ -202,6 +203,21 @@
 <p>由PC2有，$C_i(t) - C_j(t) &lt; -\epsilon$。</p>
 <p>故而得，$ \epsilon \leq \mu(1 - k)$。</p>
 <h2 id="84-定理证明">8.4 定理证明</h2>
+<p>对于任意的 $i$ 和 $t$，我们定义 $C_i^t$ 为一时钟，在时刻 $t$ 设定为 $C_i$ 并与 $C_i$ 运行速率相同，且永不被重置。换言之，</p>
+<p>$$ C_i^t = C_i(t) + \int_{t}^{t&rsquo;}[dC_i(t)/dt]dt \qquad (1)$$</p>
+<p>对于所有的 $t&rsquo; \geq t$，我们注意到</p>
+<p>$$ C_i(t’) \geq C_i^t(t&rsquo;) \qquad (2)$$</p>
+<p>假设 $P_1$ 在时刻 $t_1$ 发送消息给 $P_2$，$P_2$ 接收于时刻 $t_2$，不可预测延迟 $\leq \xi$，$ t_0 \leq t_1 \leq t_2$。则对于所有的 $t \geq t_2$，我们有</p>
+<p>$$
+\begin{aligned}
+&amp; C_2^{t_2}(t) \geq C_2^{t_2}(t_2) + (1 - \kappa)(t - t_2) &amp; \qquad [by\ (1)\ and\ PC1] \\<br>
+&amp; \geq C_1(t_1) + \mu_m + (1 - \kappa)(t - t_2) &amp; \qquad [by\ IR2&rsquo;(b)] \\<br>
+&amp; = C_1(t_1) + (1 - \kappa)(t - t_1) - [(t_2 - t_1) - \mu_m] + \kappa(t_2 - t_1) \\<br>
+&amp; \geq C_1(t_1) + (1 - \kappa)(t - t_1) - \xi
+\end{aligned}
+$$</p>
+<p>因此，利用这些假设，我们可以得到，对于所有的$t \geq t2$，有 $C_2^{t_2}(t) \geq C_1(t_1) + (1 - \kappa)(t - t_1) - \xi$。</p>
+<p>TBD</p>
 </main>
 
 <div class="post-comment">

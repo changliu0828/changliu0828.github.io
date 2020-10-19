@@ -166,6 +166,8 @@ tags:
 
 ## 8.1 全序关系的应用：互斥访问
 
+TBD
+
 ## 8.2 推导
 
 由PC1有 $\left | \frac{C_i(t+\mu) - C_i(t)}{\mu}  < \kappa \right |$，则有 $(1 - \kappa)\mu < C_i(t+\mu) - C_i(t) < (1 + \kappa)\mu$ 。
@@ -182,3 +184,25 @@ tags:
 
 ## 8.4 定理证明
 
+对于任意的 $i$ 和 $t$，我们定义 $C_i^t$ 为一时钟，在时刻 $t$ 设定为 $C_i$ 并与 $C_i$ 运行速率相同，且永不被重置。换言之，
+
+$$ C_i^t = C_i(t) + \int_{t}^{t'}[dC_i(t)/dt]dt \qquad (1)$$
+
+对于所有的 $t' \geq t$，我们注意到 
+
+$$ C_i(t’) \geq C_i^t(t') \\qquad (2)$$
+
+假设 $P_1$ 在时刻 $t_1$ 发送消息给 $P_2$，$P_2$ 接收于时刻 $t_2$，不可预测延迟 $\leq \xi$，$ t_0 \leq t_1 \leq t_2$。则对于所有的 $t \geq t_2$，我们有
+
+$$
+\begin{aligned}
+& C_2^{t_2}(t) \geq C_2^{t_2}(t_2) + (1 - \kappa)(t - t_2) & \\qquad [by\ (1)\ and\ PC1] \\\\
+& \geq C_1(t_1) + \mu_m + (1 - \kappa)(t - t_2) & \\qquad [by\ IR2'(b)] \\\\
+& = C_1(t_1) + (1 - \kappa)(t - t_1) - [(t_2 - t_1) - \mu_m] + \kappa(t_2 - t_1) \\\\
+& \geq C_1(t_1) + (1 - \kappa)(t - t_1) - \xi
+\end{aligned}
+$$
+
+因此，利用这些假设，我们可以得到，对于所有的$t \geq t2$，有 $C_2^{t_2}(t) \geq C_1(t_1) + (1 - \kappa)(t - t_1) - \xi$。
+
+TBD
