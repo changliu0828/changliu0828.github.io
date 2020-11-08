@@ -250,11 +250,11 @@ vector<Point> v;
 //c++03
 int compByX(const Point& p1, const Point& p1) { return p1.x < p2.x; }
 int compByY(const Point& p1, const Point& p1) { return p1.y < p2.y; }
-sort(v.begin, v.end(), compByX);
-sort(v.begin, v.end(), compByY);
+sort(v.begin(), v.end(), compByX);
+sort(v.begin(), v.end(), compByY);
 //c++11
-sort(v.begin, v.end(), [](const Point& p1, const Point& p1) { return p1.x < p2.x });
-sort(v.begin, v.end(), [](const Point& p1, const Point& p1) { return p1.y < p2.y });
+sort(v.begin(), v.end(), [](const Point& p1, const Point& p1) { return p1.x < p2.x });
+sort(v.begin(), v.end(), [](const Point& p1, const Point& p1) { return p1.y < p2.y });
 ```
 
 ## 5. 自动类型推导(auto)与decltype关键字

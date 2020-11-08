@@ -459,11 +459,11 @@ vector&lt;Point&gt; v;
 <span style="color:#aaa;font-style:italic">//c++03
 </span><span style="color:#aaa;font-style:italic"></span><span style="color:#0aa">int</span> <span style="color:#0a0">compByX</span>(<span style="color:#00a">const</span> Point&amp; p1, <span style="color:#00a">const</span> Point&amp; p1) { <span style="color:#00a">return</span> p1.x &lt; p2.x; }
 <span style="color:#0aa">int</span> <span style="color:#0a0">compByY</span>(<span style="color:#00a">const</span> Point&amp; p1, <span style="color:#00a">const</span> Point&amp; p1) { <span style="color:#00a">return</span> p1.y &lt; p2.y; }
-sort(v.begin, v.end(), compByX);
-sort(v.begin, v.end(), compByY);
+sort(v.begin(), v.end(), compByX);
+sort(v.begin(), v.end(), compByY);
 <span style="color:#aaa;font-style:italic">//c++11
-</span><span style="color:#aaa;font-style:italic"></span>sort(v.begin, v.end(), [](<span style="color:#00a">const</span> Point&amp; p1, <span style="color:#00a">const</span> Point&amp; p1) { <span style="color:#00a">return</span> p1.x &lt; p2.x });
-sort(v.begin, v.end(), [](<span style="color:#00a">const</span> Point&amp; p1, <span style="color:#00a">const</span> Point&amp; p1) { <span style="color:#00a">return</span> p1.y &lt; p2.y });
+</span><span style="color:#aaa;font-style:italic"></span>sort(v.begin(), v.end(), [](<span style="color:#00a">const</span> Point&amp; p1, <span style="color:#00a">const</span> Point&amp; p1) { <span style="color:#00a">return</span> p1.x &lt; p2.x });
+sort(v.begin(), v.end(), [](<span style="color:#00a">const</span> Point&amp; p1, <span style="color:#00a">const</span> Point&amp; p1) { <span style="color:#00a">return</span> p1.y &lt; p2.y });
 </code></pre></td></tr></table>
 </div>
 </div><h2 id="5-自动类型推导auto与decltype关键字">5. 自动类型推导(auto)与decltype关键字</h2>
