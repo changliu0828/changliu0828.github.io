@@ -8,12 +8,13 @@ body {
 
 /* header and footer areas */
 .menu { padding: 0; }
-.menu li { display: inline-block; }
+.menu li { 
+  display: inline-block;
+}
 .article-meta, .menu a {
-  text-decoration: none;
-  background: #eee;
+  text-decoration: underline;
+  background: #ffffff;
   padding: 5px;
-  border-radius: 5px;
 }
 .menu, .article-meta, footer { text-align: center; }
 .title { font-size: 1.0em; }
@@ -76,7 +77,10 @@ a:visited {
  }
 
 li.post-list a { text-decoration: none; }
-ul.post-list { list-style-type: none; }
+ul.post-list { 
+  list-style-type: none;
+  padding: 0; 
+}
 .categories {
   display: inline-block;
 }

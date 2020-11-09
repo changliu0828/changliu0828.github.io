@@ -1,27 +1,51 @@
 baseurl = "http://changliu0828.github.io"
+DefaultContentLanguage = "ch"
 languageCode = "en"
-title = "Chang Liu's Blog"
+
 theme = "hugo-xmin"
 googleAnalytics = ""
 disqusShortname = ""
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 footnotereturnlinkcontents = "↩"
 
+[languages]
+  [languages.ch]
+    languageName = "ZH"
+    title = "刘畅的博客"
+    contentDir = "content/ch"
+    weight = 1
+    [[languages.ch.menu.main]]
+      name = "主页"
+      url = "/"
+      weight = 1
+    [[languages.ch.menu.main]]
+      name = "分类"
+      url = "/categories/"
+      weight = 2
+    [[languages.ch.menu.main]]
+      name = "标签"
+      url = "/tags/"
+      weight = 3
+  [languages.en]
+    languageName = "EN"
+    title = "Chang Liu's Blog"
+    contentDir = "content/en"
+    weight = 2
+    [[languages.en.menu.main]]
+      name = "Home"
+      url = "/en/"
+      weight = 1
+    [[languages.en.menu.main]]
+      name = "Categories"
+      url = "/en/categories/"
+      weight = 2
+    [[languages.en.menu.main]]
+      name = "Tags"
+      url = "/en/tags/"
+      weight = 3   
+
 [permalinks]
     post = "/post/:filename/"
-
-[[menu.main]]
-    name = "主页"
-    url = "/"
-    weight = 1
-[[menu.main]]
-    name = "分类"
-    url = "/categories/"
-    weight = 2
-[[menu.main]]
-    name = "标签"
-    url = "/tags/"
-    weight = 3
 
 [params]
     description = "Chang Liu's Blog"
