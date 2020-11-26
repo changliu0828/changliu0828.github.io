@@ -11,7 +11,7 @@ tags:
   - State Machine
 ---
 
-本篇文章总结学习了Lamport于1978年发表在 *Communications of the ACM* 上的论文 [Time, Clocks, and the Ordering of Events in a Distributed System](https://lamport.azurewebsites.net/pubs/time-clocks.pdf)，文章对分布式系统中的时间，时钟等概念做了深入的讨论，提出了“Happened Before”，“逻辑时钟”，“物理时钟”，“State Machine”等重要概念与算法，是分布式领域不能不读的经典论文。
+本篇总结学习了1978年[Leslie Lamport](https://en.wikipedia.org/wiki/Leslie_Lamport)发表在 *Communications of the ACM* 上的论文 [Time, Clocks, and the Ordering of Events in a Distributed System](https://lamport.azurewebsites.net/pubs/time-clocks.pdf)。论文对分布式系统中的时间，时钟等概念做了深入的讨论，提出了“Happened Before”，“逻辑时钟”，“物理时钟”，“State Machine”等重要概念与算法，是分布式领域不能不读的经典论文。
 
 <!--more-->
 
@@ -19,36 +19,41 @@ tags:
 
 在进入正题之前，首先让我们考虑如下问题：
 
-+ 某一人做了某事 $A$ 并看了其手表，其读数为“2020/10/06 13:00”。他声称 $ A $ 发生于“2020/10/06 13:00”。
-+ 另一人做了某事 $B$ 并看了其手表，其读数为“2020/10/06 13:05”。他声称 $B$ 发生于“2020/10/06 13:05”。
+$A$，$B$ 两人**各自带着手表**，在咖啡厅中喝咖啡，
++ $A$ 喝完咖啡后看手表，读数为13:00。他声称“我在13:00喝完咖啡”。
++ $B$ 喝完咖啡后看手表，读数为13:05。他声称“我在13:05喝完咖啡”。
 
-假设两人都是诚实的，我们能说 $A$ 发生在 $B$ 之前吗？显然，由于我们并不知道两人的手表时间是否“准确”，所以不能准确地判断出孰先孰后。那么如果问题变成下面这样，结论又是如何呢？
+假定两人都是诚实的，我们能说 $A$ 在 $B$ 之前喝完咖啡吗？
 
-+ 某一人做了某事 $A$ ，并看了其手表，读数为“2020/10/06 13:00”。他声称 $ A $ 发生于“2020/10/06 13:00”。
-+ 此人打了一通电话给另一人。
-+ 第二个人在通话完毕后，做了某事 $B$ 并看了其手表，其读数为“2020/10/06 12:55”。他声称 $B$ 发生于“2020/10/06 12:55”。
+结论是不一定。由于我们并不知道两人的手表时间是否“准确”，即便两人诚实地说出了自己喝完咖啡时手表的读数，也并不能由此推论出孰先孰后。那么如果情形变成如下这样，结论又是如何呢？
 
-由此可见，我们通常使用的时钟读数、时间戳等概念并不能准确地刻画出事件发生的先后顺序。而在分布式系统中，事件发生的先后常常扮演着各种算法的“关键角色”。那么我们如何准确地刻画这种顺序，或是设计我们的时钟，从而避免上面例子中的问题呢？
++ $A$ 喝完咖啡后看手表，读数为13:00，他声称“我在13:00喝完咖啡”。
++ $A$ 喝完咖啡后，打了一通电话给 $B$。
++ $B$ 在通话完毕后，喝完咖啡，看手表，读数为13:05。他声称“我在13:05喝完咖啡”。
+
+在这种情形下，我们可以得知 $A$ 在通话前喝完咖啡，$B$ 在通话后喝完咖啡，故而必然有 $A$ 在 $B$ 之前喝完咖啡。一通电话使得彼此独立的两个时间体系产生了确定性的先后关系。
+
+由上面的例子可见，我们通常使用的时钟读数、时间戳等概念并不能准确地刻画出事件发生的先后顺序。而在分布式系统中，事件发生的先后常常扮演着各种算法的“关键角色”。那么我们如何准确地刻画这种顺序，或是设计我们的时钟，从而准确的刻画这种先后顺序呢？
 
 # 2. 时间是什么
 
 > The concept of time is fundamental to our way of thinking. It is derived from the more basic concept of the order in which events occur.
 
-时间的定义对于分布式领域关于“事件发生先后”、“并发”等概念的认识至关重要。Lamport在文中指出，时间是由更加基本的概念“事件发生的顺序”衍生出来的。例如我们说某件事在13:00发生，其实是在说这件事发生在我们读到时钟上的读数为13:00之后，13:01之前。由此可见，时钟其实是对连续的时间进行了离散化的“编号”。
+时间的定义对于分布式领域关于“事件发生先后”、“并发”等概念的认识至关重要。Lamport在文中指出，时间是由更加基本的概念“事件发生的顺序”衍生出来的。例如我们说某件事在13:00发生，其实是在说这件事发生在我们读到时钟上的读数为13:00之后，13:01之前。在此种定义下，时钟其实是通过读取时刻这一行为，对连续的时间进行了离散化的编号。
 
 # 3. 分布式系统
 
-本文中讨论的分布式系统，是由若干空间上分离的process组成。同一process上的事件顺序串行发生，process之间通过收发消息进行通信。这里的process可以是若干独立的计算机，独立的进程，亦或是一台计算机内独立的硬件模块。在后文中我们我们统称process为“节点”。特别的，各个节点之间的通信延迟与单个节点内部事件发生的频率相比，是不可忽略的。
+本文中讨论的分布式系统，是由若干空间上分离的process组成。同一process上的事件顺序串行发生，process之间通过收发消息进行通信。这里的process可以是若干独立的计算机，独立的进程，亦或是一台计算机内独立的硬件模块。在后文中我们我们统称process为“节点”。特别的，我们应当注意各个节点之间的通信延迟，它与单个节点内部事件发生的频率相比是不可忽略的。
 
 # 4. Happened Before 偏序关系
 
-对于一个分布式系统中的若干事件，我们定义“happened before”关系，用"$\rightarrow$"标识。其满足如下三个条件，
+对于一个分布式系统中的若干事件，我们定义“happened before”关系，记为"$\rightarrow$"。其满足如下三个条件，
 
-+ (1) 如果 $a$ 和 $b$ 是在相同节点上的两个事件，$a$ 在 $b$ 之前发生，则有 $a \rightarrow b$ 。
-+ (2) 如果事件 $a$ 表示某个节点发送某条消息，$b$ 是另一个节点接受这条消息，则有 $a \rightarrow b$ 。
-+ (3) 如果有 $a \rightarrow b$ 且 $b \rightarrow c$ ，则有 $a \rightarrow c$ 。
+ + 如果 $a$ 和 $b$ 是在相同节点上的两个事件，$a$ 在 $b$ 之前发生，则有 $a \rightarrow b$ 。
+ + 如果事件 $a$ 表示某个节点发送某条消息，$b$ 是另一个节点接受这条消息，则有 $a \rightarrow b$ 。
+ + 如果有 $a \rightarrow b$ 且 $b \rightarrow c$ ，则有 $a \rightarrow c$ 。
 
-当且仅当 $a \nrightarrow b, b \nrightarrow a$ 时，我们称两个事件为**并发的(concurrent)**。
+当且仅当 $a \nrightarrow b$ 且 $b \nrightarrow a$ 时，我们称两个事件为**并发的(concurrent)**。
 
 此外，我们规定 $\rightarrow$ 为非自反关系，即 $a \nrightarrow a$ 。显然，说一件事发生在自己“之前”并无任何意义。
 
@@ -66,12 +71,12 @@ tags:
 
 **时钟仅仅是对事件的发生予以编号而已。** 更加准确地讲，对于每一个节点 $P_i$ 我们定义时钟 $C_i$ 为一个函数，它为任意的事件 $a$ 赋值编号为 $C_i \langle a \rangle$。对整个系统时钟来讲，任意事件 $b$ 的发生时间标记为 $  C \langle b \rangle $，如果其发生在节点 $P_j$ 上，则 $ C \langle b \rangle =  C_j \langle b \rangle$。这里的时钟我们看做是系统内部的逻辑时钟，而非物理时钟，其标识与计数方法无需与物理时间一致。为了满足上文的"happened before"偏序关系，我们设计的逻辑时钟需要满足如下的Clock Condition.
 
-**Clock Condition.** 对于系统中的任意事件 $a, b$：如果 $ a \rightarrow b$，则 $C \langle a \rangle < C \langle b \rangle$。
+**Clock Condition.** 对于系统中的任意事件 $a, b$：如果 $ a \rightarrow b$，则有 $C \langle a \rangle < C \langle b \rangle$。
 
 + C1. 如果 $a$ 和 $b$ 是在相同节点 $P_i$ 上的两个事件，$a$ 在 $b$ 之前发生，则有 $C_i \langle a \rangle < C_i \langle b \rangle$。
 + C2. 如果事件 $a$ 表示节点 $P_i$ 发送某条消息，$b$ 表示节点 $P_j$ 接受这条消息，则有$ C_i \langle a \rangle < C_j \langle b \rangle $。
 
-**特别的，Clock Condition的逆命题"如果 $C \langle a \rangle < C \langle b \rangle$，则 $ a \rightarrow b$"并不成立。** 因为它要求并发的事件必须具有相同的逻辑时间。例如图1中的 $p_2,p_3$ 都与 $q_3$ 为并发关系，但由 C1 有 $C \langle p_2 \rangle < C \langle p_3 \rangle$，则必然有 $C \langle q_3 \rangle \neq C \langle p_2 \rangle$ 或 $C \langle q_3 \rangle \neq C \langle p_3 \rangle$，与并发关系矛盾。
+**特别的，Clock Condition的逆命题"如果 $C \langle a \rangle < C \langle b \rangle$，则有 $ a \rightarrow b$"并不一定成立。** 因为它要求并发的事件必须具有相同的逻辑时间。例如图1中的 $p_2,p_3$ 都与 $q_3$ 为并发关系，但由 C1 有 $C \langle p_2 \rangle < C \langle p_3 \rangle$，则必然有 $C \langle q_3 \rangle \neq C \langle p_2 \rangle$ 或 $C \langle q_3 \rangle \neq C \langle p_3 \rangle$，与并发关系矛盾。
 
 对于逻辑时钟，我们可以想象单个节点内不断发生着“tick”事件，例如在同一节点 $P_i$ 内连续发生的 $a, b$ 两个事件，有 $C_i \langle a \rangle = 4, C_i \langle b \rangle = 7$，那么在这两个事件之间发生了编号为 $5,6,7$ 的 tick 事件。于是我们可以在时空图中加入类似下图虚线所示的"tick line"。根据 C1 我们可以得到，在同一节点内的连续两个事件之间，至少要有一条 tick line。 根据 C2 我们可以得到，每一条消息必须穿过至少一条 tick line。
 
@@ -90,7 +95,7 @@ tags:
 
 # 6. 全序关系
 
-利用逻辑时钟，我们可以对整个系统中的事件进行全序(total order)排序。我们首先根据事件发生的时间对其排序。对于发生时间相同的事件，我们引入对于所有节点的预先优先级 $\prec$，这里的优先级可以是根据 id 排序等任意规则。
+利用逻辑时钟，我们可以对整个系统中的事件进行全序(total order)排序。我们首先根据事件发生的逻辑时间对其排序。对于发生时间相同的事件，我们引入对于所有节点的预先优先级 $\prec$，这里的优先级可以是根据 id 排序等任意规则。
 
 更加严谨的说，我们定义全序关系 $\Rightarrow$。对于发生在节点 $P_i$ 的事件 $a$ 和发生在节点 $P_j$ 的事件 $b$，有 $ a \Rightarrow b $ 当且仅当 (i) $ C_i \langle a \rangle < C_j \langle b \rangle $ 或 (ii) $C_i \langle a \rangle = C_j \langle b \rangle$ 且 $P_i \prec P_j$。
 
@@ -125,11 +130,11 @@ tags:
 
  + PC1. 存在一个常数 $\kappa \ll 1$，对于所有的 $i$ ，有 $| dC_i(t)/dt - 1 | < \kappa$。对于典型的晶控时钟(crystal controlled clock)，$\kappa \leq 10^{-6}$。
 
- 除了保证单个时钟运行准确之外，各个时钟之间也需要保持同步，即所有的 $i,j,t$，有 $C_i(t) \approx C_j(t)$
+除了保证单个时钟运行准确之外，各个时钟之间也需要保持同步，即所有的 $i,j,t$，有 $C_i(t) \approx C_j(t)$，
 
- + PC2. 对于所有的 $i, j$：$|C_i(t) - C_j(t)| < \epsilon$。直观来讲即图2中的单条 tick line 高度差不能太大。 
+ + PC2. 对于所有的 $i, j$，有$|C_i(t) - C_j(t)| < \epsilon$。直观来讲即图2中的单条 tick line 高度差不能太大。 
 
-对于 PC2，由于累计误差（accumulated error）的存在，两个完全独立运行的时钟必然会误差越来越大。因此我们需要某种算法对不同节点上的时钟进行对时。
+对于 PC2，由于累计误差(accumulated error)的存在，两个完全独立运行的时钟必然会误差越来越大。因此我们需要某种算法对不同节点上的时钟进行对时。
 
 首先我们假设我们的时钟满足**Clock Condition.**，这样我们只需考虑在 $\underline{\varphi}$ 中 $a \nrightarrow b$ 的情况。不难发现，此时 $a$ 与 $b$ 必然发生在不同的节点上。
 
@@ -233,4 +238,50 @@ $$
 C_i(t) \geq C_j(t_1) + (1 - \kappa)(t - t_1) - d\xi \tag{6} 
 $$
 
-TDB
+令 $m$ 为任意时间戳为 $T_m$ 的消息，其在 $t$ 时刻发送，在 $t'$ 时刻接收。我们假设 $m$ 有一个以一个恒定速率运行的时钟 $C_m$，且有 $C_m(t)=t_m$，$C_m(t') = t_m + \mu_m$。那么由 $ \mu_m \leq t' - t $ 可以推导出 $dC_m/dt \leq 1$。规则 IR2'(b)将 $C_j(t')$ 设置为 $max(C_j(t' - 0), C_m(t'))$。因此，当时钟被重置时，只可能重置与其他某个时钟相等。
+
+对于任意时间 $t_x \geq t_0 + \mu/(1-\kappa)$，令 $C_x$ 为 $t_x$ 时刻具有最大值的时钟。由于所有的时钟以低于 $1+\kappa$ 的速率运行，我们有对于所有的 $i$ 和所有的 $t \geq t_x$：
+
+$$
+C_i(t) \leq C_x(t_x) + (1 + \kappa)(t - t_x) \tag{7} 
+$$
+
+现在我们考虑如下两种情况：（i）$C_x$ 为节点 $P_q$ 的时钟 $C_q$。（ii）$C_x$ 为节点 $P_q$ 在 $t_1$ 时刻发送于消息 $m$ 的时钟。在情况（i）中，(7)简单的成为，
+
+$$
+C_i(t) \leq C_q(t_x) + (1 + \kappa)(t - t_x) \tag{8i} 
+$$
+
+在情况（ii）中，由于 $C_m(t_1)=C_q(t_1)$，且 $dC_m/dt \leq 1$，我们有，
+
+$$
+C_x(t_x) \leq C_q(t_1) + (t_x - t_1) 
+$$
+
+因此，由(7)有，
+
+$$
+C_i(t) \leq C_q(t_1) + (1 - \kappa)(t - t_1) \tag{8ii} 
+$$
+
+由于 $t_x \geq t_0 + \mu/(1 - \kappa)$，我们有，
+
+$$
+\begin{aligned}
+& C_q(t_x - \mu/(1 - \kappa)) \leq C_q(t_x) - \mu & \\qquad [by\ PC1] \\\\
+& \leq C_m(t_x) - \mu & \\qquad [by\ choice \ of \ m] \\\\
+& \leq C_m(t_x) - (t_x - t_1)\mu_m/v_m & \\qquad [\mu_m \leq \mu, t_x - t_1 \leq v_m] \\\\
+& = T_m & \\qquad [by\ definition \ of \ C_m] \\\\
+& = C_q(t_1) & \\qquad [by\ IR2'(a)]
+\end{aligned}
+$$
+
+因此，$ C_q(t_x - \mu/(1 - \kappa)) \leq C_q(t_1) $，因此 $ t_x - t_1 \leq \mu(1 - \kappa), t_1 \geq t_0 $。
+
+令 $ t_1 = t_x $，对于情况(i)，我们结合(8i)和(8ii)可以推出对于任意的 $t，t_x$，且$t \geq t_x \geq t_0 + \mu/(1 - \kappa)$，存在一个节点 $P_q$ 和一个时间 $t_1$，$t_x - \mu/(1 - \kappa)\leq t_1 \leq t_x$，对于所有的 $ i $，
+
+$$
+C_i(t) \leq C_q(t_1) + (1 + \kappa)(t - t_1) \tag{9} 
+$$
+
+TBD
