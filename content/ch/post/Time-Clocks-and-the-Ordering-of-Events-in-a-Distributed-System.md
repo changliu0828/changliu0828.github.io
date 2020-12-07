@@ -284,4 +284,37 @@ $$
 C_i(t) \leq C_q(t_1) + (1 + \kappa)(t - t_1) \tag{9} 
 $$
 
-TBD
+若我们选择的 $t$ 和 $t_x$ 满足 $t \geq t_x + d(\tau + v)$，我们可以结合（6）和（9）得到存在一个时间 $t_1$ 和一个节点 $P_q$，对于所有的 $i$，
+
+$$
+C_q(t_1) + (1 - \kappa)(t - t_1) - d\xi \leq C_i(t) \leq C_q(t_1) + (1 - \kappa)(t - t_1) \tag{10}
+$$
+
+令 $t = t_x + d(\tau + v)$，我们有,
+
+$$
+d(\tau + v) \leq t - t_1 \leq d(\tau + v) + \mu(1 - \kappa)
+$$
+
+结合（10），我们有，
+
+$$
+C_q(t_1) + (t - t_1) - \kappa d(\tau + v) - d\xi \leq C_i(t) \leq C_q(t_1) + (t - t_1) + \kappa[d(\tau + v) + \mu/(1 - \kappa)] \tag{11}
+$$
+
+结合假设 $\kappa \ll 1$ 以及 $\mu \leq v \ll \tau$，我们可以重写（11）为，
+
+$$
+C_q(t_1) + (t - t_1) - d(\kappa\tau + \xi) \lessapprox C_i(t) \lessapprox C_q(t_1) + (t - t_1) + d\kappa\tau \tag{12}
+$$
+
+由于上式对于所有的 $i$ 成立，我们有，
+
+$$
+|C_i(t) - C_j(t)| \lessapprox d(2\kappa\tau + \xi)
+$$
+
+上式对于所有的 $t \gtrapprox t_0 + d\tau $ 均成立。
+
+证毕。
+
