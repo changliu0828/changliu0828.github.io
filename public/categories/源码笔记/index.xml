@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>源码笔记 on 刘畅的博客</title>
+    <link>http://changliu0828.github.io/categories/%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0/</link>
+    <description>Recent content in 源码笔记 on 刘畅的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Wed, 23 Sep 2020 16:28:30 +0800</lastBuildDate>
+    
+	<atom:link href="http://changliu0828.github.io/categories/%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>libco源码笔记(3)自动切换</title>
+      <link>http://changliu0828.github.io/post/libco-auto/</link>
+      <pubDate>Wed, 23 Sep 2020 16:28:30 +0800</pubDate>
+      
+      <guid>http://changliu0828.github.io/post/libco-auto/</guid>
+      <description>&lt;p&gt;在之前的文章&lt;a href=&#34;http://www.changliu.me/post/libco-manual/&#34;&gt;libco源码笔记(2)显示切换&lt;/a&gt;中，我们介绍了libco提供的显示协程切换接口，并讨论了协程池的使用。本文讨论libco提供的自动切换相关函数接口。建议配合我自己的&lt;a href=&#34;https://github.com/changliu0828/libco&#34;&gt;注释版本&lt;/a&gt;阅读本文。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>libco源码笔记(2)显式切换</title>
+      <link>http://changliu0828.github.io/post/libco-manual/</link>
+      <pubDate>Tue, 22 Sep 2020 16:18:17 +0800</pubDate>
+      
+      <guid>http://changliu0828.github.io/post/libco-manual/</guid>
+      <description>&lt;p&gt;在之前的文章&lt;a href=&#34;http://www.changliu.me/post/libco-coroutine/&#34;&gt;libco源码笔记(1)协程与上下文切换&lt;/a&gt;中，我们介绍了协程的基本概念以及libco中的上下文切换核心代码。本文libco提供的显式切换相关函数接口，与此相对的通过hook系统调用提供的自动切换机制在后续文章中介绍。建议配合我自己的&lt;a href=&#34;https://github.com/changliu0828/libco&#34;&gt;注释版本&lt;/a&gt;阅读本文。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>libco源码笔记(1)协程与上下文切换</title>
+      <link>http://changliu0828.github.io/post/libco-coroutine/</link>
+      <pubDate>Fri, 11 Sep 2020 15:08:21 +0800</pubDate>
+      
+      <guid>http://changliu0828.github.io/post/libco-coroutine/</guid>
+      <description>&lt;p&gt;本文结合微信高性能开源协程库&lt;a href=&#34;https://github.com/Tencent/libco&#34;&gt;libco&lt;/a&gt;，总结了协程相关的问题与解决方案。libco源码注释不多，这里附上我自己的&lt;a href=&#34;https://github.com/changliu0828/libco&#34;&gt;注释版本&lt;/a&gt;，建议配合阅读。此外，文中的代码及解释均运行于x86-32位下，64位下的情况略有不同，篇幅有限不再赘述。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
