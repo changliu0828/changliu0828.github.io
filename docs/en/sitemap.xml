@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
   <url>
     <loc>http://changliu0828.github.io/en/categories/</loc>
-    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="ch"
@@ -15,41 +13,8 @@
                 hreflang="en"
                 href="http://changliu0828.github.io/en/categories/"
                 />
-  </url>
-  
-  <url>
-    <loc>http://changliu0828.github.io/en/tags/clock/</loc>
-    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="ch"
-                href="http://changliu0828.github.io/tags/clock/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="http://changliu0828.github.io/en/tags/clock/"
-                />
-  </url>
-  
-  <url>
-    <loc>http://changliu0828.github.io/en/tags/distributed-system/</loc>
-    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="ch"
-                href="http://changliu0828.github.io/tags/distributed-system/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="http://changliu0828.github.io/en/tags/distributed-system/"
-                />
-  </url>
-  
-  <url>
+  </url><url>
     <loc>http://changliu0828.github.io/en/</loc>
-    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="ch"
@@ -60,46 +25,8 @@
                 hreflang="en"
                 href="http://changliu0828.github.io/en/"
                 />
-  </url>
-  
-  <url>
-    <loc>http://changliu0828.github.io/en/categories/paper-note/</loc>
-    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://changliu0828.github.io/en/post/</loc>
-    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="ch"
-                href="http://changliu0828.github.io/post/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="http://changliu0828.github.io/en/post/"
-                />
-  </url>
-  
-  <url>
-    <loc>http://changliu0828.github.io/en/tags/state-machine/</loc>
-    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="ch"
-                href="http://changliu0828.github.io/tags/state-machine/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="http://changliu0828.github.io/en/tags/state-machine/"
-                />
-  </url>
-  
-  <url>
+  </url><url>
     <loc>http://changliu0828.github.io/en/tags/</loc>
-    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="ch"
@@ -111,20 +38,4 @@
                 href="http://changliu0828.github.io/en/tags/"
                 />
   </url>
-  
-  <url>
-    <loc>http://changliu0828.github.io/en/post/time-clocks-and-the-ordering-of-events-in-a-distributed-system/</loc>
-    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="ch"
-                href="http://changliu0828.github.io/post/time-clocks-and-the-ordering-of-events-in-a-distributed-system/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="http://changliu0828.github.io/en/post/time-clocks-and-the-ordering-of-events-in-a-distributed-system/"
-                />
-  </url>
-  
 </urlset>

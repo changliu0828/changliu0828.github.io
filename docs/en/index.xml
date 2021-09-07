@@ -5,20 +5,6 @@
     <link>http://changliu0828.github.io/en/</link>
     <description>Recent content in Home on Chang Liu&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en</language>
-    <lastBuildDate>Tue, 06 Oct 2020 10:02:07 +0800</lastBuildDate>
-    
-	<atom:link href="http://changliu0828.github.io/en/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>Time, Clocks, and the Ordering of Events in a Distributed System, Lamport, 1978</title>
-      <link>http://changliu0828.github.io/en/post/time-clocks-and-the-ordering-of-events-in-a-distributed-system/</link>
-      <pubDate>Tue, 06 Oct 2020 10:02:07 +0800</pubDate>
-      
-      <guid>http://changliu0828.github.io/en/post/time-clocks-and-the-ordering-of-events-in-a-distributed-system/</guid>
-      <description>test</description>
-    </item>
-    
+    <language>en</language><atom:link href="http://changliu0828.github.io/en/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>
