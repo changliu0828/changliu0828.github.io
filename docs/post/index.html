@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Posts | 刘畅的博客</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <script src="https://kit.fontawesome.com/a0e5d04d0b.js" crossorigin="anonymous"></script>
+
+
+  </head>
+
+  <body>
+    <nav>
+      <ul class="menu">
+        <span class="menu_li">
+          
+            <li><a href="/">主页</a></li>
+          
+            <li><a href="/categories/">分类</a></li>
+          
+            <li><a href="/tags/">标签</a></li>
+          
+        </span>
+        <span class="change_lang">
+          
+            <li><i class="fas fa-globe-asia"></i><a href="/en">中/EN</a></li>
+          
+        </span>
+      </ul>
+      <hr/>
+    </nav>
+
+
+
+<h1>Posts</h1>
+
+
+
+
+<ul class="post-list">
+  
+  
+  
+  <li class="post-list">
+    <h3><a href="/post/time-clocks-and-the-ordering-of-events-in-a-distributed-system/">Time, Clocks, and the Ordering of Events in a Distributed System, Lamport, 1978</a></h3>
+    <div>
+      <p>本篇总结学习了1978年<a href="https://en.wikipedia.org/wiki/Leslie_Lamport">Leslie Lamport</a>发表在 <em>Communications of the ACM</em> 上的论文 <a href="https://lamport.azurewebsites.net/pubs/time-clocks.pdf">Time, Clocks, and the Ordering of Events in a Distributed System</a>。论文对分布式系统中的时间，时钟等概念做了深入的讨论，提出了“Happened Before”，“逻辑时钟”，“物理时钟”，“State Machine”等重要概念与算法，是分布式领域不能不读的经典论文。</p>
+    </div>
+    <i class="far fa-calendar-check"></i><span class="date">2020/10/06</span>
+    <span class="categories">
+      
+      
+      
+      <i class="far fa-folder"></i><a href = '/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/'>论文笔记</a>
+      
+      
+    </span>
+    <span class="tags">
+      
+      
+      
+      <i class="fas fa-hashtag"></i><a href = '/tags/distributed-system/'>Distributed System</a>
+      
+      
+      <i class="fas fa-hashtag"></i><a href = '/tags/clock/'>Clock</a>
+      
+      
+      <i class="fas fa-hashtag"></i><a href = '/tags/state-machine/'>State Machine</a>
+      
+      
+    </span>
+    <hr>
+  </li>
+  
+  <li class="post-list">
+    <h3><a href="/post/libco-auto/">libco源码笔记(3)自动切换</a></h3>
+    <div>
+      <p>在之前的文章<a href="http://www.changliu.me/post/libco-manual/">libco源码笔记(2)显示切换</a>中，我们介绍了libco提供的显示协程切换接口，并讨论了协程池的使用。本文讨论libco提供的自动切换相关函数接口。建议配合我自己的<a href="https://github.com/changliu0828/libco">注释版本</a>阅读本文。</p>
+    </div>
+    <i class="far fa-calendar-check"></i><span class="date">2020/09/23</span>
+    <span class="categories">
+      
+      
+      
+      <i class="far fa-folder"></i><a href = '/categories/%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0/'>源码笔记</a>
+      
+      
+    </span>
+    <span class="tags">
+      
+      
+      
+      <i class="fas fa-hashtag"></i><a href = '/tags/libco/'>libco</a>
+      
+      
+    </span>
+    <hr>
+  </li>
+  
+  <li class="post-list">
+    <h3><a href="/post/libco-manual/">libco源码笔记(2)显式切换</a></h3>
+    <div>
+      <p>在之前的文章<a href="http://www.changliu.me/post/libco-coroutine/">libco源码笔记(1)协程与上下文切换</a>中，我们介绍了协程的基本概念以及libco中的上下文切换核心代码。本文libco提供的显式切换相关函数接口，与此相对的通过hook系统调用提供的自动切换机制在后续文章中介绍。建议配合我自己的<a href="https://github.com/changliu0828/libco">注释版本</a>阅读本文。</p>
+    </div>
+    <i class="far fa-calendar-check"></i><span class="date">2020/09/22</span>
+    <span class="categories">
+      
+      
+      
+      <i class="far fa-folder"></i><a href = '/categories/%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0/'>源码笔记</a>
+      
+      
+    </span>
+    <span class="tags">
+      
+      
+      
+      <i class="fas fa-hashtag"></i><a href = '/tags/libco/'>libco</a>
+      
+      
+    </span>
+    <hr>
+  </li>
+  
+  <li class="post-list">
+    <h3><a href="/post/libco-coroutine/">libco源码笔记(1)协程与上下文切换</a></h3>
+    <div>
+      <p>本文结合微信高性能开源协程库<a href="https://github.com/Tencent/libco">libco</a>，总结了协程相关的问题与解决方案。libco源码注释不多，这里附上我自己的<a href="https://github.com/changliu0828/libco">注释版本</a>，建议配合阅读。此外，文中的代码及解释均运行于x86-32位下，64位下的情况略有不同，篇幅有限不再赘述。</p>
+    </div>
+    <i class="far fa-calendar-check"></i><span class="date">2020/09/11</span>
+    <span class="categories">
+      
+      
+      
+      <i class="far fa-folder"></i><a href = '/categories/%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0/'>源码笔记</a>
+      
+      
+    </span>
+    <span class="tags">
+      
+      
+      
+      <i class="fas fa-hashtag"></i><a href = '/tags/libco/'>libco</a>
+      
+      
+    </span>
+    <hr>
+  </li>
+  
+  <li class="post-list">
+    <h3><a href="/post/a-new-solution-of-dijkstras-concurrent-programming-problem/">A New Solution of Dijkstra&rsquo;s Concurrent Programming Problem, Lamport, 1974</a></h3>
+    <div>
+      <p>在之前的<a href="http://www.changliu.me/post/solution-of-a-problem-in-concurrent-programming-control/">文章</a>中提到过Dijkstra于1965年提出的基于共享存储的临界区互斥访问问题。Dijkstra提出了基于对内存单元的原子性读写实现的方案。
+然而，Lamport指出Dijkstra的方案会因为节点在临界区内失效而导致系统死锁。在其于1974年发表的文章<a href="https://lamport.azurewebsites.net/pubs/bakery.pdf">A New Solution of Dijkstra&rsquo;s Concurrent Programming Problem</a>中，Lamport提出了完全基于软件实现的解决方案，被称为“面包店算法”。</p>
+    </div>
+    <i class="far fa-calendar-check"></i><span class="date">2020/09/05</span>
+    <span class="categories">
+      
+      
+      
+      <i class="far fa-folder"></i><a href = '/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/'>论文笔记</a>
+      
+      
+    </span>
+    <span class="tags">
+      
+      
+      
+      <i class="fas fa-hashtag"></i><a href = '/tags/distributed-system/'>Distributed System</a>
+      
+      
+      <i class="fas fa-hashtag"></i><a href = '/tags/bakery-algorithm/'>Bakery Algorithm</a>
+      
+      
+    </span>
+    <hr>
+  </li>
+  
+  <li class="post-list">
+    <h3><a href="/post/solution-of-a-problem-in-concurrent-programming-control/">Solution of a Problem in Concurrent Programming Control, Dijkstra, 1965</a></h3>
+    <div>
+      <p><a href="https://en.wikipedia.org/wiki/Edsger_W._Dijkstra">Edsger W. Dijkstra</a>于1965年发表文章<a href="https://www.di.ens.fr/~pouzet/cours/systeme/bib/dijkstra.pdf">Solution of a Problem in Concurrent Programming Control</a>，引出并发系统下的互斥(mutual exclusion)问题，自此开辟了分布式计算领域。Dijkstra在文中给出了基于共享存储原子性访问的解决方案只有十多行代码，但阅读起来较难以理解。在查阅若干资料后，总结了一种较为直观的解释方法，记录于此。</p>
+    </div>
+    <i class="far fa-calendar-check"></i><span class="date">2020/09/03</span>
+    <span class="categories">
+      
+      
+      
+      <i class="far fa-folder"></i><a href = '/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/'>论文笔记</a>
+      
+      
+    </span>
+    <span class="tags">
+      
+      
+      
+      <i class="fas fa-hashtag"></i><a href = '/tags/distributed-system/'>Distributed System</a>
+      
+      
+    </span>
+    <hr>
+  </li>
+  
+  <li class="post-list">
+    <h3><a href="/post/cpp11-features/">c++11特性简介</a></h3>
+    <div>
+      <p>c++自1985年发行以来，以其高效、灵活的特性成为最成功的高级编程语言之一。2011年，距离上一个c++标准c++03发布的8年后，c++委员会吸取了现代编程语言的若干特性，发布了新的c++11标准，使得古朴的c++得以跻身现代编程语言的行列。本文挑选了部分c++11引入的新特性进行说明，阐述其缘由，使用以及注意事项。如果你需要查看完整特性与编译器支持请参考<a href="https://en.cppreference.com/w/cpp/compiler_support">这里$^{[1]}$</a>。</p>
+    </div>
+    <i class="far fa-calendar-check"></i><span class="date">2020/08/28</span>
+    <span class="categories">
+      
+      
+      
+      <i class="far fa-folder"></i><a href = '/categories/%E6%80%BB%E7%BB%93/'>总结</a>
+      
+      
+    </span>
+    <span class="tags">
+      
+      
+      
+      <i class="fas fa-hashtag"></i><a href = '/tags/c&#43;&#43;/'>c&#43;&#43;</a>
+      
+      
+    </span>
+    <hr>
+  </li>
+  
+  <li class="post-list">
+    <h3><a href="/post/friend-recommendation/">根据在线时间推荐好友</a></h3>
+    <div>
+      <p>玩过类似魔兽世界这种网游的朋友，应该都有组团刷副本的经历。然而有些时候我们会发现，虽然加了很多游戏好友，但自己想刷副本时经常会缺“奶”，缺“T”。能不能根据玩家在线的时间段偏好推荐相似的好友呢？</p>
+    </div>
+    <i class="far fa-calendar-check"></i><span class="date">2019/02/14</span>
+    <span class="categories">
+      
+      
+      
+      <i class="far fa-folder"></i><a href = '/categories/%E6%80%BB%E7%BB%93/'>总结</a>
+      
+      
+    </span>
+    <span class="tags">
+      
+    </span>
+    <hr>
+  </li>
+  
+</ul>
+
+  <footer>
+  <script src="//yihui.name/js/math-code.js"></script>
+<script type="text/javascript"
+        async
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+<script async src="//yihui.name/js/center-img.js"></script>
+
+  
+  <hr/>
+  © <a href="www.changliu.me">Chang Liu</a> 2020 | <a href="mailto:changliu0828@gmail.com">Contact</a>
+  
+  </footer>
+  </body>
+</html>
+
