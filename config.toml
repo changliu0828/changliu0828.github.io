@@ -49,7 +49,7 @@ footnotereturnlinkcontents = "↩"
 
 [params]
     description = "Chang Liu's Blog"
-    footer = "&copy; [Chang Liu](www.changliu.me) 2020 | [Contact](mailto:changliu0828@gmail.com)"
+    footer = "&copy; [Chang Liu](www.changliu.me) 2021 | [Contact](mailto:changliu0828@gmail.com)"
 
 [markup]
   [markup.goldmark]
