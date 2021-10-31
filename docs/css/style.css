@@ -44,7 +44,7 @@ pre {
   padding: 1em;
   overflow-x: auto;
 }
-code { background: #f1f1f1; color: crimson}
+code { background: #f9f9f9; }
 pre code { background: none; }
 
 /* misc elements */
