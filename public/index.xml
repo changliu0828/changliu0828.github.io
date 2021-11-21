@@ -6,10 +6,15 @@
     <description>Recent content in Home on 刘畅的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 06 Oct 2020 10:02:07 +0800</lastBuildDate>
-    
-	<atom:link href="http://changliu0828.github.io/index.xml" rel="self" type="application/rss+xml" />
-    
+    <lastBuildDate>Sat, 30 Oct 2021 11:54:16 +0800</lastBuildDate><atom:link href="http://changliu0828.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>日文学习笔记</title>
+      <link>http://changliu0828.github.io/post/japanese-learning-note/</link>
+      <pubDate>Sat, 30 Oct 2021 11:54:16 +0800</pubDate>
+      
+      <guid>http://changliu0828.github.io/post/japanese-learning-note/</guid>
+      <description>&lt;p&gt;本文记录日文学习过程中整理的语法。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Time, Clocks, and the Ordering of Events in a Distributed System, Lamport, 1978</title>
@@ -82,6 +87,15 @@
       
       <guid>http://changliu0828.github.io/post/friend-recommendation/</guid>
       <description>&lt;p&gt;玩过类似魔兽世界这种网游的朋友，应该都有组团刷副本的经历。然而有些时候我们会发现，虽然加了很多游戏好友，但自己想刷副本时经常会缺“奶”，缺“T”。能不能根据玩家在线的时间段偏好推荐相似的好友呢？&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>刘畅的仪表盘</title>
+      <link>http://changliu0828.github.io/dashboard/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://changliu0828.github.io/dashboard/</guid>
+      <description>   Plotly.d3.json(&#34;https://dzyla.github.io/Follow_Relion_gracefully/jobs/job016/cls3d_model0_Class3D_job016_.json&#34;, function(err, fig) { Plotly.plot(&#39;https:\/\/dzyla.github.io\/Follow_Relion_gracefully\/jobs\/job016\/cls3d_model0_Class3D_job016_.json&#39;, fig.data, fig.layout, {responsive: true}); });  </description>
     </item>
     
   </channel>

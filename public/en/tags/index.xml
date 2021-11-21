@@ -5,38 +5,6 @@
     <link>http://changliu0828.github.io/en/tags/</link>
     <description>Recent content in Tags on Chang Liu&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en</language>
-    <lastBuildDate>Tue, 06 Oct 2020 10:02:07 +0800</lastBuildDate>
-    
-	<atom:link href="http://changliu0828.github.io/en/tags/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>Clock</title>
-      <link>http://changliu0828.github.io/en/tags/clock/</link>
-      <pubDate>Tue, 06 Oct 2020 10:02:07 +0800</pubDate>
-      
-      <guid>http://changliu0828.github.io/en/tags/clock/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Distributed System</title>
-      <link>http://changliu0828.github.io/en/tags/distributed-system/</link>
-      <pubDate>Tue, 06 Oct 2020 10:02:07 +0800</pubDate>
-      
-      <guid>http://changliu0828.github.io/en/tags/distributed-system/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>State Machine</title>
-      <link>http://changliu0828.github.io/en/tags/state-machine/</link>
-      <pubDate>Tue, 06 Oct 2020 10:02:07 +0800</pubDate>
-      
-      <guid>http://changliu0828.github.io/en/tags/state-machine/</guid>
-      <description></description>
-    </item>
-    
+    <language>en</language><atom:link href="http://changliu0828.github.io/en/tags/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>

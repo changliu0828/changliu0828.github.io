@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/fonts.css" />
     <script src="https://kit.fontawesome.com/a0e5d04d0b.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, securityLevel: 'loose', theme: "neutral" });</script>
+
 
 
   </head>
@@ -21,6 +24,8 @@
             <li><a href="/categories/">分类</a></li>
           
             <li><a href="/tags/">标签</a></li>
+          
+            <li><a href="/dashboard/">仪表盘</a></li>
           
         </span>
         <span class="change_lang">
@@ -58,16 +63,16 @@
 <p>在共享存储上，Dijkstra使用了两个长度为N的布尔数组，和一个整数。</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">Boolean array b, c[1:N]; integer K
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">Boolean array b, c[1:N]; integer K
 </code></pre></td></tr></table>
 </div>
 </div><p>其中，$k$ 满足 $1 \leqslant k \leqslant N$，$b[i]$ 和 $c[i]$ 只被节点 $i$ 修改，且初始值为true。对于第 $i$ 个节点$(1 \leqslant i \leqslant N)$，执行下面的代码</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -85,7 +90,7 @@
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">integer j
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">integer j
 Li0:  b[i] := false
 Li1:  if k != i then
 Li2:  begin c[i] := true
@@ -114,7 +119,7 @@ Li4:  begin c[i] := false
 </ul>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -132,7 +137,7 @@ Li4:  begin c[i] := false
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#0aa">bool</span>  want_to_enter_critical_section[N] = { <span style="color:#0aa">false</span> }; <span style="color:#aaa;font-style:italic">//b array
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#0aa">bool</span>  want_to_enter_critical_section[N] = { <span style="color:#0aa">false</span> }; <span style="color:#aaa;font-style:italic">//b array
 </span><span style="color:#aaa;font-style:italic"></span><span style="color:#0aa">bool</span>  in_critical_section[N] = { <span style="color:#0aa">false</span> };            <span style="color:#aaa;font-style:italic">//c array
 </span><span style="color:#aaa;font-style:italic"></span>Li0:  want_to_enter_critical_section[i] = <span style="color:#0aa">true</span>;
 Li1:  <span style="color:#00a">if</span> (k != i) {
@@ -161,14 +166,14 @@ Li4:  } <span style="color:#00a">else</span> {
 <p>这里Dijstra原文中没有明确指出的是，考虑并发情况下两个节点 <code>x</code> 和 <code>y</code> 同时运行 <code>Li4</code> 中代码，则会出现下面的情况。此种情况下，两个节点都 <code>goto Li1</code>。<code>x</code> 和 <code>y</code> 中不等于 <code>k</code>的节点会执行 <code>Li2</code>，从而使得节点 <code>k</code>在下次执行 <code>Li4</code> 时成功通过，进入临界区。</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#aaa;font-style:italic">// xyxy, 同xyyx
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#aaa;font-style:italic">// xyxy, 同xyyx
 </span><span style="color:#aaa;font-style:italic"></span>x: in_critical_section[x] = <span style="color:#0aa">true</span>;
 y: in_critical_section[y] = <span style="color:#0aa">true</span>;
 x: in_critical_section[y] == <span style="color:#0aa">true</span> <span style="color:#00a">goto</span> Li1;
@@ -241,9 +246,10 @@ code.has-jax {
 
 <script async src="//yihui.name/js/center-img.js"></script>
 
+
   
   <hr/>
-  © <a href="www.changliu.me">Chang Liu</a> 2020 | <a href="mailto:changliu0828@gmail.com">Contact</a>
+  © <a href="www.changliu.me">Chang Liu</a> 2021 | <a href="mailto:changliu0828@gmail.com">Contact</a>
   
   </footer>
   </body>
