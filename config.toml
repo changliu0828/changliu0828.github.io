@@ -26,6 +26,10 @@ footnotereturnlinkcontents = "↩"
       name = "标签"
       url = "/tags/"
       weight = 3
+    [[languages.ch.menu.main]]
+      name = "仪表盘"
+      url = "/dashboard/"
+      weight = 4
   [languages.en]
     languageName = "EN"
     title = "Chang Liu's Blog"

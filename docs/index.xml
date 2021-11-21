@@ -89,5 +89,14 @@
       <description>&lt;p&gt;玩过类似魔兽世界这种网游的朋友，应该都有组团刷副本的经历。然而有些时候我们会发现，虽然加了很多游戏好友，但自己想刷副本时经常会缺“奶”，缺“T”。能不能根据玩家在线的时间段偏好推荐相似的好友呢？&lt;/p&gt;</description>
     </item>
     
+    <item>
+      <title>刘畅的仪表盘</title>
+      <link>http://changliu0828.github.io/dashboard/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://changliu0828.github.io/dashboard/</guid>
+      <description>   Plotly.d3.json(&#34;https://dzyla.github.io/Follow_Relion_gracefully/jobs/job016/cls3d_model0_Class3D_job016_.json&#34;, function(err, fig) { Plotly.plot(&#39;https:\/\/dzyla.github.io\/Follow_Relion_gracefully\/jobs\/job016\/cls3d_model0_Class3D_job016_.json&#39;, fig.data, fig.layout, {responsive: true}); });  </description>
+    </item>
+    
   </channel>
 </rss>
