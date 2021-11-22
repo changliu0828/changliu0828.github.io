@@ -14,6 +14,4 @@ ifeq ($(strip $(POST_NAME)),)
 else
 	mkdir static/image/$(POST_NAME); \
   	hugo new post/$(POST_NAME).md; \
-
-
-
+endif
