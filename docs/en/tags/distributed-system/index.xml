@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Home on Chang Liu&#39;s Blog</title>
-    <link>http://changliu0828.github.io/en/</link>
-    <description>Recent content in Home on Chang Liu&#39;s Blog</description>
+    <title>Distributed System on Chang Liu&#39;s Blog</title>
+    <link>http://changliu0828.github.io/en/tags/distributed-system/</link>
+    <description>Recent content in Distributed System on Chang Liu&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 06 Oct 2020 10:02:07 +0800</lastBuildDate><atom:link href="http://changliu0828.github.io/en/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 06 Oct 2020 10:02:07 +0800</lastBuildDate><atom:link href="http://changliu0828.github.io/en/tags/distributed-system/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Time, Clocks, and the Ordering of Events in a Distributed System, Lamport, 1978</title>
       <link>http://changliu0828.github.io/en/post/time-clocks-and-the-ordering-of-events-in-a-distributed-system/</link>
