@@ -80,13 +80,14 @@
 <p>In this post, I summarize the study of the paper <a href="https://lamport.azurewebsites.net/pubs/time-clocks.pdf">Time, Clocks, and the Ordering of Events in a Distributed System</a> authored by <a href="https://en.wikipedia.org/wiki/Leslie_Lamport">Leslie Lamport</a> published on <em>Communications of the ACM</em> in 1978.
 The paper dives into the fundamental topics &ldquo;time and clock&rdquo; in the distributed system, and proposed several important concepts such as <a href="https://en.wikipedia.org/wiki/Happened-before">Happened-Before</a>, Logical Clocks, Physical Clocks and <a href="https://en.wikipedia.org/wiki/State_machine_replication">State Machine Replication</a>. It is definetely one of the &ldquo;Must-Read&rdquo; classic paper in distributed system area.</p>
 <h1 id="1-problem">1. Problem</h1>
-<p>在进入正题之前，首先让我们考虑如下问题：</p>
-<p>$A$，$B$ 两人<strong>各自带着手表</strong>，在咖啡厅中喝咖啡，</p>
+<p>Before we jump into the discusstion, let&rsquo;s consider the following question:</p>
+<p>We have two persons A and B. They are having coffee wearing their own watches.</p>
 <ul>
-<li>$A$ 喝完咖啡后看手表，读数为13:00。他声称“我在13:00喝完咖啡”。</li>
-<li>$B$ 喝完咖啡后看手表，读数为13:05。他声称“我在13:05喝完咖啡”。</li>
+<li>A read the time by his watch after finishing his coffee. And A said: &ldquo;I finished my coffee at 13:00&rdquo;.</li>
+<li>B read the time by his watch after finishing his coffee. And B said: &ldquo;I finished my coffee at 13:05&rdquo;.</li>
 </ul>
-<p>假定两人都是诚实的，我们能说 $A$ 在 $B$ 之前喝完咖啡吗？</p>
+<p>Suppose they are both honest, <strong>can we say that &ldquo;A finished his coffee before B&rdquo;?</strong></p>
+<p>The answer is no. Since we have no idea whether their watches are &ldquo;accurate&rdquo; or not, we can&rsquo;t have the conclusion of &ldquo;who finished first&rdquo;, even though they both announced their reading of the watch honestly.</p>
 <p>结论是不一定。由于我们并不知道两人的手表时间是否“准确”，即便两人诚实地说出了自己喝完咖啡时手表的读数，也并不能由此推论出孰先孰后。那么如果情形变成如下这样，结论又是如何呢？</p>
 <ul>
 <li>$A$ 喝完咖啡后看手表，读数为13:00，他声称“我在13:00喝完咖啡”。</li>

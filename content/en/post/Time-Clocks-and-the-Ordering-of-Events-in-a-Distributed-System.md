@@ -18,13 +18,15 @@ The paper dives into the fundamental topics "time and clock" in the distributed 
 
 # 1. Problem
 
-在进入正题之前，首先让我们考虑如下问题：
+Before we jump into the discusstion, let's consider the following question:
 
-$A$，$B$ 两人**各自带着手表**，在咖啡厅中喝咖啡，
-+ $A$ 喝完咖啡后看手表，读数为13:00。他声称“我在13:00喝完咖啡”。
-+ $B$ 喝完咖啡后看手表，读数为13:05。他声称“我在13:05喝完咖啡”。
+We have two persons A and B. They are having coffee wearing their own watches.
++ A read the time by his watch after finishing his coffee. And A said: "I finished my coffee at 13:00".
++ B read the time by his watch after finishing his coffee. And B said: "I finished my coffee at 13:05".
 
-假定两人都是诚实的，我们能说 $A$ 在 $B$ 之前喝完咖啡吗？
+Suppose they are both honest, **can we say that "A finished his coffee before B"?**
+
+The answer is no. Since we have no idea whether their watches are "accurate" or not, we can't have the conclusion of "who finished first", even though they both announced their reading of the watch honestly.
 
 结论是不一定。由于我们并不知道两人的手表时间是否“准确”，即便两人诚实地说出了自己喝完咖啡时手表的读数，也并不能由此推论出孰先孰后。那么如果情形变成如下这样，结论又是如何呢？
 
