@@ -38,12 +38,16 @@ The answer is no. Since we have no idea whether their watches are "accurate" or 
 In this scenario, we can have A finished the coffee before the call, and B finished after that. So A's coffee must be finished before B. **This phone call made up a deterministic "happened-before" relationship between two indipendent time system.** 
 
 
-By the above example, we know that the common concept/method such as "reading of clock", "timestamp" can not correctly describe the order of things happening. However, in the distributed system, this order plays critical role in different algorithims. So, how could we build our "clock" to presisly describe this order? This paper gives us the answer.
+By the above example, we know that the common concept/method such as "reading of clock", "timestamp" can not correctly describe the order of event occurs. However, in the distributed system, this order plays critical role in different algorithims. So, how could we build our "clock" to presisly describe this order? This paper gives us the answer.
 
 # 2. What is time
 
+
+In the paper, Lamport said, 
+
 > The concept of time is fundamental to our way of thinking. It is derived from the more basic concept of the order in which events occur.
 
+For example, if we say some event occurs at 13:00pm. The critical statesments should be: It occured after we reading 13:00pm at clock and before 13:01pm. By this definition, we know that treate 
 时间的定义对于分布式领域关于“事件发生先后”、“并发”等概念的认识至关重要。Lamport在文中指出，时间是由更加基本的概念“事件发生的顺序”衍生出来的。例如我们说某件事在13:00发生，其实是在说这件事发生在我们读到时钟上的读数为13:00之后，13:01之前。在此种定义下，时钟其实是通过读取时刻这一行为，对连续的时间进行了离散化的编号。
 
 # 3. The definition of distributed system

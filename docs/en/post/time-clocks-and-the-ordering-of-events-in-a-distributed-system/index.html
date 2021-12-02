@@ -97,12 +97,14 @@ The paper dives into the fundamental topics &ldquo;time and clock&rdquo; in the 
 <li>B answered the call, then finished his coffee and read the time by his watch. He said: &ldquo;I finished my coffee at 13:05&rdquo;.</li>
 </ul>
 <p>In this scenario, we can have A finished the coffee before the call, and B finished after that. So A&rsquo;s coffee must be finished before B. <strong>This phone call made up a deterministic &ldquo;happened-before&rdquo; relationship between two indipendent time system.</strong></p>
-<p>By the above example, we know that the common concept/method such as &ldquo;reading of clock&rdquo;, &ldquo;timestamp&rdquo; can not correctly describe the order of things happening. However, in the distributed system, this order plays critical role in different algorithims. So, how could we build our &ldquo;clock&rdquo; to presisly describe this order? This paper gives us the answer.</p>
+<p>By the above example, we know that the common concept/method such as &ldquo;reading of clock&rdquo;, &ldquo;timestamp&rdquo; can not correctly describe the order of event occurs. However, in the distributed system, this order plays critical role in different algorithims. So, how could we build our &ldquo;clock&rdquo; to presisly describe this order? This paper gives us the answer.</p>
 <h1 id="2-what-is-time">2. What is time</h1>
+<p>In the paper, Lamport said,</p>
 <blockquote>
 <p>The concept of time is fundamental to our way of thinking. It is derived from the more basic concept of the order in which events occur.</p>
 </blockquote>
-<p>时间的定义对于分布式领域关于“事件发生先后”、“并发”等概念的认识至关重要。Lamport在文中指出，时间是由更加基本的概念“事件发生的顺序”衍生出来的。例如我们说某件事在13:00发生，其实是在说这件事发生在我们读到时钟上的读数为13:00之后，13:01之前。在此种定义下，时钟其实是通过读取时刻这一行为，对连续的时间进行了离散化的编号。</p>
+<p>For example, if we say some event occurs at 13:00pm. The critical statesments should be: It occured after we reading 13:00pm at clock and before 13:01pm. By this definition, we know that treate
+时间的定义对于分布式领域关于“事件发生先后”、“并发”等概念的认识至关重要。Lamport在文中指出，时间是由更加基本的概念“事件发生的顺序”衍生出来的。例如我们说某件事在13:00发生，其实是在说这件事发生在我们读到时钟上的读数为13:00之后，13:01之前。在此种定义下，时钟其实是通过读取时刻这一行为，对连续的时间进行了离散化的编号。</p>
 <h1 id="3-the-definition-of-distributed-system">3. The definition of distributed system</h1>
 <p>本文中讨论的分布式系统，是由若干空间上分离的process组成。同一process上的事件顺序串行发生，process之间通过收发消息进行通信。这里的process可以是若干独立的计算机，独立的进程，亦或是一台计算机内独立的硬件模块。在后文中我们我们统称process为“节点”。特别的，我们应当注意各个节点之间的通信延迟，它与单个节点内部事件发生的频率相比是不可忽略的。</p>
 <h1 id="4-happened-before">4. Happened Before</h1>
