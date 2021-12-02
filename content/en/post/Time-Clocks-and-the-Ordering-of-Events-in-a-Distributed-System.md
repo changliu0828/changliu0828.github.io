@@ -18,7 +18,7 @@ The paper dives into the fundamental topics "time and clock" in the distributed 
 
 # 1. Problem
 
-{{< figure src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/cafe.jpg" width="100%" >}}
+{{< figure src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/cafe.jpeg" width="100%" >}}
 
 Before we jump into the discussion, let's consider the following scenario:
 
