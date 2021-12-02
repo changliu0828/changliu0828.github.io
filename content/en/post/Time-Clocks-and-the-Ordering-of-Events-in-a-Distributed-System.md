@@ -18,25 +18,27 @@ The paper dives into the fundamental topics "time and clock" in the distributed 
 
 # 1. Problem
 
-Before we jump into the discusstion, let's consider the following question:
+{{< figure src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/cafe.jpg" width="100%" >}}
+
+Before we jump into the discussion, let's consider the following scenario:
 
 We have two persons A and B. They are having coffee wearing their own watches.
-+ A read the time by his watch after finishing his coffee. And A said: "I finished my coffee at 13:00".
-+ B read the time by his watch after finishing his coffee. And B said: "I finished my coffee at 13:05".
++ A read the time by his watch after finishing his coffee, and he said: "I finished my coffee at 13:00".
++ B read the time by his watch after finishing his coffee. and he said: "I finished my coffee at 13:05".
 
 Suppose they are both honest, **can we say that "A finished his coffee before B"?**
 
-The answer is no. Since we have no idea whether their watches are "accurate" or not, we can't have the conclusion of "who finished first", even though they both announced their reading of the watch honestly.
+The answer is no. Since we have no idea whether their watches are "accurate" or not. We can't have the conclusion of "who finished first", even though they both announced their reading of the watch honestly. Then what about this:
 
-结论是不一定。由于我们并不知道两人的手表时间是否“准确”，即便两人诚实地说出了自己喝完咖啡时手表的读数，也并不能由此推论出孰先孰后。那么如果情形变成如下这样，结论又是如何呢？
 
-+ $A$ 喝完咖啡后看手表，读数为13:00，他声称“我在13:00喝完咖啡”。
-+ $A$ 喝完咖啡后，打了一通电话给 $B$。
-+ $B$ 在通话完毕后，喝完咖啡，看手表，读数为13:05。他声称“我在13:05喝完咖啡”。
++ A read the time by his watch after finishing his coffee, and he said: "I finished my coffee at 13:00".
++ A made a phone call to B after coffee.
++ B answered the call, then finished his coffee and read the time by his watch. He said: "I finished my coffee at 13:05".
 
-在这种情形下，我们可以得知 $A$ 在通话前喝完咖啡，$B$ 在通话后喝完咖啡，故而必然有 $A$ 在 $B$ 之前喝完咖啡。一通电话使得彼此独立的两个时间体系产生了确定性的先后关系。
+In this scenario, we can have A finished the coffee before the call, and B finished after that. So A's coffee must be finished before B. **This phone call made up a deterministic "happened-before" relationship between two indipendent time system.** 
 
-由上面的例子可见，我们通常使用的时钟读数、时间戳等概念并不能准确地刻画出事件发生的先后顺序。而在分布式系统中，事件发生的先后常常扮演着各种算法的“关键角色”。那么我们如何准确地刻画这种顺序，或是设计我们的时钟，从而准确的刻画这种先后顺序呢？
+
+By the above example, we know that the common concept/method such as "reading of clock", "timestamp" can not correctly describe the order of things happening. However, in the distributed system, this order plays critical role in different algorithims. So, how could we build our "clock" to presisly describe this order? This paper gives us the answer.
 
 # 2. What is time
 
