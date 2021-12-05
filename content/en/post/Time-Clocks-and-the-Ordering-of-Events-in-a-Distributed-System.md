@@ -42,60 +42,55 @@ By the above example, we know that the common concept/method such as "reading of
 
 # 2. What is time
 
-
-In the paper, Lamport said, 
-
 > The concept of time is fundamental to our way of thinking. It is derived from the more basic concept of the order in which events occur.
 
-For example, if we say some event occurs at 13:00pm. The critical statesments should be: It occured after we reading 13:00pm at clock and before 13:01pm. By this definition, we know that treate 
-时间的定义对于分布式领域关于“事件发生先后”、“并发”等概念的认识至关重要。Lamport在文中指出，时间是由更加基本的概念“事件发生的顺序”衍生出来的。例如我们说某件事在13:00发生，其实是在说这件事发生在我们读到时钟上的读数为13:00之后，13:01之前。在此种定义下，时钟其实是通过读取时刻这一行为，对连续的时间进行了离散化的编号。
+For example, if we say some event occurs at 13:00. The critical statements should be: It occurred after we read 13:00 at the clock and before 13:01. By this definition, we know that “time” is a behavior that discrete the continuous-time by the number read on the clock.
+
 
 # 3. The definition of distributed system
 
-本文中讨论的分布式系统，是由若干空间上分离的process组成。同一process上的事件顺序串行发生，process之间通过收发消息进行通信。这里的process可以是若干独立的计算机，独立的进程，亦或是一台计算机内独立的硬件模块。在后文中我们我们统称process为“节点”。特别的，我们应当注意各个节点之间的通信延迟，它与单个节点内部事件发生的频率相比是不可忽略的。
+The so-called distributed system in this paper comprises several spatially separated Nodes. Events in the single node happened sequentially. Different nodes communicate by messaging. We can understand the node as independent computers, processes of operating systems, or different hardware modules in a computer. Especially, we should care about communication latency. It should not be ignored compared to the frequency of events happening in a single node.
 
 # 4. Happened Before
 
-对于一个分布式系统中的若干事件，我们定义“happened before”关系，记为"$\rightarrow$"。其满足如下三个条件，
+We define the "happened before" relation on the events in a distributed system, and denote it by "$\rightarrow$". It satisfied, 
 
- + 如果 $a$ 和 $b$ 是在相同节点上的两个事件，$a$ 在 $b$ 之前发生，则有 $a \rightarrow b$ 。
- + 如果事件 $a$ 表示某个节点发送某条消息，$b$ 是另一个节点接受这条消息，则有 $a \rightarrow b$ 。
- + 如果有 $a \rightarrow b$ 且 $b \rightarrow c$ ，则有 $a \rightarrow c$ 。
++ If $a$ and $b$ are the events in the same node, if $a$ comes before $b$, then $a \rightarrow b$.
++ If $a$ is the sending of a message by one node and $b$ is the receipt of the same message by another node, then $a \rightarrow b$.
++ If $a \rightarrow b$ and $b \rightarrow c$, then $a \rightarrow c$.
 
-当且仅当 $a \nrightarrow b$ 且 $b \nrightarrow a$ 时，我们称两个事件为**并发的(concurrent)**。
+If and only if $a \nrightarrow b$ and $b \nrightarrow a$, we say these two events are "concurrent".
 
-此外，我们规定 $\rightarrow$ 为非自反关系，即 $a \nrightarrow a$ 。显然，说一件事发生在自己“之前”并无任何意义。
+Besides, we define the $\rightarrow$ is a [irreflexive relation](https://en.wikipedia.org/wiki/Reflexive_relation), which is $a \nrightarrow a$. Obviously, a event which happened before itself does not make any sense.
 
-为了直观的描述这一关系，Lamport引入了如下图所示的“时空图”，图中垂直方向自下而上为时间发生顺序，水平方向为空间上的不同节点。图中的黑色圆点表示事件，波浪线箭头表示通信消息。
+To intuitively describe the relation, Lamport imported the below "space-time Diagram". In terms of terminology, the "process" in the diagram is the same as the "node" we discussed before. Black dots are the events that occurred on different nodes. The events on a single vertical line(node/process) happened from top to bottom, and the wave arrow between different nodes describes the messaging.
 
-回顾上面的"happened before"关系, 我们不难在图中找到若干满足条件的事件对，例如 $p_1 \rightarrow r_4$，其由 $ p_1 \rightarrow q_2 \rightarrow q_4 \rightarrow r_3 \rightarrow r_4$ 推导而来。
+Recall the "happened before" relation. It is not hard to find some satisfying event pairs. Such as $p_1 \rightarrow r_4$, deducted by $ p_1 \rightarrow q_2 \rightarrow q_4 \rightarrow r_3 \rightarrow r_4$.
 
-图中亦有若干并发的事件，例如 $p_3$ 和 $q_3$，虽然在图中我们能看到 $p_3$ 发生的物理时间(physical time)晚于 $q_3$，但对于系统中的节点来说，他们并不知道谁先谁后。
+And there are several concurrent events as well, such as $p_3$ and $q_3$. Even though we can see $p_3$ is above of $q_3$, but for the nodes , they do not aware of this kind of order.
 
 {{< figure src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/Fig1.jpg" width="70%" caption="Fig1. space-time diagram">}}
-
 # 5. Logical Clocks
-
 > a clock is just a way of assigning a number to an event.
 
-**时钟仅仅是对事件的发生予以编号而已。** 更加准确地讲，对于每一个节点 $P_i$ 我们定义时钟 $C_i$ 为一个函数，它为任意的事件 $a$ 赋值编号为 $C_i \langle a \rangle$。对整个系统时钟来讲，任意事件 $b$ 的发生时间标记为 $  C \langle b \rangle $，如果其发生在节点 $P_j$ 上，则 $ C \langle b \rangle =  C_j \langle b \rangle$。这里的时钟我们看做是系统内部的逻辑时钟，而非物理时钟，其标识与计数方法无需与物理时间一致。为了满足上文的"happened before"偏序关系，我们设计的逻辑时钟需要满足如下的Clock Condition.
+More precisely, for each node $P_i$, we define clock $C_i$ as a function. It numbers an arbitrary event $a$ of $C_i \langle a \rangle$. For the whole system, denote the happened time of an arbitrary event $b$ as $C \langle b \rangle$. If $b$ happened on node $P_j$, then $ C \langle b \rangle =  C_j \langle b \rangle$. Here, the clock $C$ is not the real clock we use in daily life. That is a logical clock simply assign integers to each event to present the order of happening. To follow the "happened before" relation, the clock should satisfied the following Clock Condition.
 
-**Clock Condition.** 对于系统中的任意事件 $a, b$：如果 $ a \rightarrow b$，则有 $C \langle a \rangle < C \langle b \rangle$。
+> **Clock Condition.** For any events $a, b$: if $a \rightarrow b$, then $C \langle a \rangle < C \langle b \rangle$.  
+> **C1**. If $a$ and $b$ are events in node $P_i$, and $a$ comes before $b$, then $C_i \langle a \rangle < C_i \langle b \rangle$.  
+> **C2**. If $a$ is the sending of a message by node $P_i$, and $b$ is the receipt of that message by node $P_j$, then $ C_i \langle a \rangle < C_j \langle b \rangle $.
 
-+ C1. 如果 $a$ 和 $b$ 是在相同节点 $P_i$ 上的两个事件，$a$ 在 $b$ 之前发生，则有 $C_i \langle a \rangle < C_i \langle b \rangle$。
-+ C2. 如果事件 $a$ 表示节点 $P_i$ 发送某条消息，$b$ 表示节点 $P_j$ 接受这条消息，则有$ C_i \langle a \rangle < C_j \langle b \rangle $。
+**In particular, the the converse proposition of Clock Condition "If $C \langle a \rangle < C \langle b \rangle$, then $a \rightarrow b$" does not necessarily hold.**. For example, in Fig1, $(p_2, q_3), (p_3, q_3)$ are concurrent. By $C1$, we have $C \langle p_2 \rangle < C \langle p_3 \rangle$, then we have either $C \langle q_3 \rangle \neq C \langle p_2 \rangle$ or $C \langle q_3 \rangle \neq C \langle p_3 \rangle$, which is confict with concurrent relation.
 
-**特别的，Clock Condition的逆命题"如果 $C \langle a \rangle < C \langle b \rangle$，则有 $ a \rightarrow b$"并不一定成立。** 因为它要求并发的事件必须具有相同的逻辑时间。例如图1中的 $p_2,p_3$ 都与 $q_3$ 为并发关系，但由 C1 有 $C \langle p_2 \rangle < C \langle p_3 \rangle$，则必然有 $C \langle q_3 \rangle \neq C \langle p_2 \rangle$ 或 $C \langle q_3 \rangle \neq C \langle p_3 \rangle$，与并发关系矛盾。
+For the logical clock, we can imagine that the "tick" evens keep occurring in a single node. For example, two evens $a, b$ continuous happened in a node $P_i$, and we have $C_i \langle a \rangle = 4, C_i \langle b \rangle = 7$, then we should have three "tick" evens happened between them which numbered $5,6,7$. Therefore, we can add "tick line" to our space-time diagram as Fig.2. By $C1$, we can know that for two evens continuous happened in the same node, there should have at least tick line between them. By $C2$, we can have that every message should go across at least one tick line.
 
-对于逻辑时钟，我们可以想象单个节点内不断发生着“tick”事件，例如在同一节点 $P_i$ 内连续发生的 $a, b$ 两个事件，有 $C_i \langle a \rangle = 4, C_i \langle b \rangle = 7$，那么在这两个事件之间发生了编号为 $5,6,7$ 的 tick 事件。于是我们可以在时空图中加入类似下图虚线所示的"tick line"。根据 C1 我们可以得到，在同一节点内的连续两个事件之间，至少要有一条 tick line。 根据 C2 我们可以得到，每一条消息必须穿过至少一条 tick line。
+{{< figure src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/Fig2.png" width="70%" caption="Fig2. space-time diagram with tick line">}}
 
-{{< figure src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/Fig2.png" width="70%" caption="图2">}}
+For easy understanding, as Fig3, we can make horizontal the tick line with the same partial order of events and messages.
 
-为了更方便理解，我们也可以在保证事件和消息的偏序关系下，将 tick line 绘制成如下图中等价的水平线的形式。
-
-{{< figure src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/Fig3.png" width="70%" caption="图3">}}
+{{< figure src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/Fig3.png" width="70%" caption="Fig.3 horizontal the tick line">}}
 
 对于单个节点上的逻辑时钟算法的实现，我们有如下的实现规则（Implementation Rule）：
+
 
 + IR1. 每个节点 $P_i$ 在任意连续的两个事件之间都要增加 $C_i$ 。
 + IR2. (a) 如果事件 $a$ 表示节点 $P_i$ 发送消息 $m$ ，那么 $m$ 中包含时间戳 $T_m=C_i \langle a \rangle $。(b) 当收到消息 $m$ 时，进程 $P_j$ 设置当前时间 $C_j$ 为 $ C_j'$，使得 $C_j' >= C_j$ 且 $C_j' > Tm$ 。
