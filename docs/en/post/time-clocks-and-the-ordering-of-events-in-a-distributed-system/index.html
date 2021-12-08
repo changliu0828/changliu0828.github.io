@@ -148,26 +148,36 @@ The paper dives into the fundamental topics &ldquo;time and clock&rdquo; in the 
         </figcaption>
 </figure>
 
-<p>对于单个节点上的逻辑时钟算法的实现，我们有如下的实现规则（Implementation Rule）：</p>
+<p>On a single node $P_i$, our implmentation of logical clock follows(Implementation Rule):</p>
 <ul>
-<li>IR1. 每个节点 $P_i$ 在任意连续的两个事件之间都要增加 $C_i$ 。</li>
-<li>IR2. (a) 如果事件 $a$ 表示节点 $P_i$ 发送消息 $m$ ，那么 $m$ 中包含时间戳 $T_m=C_i \langle a \rangle $。(b) 当收到消息 $m$ 时，进程 $P_j$ 设置当前时间 $C_j$ 为 $ C_j'$，使得 $C_j' &gt;= C_j$ 且 $C_j' &gt; Tm$ 。</li>
+<li>IR1. $C_i$ increased between any consecutive happened events.</li>
+<li>IR2.
+<ul>
+<li>(a) If event $a$ is the sending of a message $m$, and $m$ contains the timestamp $T_m=C_i \langle a \rangle $. (b)</li>
+<li>(b) When another node $P_j$ receive the message $m$, set $C_j$ as $C_j'$, which $C_j' &gt;= C_j$ and $C_j' &gt; Tm$.</li>
 </ul>
-<p>在实践中，当我们收到某条消息后，应当先执行 IR2 修改时间，再执行具体事件，从而保证 <strong>Clock Condition</strong>。</p>
+</li>
+</ul>
 <h1 id="6-total-ordering">6. Total Ordering</h1>
-<p>利用逻辑时钟，我们可以对整个系统中的事件进行全序(total order)排序。我们首先根据事件发生的逻辑时间对其排序。对于发生时间相同的事件，我们引入对于所有节点的预先优先级 $\prec$，这里的优先级可以是根据 id 排序等任意规则。</p>
-<p>更加严谨的说，我们定义全序关系 $\Rightarrow$。对于发生在节点 $P_i$ 的事件 $a$ 和发生在节点 $P_j$ 的事件 $b$，有 $ a \Rightarrow b $ 当且仅当 (i) $ C_i \langle a \rangle &lt; C_j \langle b \rangle $ 或 (ii) $C_i \langle a \rangle = C_j \langle b \rangle$ 且 $P_i \prec P_j$。</p>
-<p>这里由 <strong>Clock Condition</strong> 我们可以看到，凡是满足偏序关系 $\rightarrow$ 的，一定也满足全序关系 $\Rightarrow$。</p>
+<p>Using the logical clock, we can sort the who events in the distributed system in total order. Firstly, we sort events by logical clocks. For the events have the same logical clock value, we sort them by the pre-defined priority rules $\prec$. e.g. alphabet order.</p>
+<p>More precisely, we define the total order $\Rightarrow$. For event $a$ on $P_i$ and $b$ on $P_j$,<br>
+we have $ a \Rightarrow b $ if and only if (i) or (ii).</p>
+<ul>
+<li>(i) $C_i \langle a \rangle &lt; C_j \langle b \rangle$.</li>
+<li>(ii) $C_i \langle a \rangle = C_j \langle b \rangle$ and $P_i \prec P_j$.</li>
+</ul>
+<p>By the definition of <strong>Clock Condition</strong>, we can know that if events satisfied $\rightarrow$, then they must satisfied $\Rightarrow$.</p>
 <figure><img src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/partial-total.png"
-         alt="图4. 偏序与全序关系" width="40%"/><figcaption>
-            <p>图4. 偏序与全序关系</p>
+         alt="Fig4. Total order and partial order" width="40%"/><figcaption>
+            <p>Fig4. Total order and partial order</p>
         </figcaption>
 </figure>
 
 <h1 id="7-physical-clocks">7. Physical Clocks</h1>
 <h2 id="71-out-of-the-system">7.1 Out of the system</h2>
-<p>在全序关系下，由于系统之外的一些事件，使得我们有时会遇到一些反常行为。</p>
-<p>考虑下面这种情况，某人在节点A上触发了事件A，随后打电话给另一个人。此人接到电话后在节点B上触发事件B。由于整个系统对于系统之外的事件“打电话”毫不知情，则有可能出现 $B \Rightarrow A$ 的情况。</p>
+<p>To build a physical clock that followed clock condition, we should take care of some &ldquo;Out of the system&rdquo; events.</p>
+<p>For example, some engineer triggered event $a$ on a node, having a cup of coffee, and triggered event $b$ on another node. The system did&rsquo;t aware about &ldquo;coffee&rdquo;, so we may have $B \Rightarrow A$.</p>
+<p>We can define</p>
 <p>我们可以定义系统中的所有事件集合为 $\varphi$。系统中的事件与外部事件的合集为 $\underline{\varphi}$。$\underline{\rightarrow}$ 为 $\underline{\varphi}$ 上的 happened before 关系。在上面的例子中，我们有 $A \underline{\rightarrow} B$，但 $A \nrightarrow B$。</p>
 <p>显然没有任何算法能够不利用外部信息，仅凭 $\varphi$ 就能保证 $\underline{\rightarrow}$ 关系。在此，为了能够确保$A \rightarrow B$，有如下两种方案，</p>
 <ol>
