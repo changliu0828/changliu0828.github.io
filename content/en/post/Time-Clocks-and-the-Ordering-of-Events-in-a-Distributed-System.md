@@ -116,32 +116,33 @@ To build a physical clock that followed clock condition, we should take care of 
 
 For example, some engineer triggered event $a$ on a node, having a cup of coffee, and triggered event $b$ on another node. The system did't aware about "coffee", so we may have $B \Rightarrow A$. 
 
-We can define 
+We define the events inside of  the system as $\varphi$. Union of events for inside and outside of the system as $\underline{\varphi}$. $\underline{\rightarrow}$ is the happened relation on $\underline{\varphi}$. In the example above, we have  $A \underline{\rightarrow} B$, but $A \nrightarrow B$.
 
-我们可以定义系统中的所有事件集合为 $\varphi$。系统中的事件与外部事件的合集为 $\underline{\varphi}$。$\underline{\rightarrow}$ 为 $\underline{\varphi}$ 上的 happened before 关系。在上面的例子中，我们有 $A \underline{\rightarrow} B$，但 $A \nrightarrow B$。
+Obviously, without the outside infomation, there is no way to have $\underline{\rightarrow}$ only by $\varphi$. Therefore, we have two ways to have $A \rightarrow B$, 
 
-显然没有任何算法能够不利用外部信息，仅凭 $\varphi$ 就能保证 $\underline{\rightarrow}$ 关系。在此，为了能够确保$A \rightarrow B$，有如下两种方案，
+1. Explicitly importing the ouside information. etc. Event $A$ happened at logical time $T_A$. After taking the phone call, tell the system $T_B$ should greater than $T_A$ explicitly. 
+2. Build a system with the **Strong Clock Condition**.
 
-1. 显式的引入外部信息。例如 $A$ 事件发生的逻辑时间为 $T_A$，在接到电话后，显式的告知系统 $B$ 的发生时间应大于 $T_A$。
-2. 构建满足如下**Strong Clock Condition** 的系统。
+> **Strong Clock Condition.** For any events $a, b$ in $\varphi$: if $ a \underline{\rightarrow} b$ then $C \langle a \rangle < C \langle b \rangle$.
 
-**Strong Clock Condition.** 对于 $\varphi$ 中的任意事件 $a, b$：如果$ a \underline{\rightarrow} b$ 则 $C \langle a \rangle < C \langle b \rangle$。
-
-显然相较于方案1，**Strong Clock Condition**才是我们希望的方案。下面具体介绍如何实现满足**Strong Clock Condition**的物理时钟。
+Obviously, **Strong Clock Condition.** is the solution we want. The following describe how to implmente a physical clock that safisfies the **Strong Clock Condition**.
 
 ## 7.2 Physical Clocks Implimentation
 
-令 $C_i(t)$ 表示时钟 $C_i$ 在物理时间 $t$ 读到的读数。为了数学上的方便起见，在此我们认为 $C_i$ 对于 $t$ 是连续可微的，$dC_i(t)/dt$ 表示时钟在时间 $t$ 运行的速率。
+Let $C_i(t)$ be the reading of $C_i$ at physical time $t$. For mathematical convenience, let's say $C_i$ to be continuously differentiable for $t$, $dC_i(t)/dt$ describe the "speed" of the clock at time $t$.
 
-为了使 $C_i$ 的运行速率与真实物理时钟相近，对于所有的 $t$，我们必须使得 $dC_i(t)/dt \approx 1$。更严谨的讲，我们需要满足如下条件，
+To make the speed of $C_i$ is close the real time, for all $t$, we must make $dC_i(t)/dt \approx 1$. More precisely, we need to satisfy the following conditions,
 
- + PC1. 存在一个常数 $\kappa \ll 1$，对于所有的 $i$ ，有 $| dC_i(t)/dt - 1 | < \kappa$。对于典型的晶控时钟(crystal controlled clock)，$\kappa \leq 10^{-6}$。
+> PC1. There exists a constant $\kappa \ll 1$ such that for all $i$: $| dC_i(t)/dt - 1 | < \kappa$.  
+> For typical crystal controlled clocks, $\kappa \leq 10^{-6}$.
 
-除了保证单个时钟运行准确之外，各个时钟之间也需要保持同步，即所有的 $i,j,t$，有 $C_i(t) \approx C_j(t)$，
+We also need to keep syncyonize between different clocks, which means for all $i,j,t$, we have $C_i(t) \approx C_j(t)$. So we have,
 
- + PC2. 对于所有的 $i, j$，有$|C_i(t) - C_j(t)| < \epsilon$。直观来讲即图2中的单条 tick line 高度差不能太大。 
+> PC2. For all $i, j$:$|C_i(t) - C_j(t)| < \epsilon$.
 
-对于 PC2，由于累计误差(accumulated error)的存在，两个完全独立运行的时钟必然会误差越来越大。因此我们需要某种算法对不同节点上的时钟进行对时。
+Intuitively speaking, the height difference of a single tick line in Fig.2 should not be too large.
+
+Due to the existence of accumulated error, two clock system that run independently will lead to increasing difference. Therefore, we need a way to syncyonize the clock.
 
 首先我们假设我们的时钟满足**Clock Condition.**，这样我们只需考虑在 $\underline{\varphi}$ 中 $a \nrightarrow b$ 的情况。不难发现，此时 $a$ 与 $b$ 必然发生在不同的节点上。
 
