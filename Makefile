@@ -8,10 +8,14 @@ git-update:
   	$(GIT) commit -m "update"; \
   	$(GIT) push origin master; \
 
+run:
+	$(HUGO) server -D
+
 new-post:
-ifeq ($(strip $(POST_NAME)),)
-	@printf("POST_NAME is empty")
-else
-	mkdir static/image/$(POST_NAME); \
-  	hugo new post/$(POST_NAME).md; \
-endif
+	ifeq ($(strip $(POST_NAME)),)
+		@printf("POST_NAME is empty")
+	else
+		mkdir static/image/$(POST_NAME); \
+  		hugo new post/$(POST_NAME).md; \
+	endif
+
