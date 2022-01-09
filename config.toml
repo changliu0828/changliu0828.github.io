@@ -30,10 +30,6 @@ footnotereturnlinkcontents = "↩"
       name = "仪表盘"
       url = "/dashboard/"
       weight = 4
-    [[languages.ch.menu.main]]
-      name = "日记"
-      url = "/journal/"
-      weight = 5
   [languages.en]
     languageName = "EN"
     title = "Chang Liu's Blog"

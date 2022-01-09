@@ -11,6 +11,9 @@ git-update:
 run:
 	$(HUGO) server -D
 
+run-slient:
+	$(HUGO) server -D &>run.log &
+
 new-post:
 	ifeq ($(strip $(POST_NAME)),)
 		@printf("POST_NAME is empty")
