@@ -309,6 +309,11 @@ graph LR
 
 例：ニューヨークは今何時ですか。纽约现在几点？
 
+## 方向
+
+{{< figure src="/image/japanese-learning-note/方向.png" width="70%" caption="图. 方向">}}
+
+
 ## 数词
 
 ### 月份
