@@ -61,52 +61,52 @@
 <p>当今现在，在基于共享内存通信的单机多进程上，我们可以很方便的使用基于TAS(Test&amp;Set)或的CAS(Copy&amp;Swap)实现的互斥锁mutex来实现临界区互斥访问。然而，在只有对内存单元原子读写的条件下，如何完成互斥访问呢？Dijkstra给出了他的解法。</p>
 <h1 id="解法与证明">解法与证明</h1>
 <p>在共享存储上，Dijkstra使用了两个长度为N的布尔数组，和一个整数。</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">Boolean array b, c[1:N]; integer K
-</code></pre></td></tr></table>
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>Boolean array b, c[1:N]; integer K
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>其中，$k$ 满足 $1 \leqslant k \leqslant N$，$b[i]$ 和 $c[i]$ 只被节点 $i$ 修改，且初始值为true。对于第 $i$ 个节点$(1 \leqslant i \leqslant N)$，执行下面的代码</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">integer j
-Li0:  b[i] := false
-Li1:  if k != i then
-Li2:  begin c[i] := true
-Li3:  if b[k] then k := i
-      go to Li1
-      end
-        else
-Li4:  begin c[i] := false
-        for j := 1 step 1 until N do
-          if j != i and not c[j] then go to Li1
-      end
-      critical section;
-      c[i] := true; b[i] := true
-      remainder of the cycle in which stopping is allowed;
-      go to Li0
-</code></pre></td></tr></table>
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>integer j
+</span></span><span style="display:flex;"><span>Li0:  b[i] := false
+</span></span><span style="display:flex;"><span>Li1:  if k != i then
+</span></span><span style="display:flex;"><span>Li2:  begin c[i] := true
+</span></span><span style="display:flex;"><span>Li3:  if b[k] then k := i
+</span></span><span style="display:flex;"><span>      go to Li1
+</span></span><span style="display:flex;"><span>      end
+</span></span><span style="display:flex;"><span>        else
+</span></span><span style="display:flex;"><span>Li4:  begin c[i] := false
+</span></span><span style="display:flex;"><span>        for j := 1 step 1 until N do
+</span></span><span style="display:flex;"><span>          if j != i and not c[j] then go to Li1
+</span></span><span style="display:flex;"><span>      end
+</span></span><span style="display:flex;"><span>      critical section;
+</span></span><span style="display:flex;"><span>      c[i] := true; b[i] := true
+</span></span><span style="display:flex;"><span>      remainder of the cycle in which stopping is allowed;
+</span></span><span style="display:flex;"><span>      go to Li0
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>Dijkstra原文中给出的证明集中论证两点。第一，所有节点互斥访问临界区。第二，不会出现系统死锁。建议大家可以先结合代码看下原文中证明。</p>
 <h1 id="易读版本">易读版本</h1>
@@ -117,43 +117,43 @@ Li4:  begin c[i] := false
 <li>将数组 <code>b</code> 改名为 <code>want_to_enter_critical_section</code>，数组 <code>c</code> 改名为 <code>in_critical_section</code>。</li>
 <li>将 <code>b</code> 和 <code>c</code> 数组的初始值改为 <code>false</code> ，并翻转代码中所有的布尔值，即 <code>false</code> 改为 <code>true</code>, <code>true</code> 改为 <code>false</code> 。</li>
 </ul>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#0aa">bool</span>  want_to_enter_critical_section[N] = { <span style="color:#0aa">false</span> }; <span style="color:#aaa;font-style:italic">//b array
-</span><span style="color:#aaa;font-style:italic"></span><span style="color:#0aa">bool</span>  in_critical_section[N] = { <span style="color:#0aa">false</span> };            <span style="color:#aaa;font-style:italic">//c array
-</span><span style="color:#aaa;font-style:italic"></span>Li0:  want_to_enter_critical_section[i] = <span style="color:#0aa">true</span>;
-Li1:  <span style="color:#00a">if</span> (k != i) {
-Li2:    in_critical_section[i] = <span style="color:#0aa">false</span>;
-Li3:    <span style="color:#00a">if</span> (!want_to_enter_critical_section[k]) k = i;
-        <span style="color:#00a">goto</span> Li1;
-Li4:  } <span style="color:#00a">else</span> {
-        in_critical_section[i] = <span style="color:#0aa">true</span>;
-        <span style="color:#00a">for</span> (<span style="color:#0aa">int</span> j = <span style="color:#099">0</span>; j &lt; N; ++ j)
-          <span style="color:#00a">if</span> (j != i &amp;&amp; in_critical_section[j]) <span style="color:#00a">goto</span> Li1;
-      }
-      <span style="color:#aaa;font-style:italic">//critical section;
-</span><span style="color:#aaa;font-style:italic"></span>      in_critical_section[i] = <span style="color:#0aa">false</span>; want_to_enter_critical_section[i] = <span style="color:#0aa">false</span>;
-      <span style="color:#aaa;font-style:italic">//remainder of the cycle in which stopping is allowed;
-</span><span style="color:#aaa;font-style:italic"></span>      <span style="color:#00a">goto</span> Li0;
-</code></pre></td></tr></table>
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#0aa">bool</span>  want_to_enter_critical_section[N] = { <span style="color:#0aa">false</span> }; <span style="color:#aaa;font-style:italic">//b array
+</span></span></span><span style="display:flex;"><span><span style="color:#aaa;font-style:italic"></span><span style="color:#0aa">bool</span>  in_critical_section[N] = { <span style="color:#0aa">false</span> };            <span style="color:#aaa;font-style:italic">//c array
+</span></span></span><span style="display:flex;"><span><span style="color:#aaa;font-style:italic"></span>Li0:  want_to_enter_critical_section[i] = <span style="color:#0aa">true</span>;
+</span></span><span style="display:flex;"><span>Li1:  <span style="color:#00a">if</span> (k != i) {
+</span></span><span style="display:flex;"><span>Li2:    in_critical_section[i] = <span style="color:#0aa">false</span>;
+</span></span><span style="display:flex;"><span>Li3:    <span style="color:#00a">if</span> (!want_to_enter_critical_section[k]) k = i;
+</span></span><span style="display:flex;"><span>        <span style="color:#00a">goto</span> Li1;
+</span></span><span style="display:flex;"><span>Li4:  } <span style="color:#00a">else</span> {
+</span></span><span style="display:flex;"><span>        in_critical_section[i] = <span style="color:#0aa">true</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#00a">for</span> (<span style="color:#0aa">int</span> j = <span style="color:#099">0</span>; j &lt; N; ++ j)
+</span></span><span style="display:flex;"><span>          <span style="color:#00a">if</span> (j != i &amp;&amp; in_critical_section[j]) <span style="color:#00a">goto</span> Li1;
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#aaa;font-style:italic">//critical section;
+</span></span></span><span style="display:flex;"><span><span style="color:#aaa;font-style:italic"></span>      in_critical_section[i] = <span style="color:#0aa">false</span>; want_to_enter_critical_section[i] = <span style="color:#0aa">false</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#aaa;font-style:italic">//remainder of the cycle in which stopping is allowed;
+</span></span></span><span style="display:flex;"><span><span style="color:#aaa;font-style:italic"></span>      <span style="color:#00a">goto</span> Li0;
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>证明：</strong></p>
 <p><strong>1. mutual exclusion</strong></p>
@@ -164,21 +164,21 @@ Li4:  } <span style="color:#00a">else</span> {
 <p>证毕。</p>
 <p><strong>并发情况</strong></p>
 <p>这里Dijstra原文中没有明确指出的是，考虑并发情况下两个节点 <code>x</code> 和 <code>y</code> 同时运行 <code>Li4</code> 中代码，则会出现下面的情况。此种情况下，两个节点都 <code>goto Li1</code>。<code>x</code> 和 <code>y</code> 中不等于 <code>k</code>的节点会执行 <code>Li2</code>，从而使得节点 <code>k</code>在下次执行 <code>Li4</code> 时成功通过，进入临界区。</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#aaa;font-style:italic">// xyxy, 同xyyx
-</span><span style="color:#aaa;font-style:italic"></span>x: in_critical_section[x] = <span style="color:#0aa">true</span>;
-y: in_critical_section[y] = <span style="color:#0aa">true</span>;
-x: in_critical_section[y] == <span style="color:#0aa">true</span> <span style="color:#00a">goto</span> Li1;
-y: in_critical_section[x] == <span style="color:#0aa">true</span> <span style="color:#00a">goto</span> Li1;
-</code></pre></td></tr></table>
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#aaa;font-style:italic">// xyxy, 同xyyx
+</span></span></span><span style="display:flex;"><span><span style="color:#aaa;font-style:italic"></span>x: in_critical_section[x] = <span style="color:#0aa">true</span>;
+</span></span><span style="display:flex;"><span>y: in_critical_section[y] = <span style="color:#0aa">true</span>;
+</span></span><span style="display:flex;"><span>x: in_critical_section[y] == <span style="color:#0aa">true</span> <span style="color:#00a">goto</span> Li1;
+</span></span><span style="display:flex;"><span>y: in_critical_section[x] == <span style="color:#0aa">true</span> <span style="color:#00a">goto</span> Li1;
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h1 id="最后">最后</h1>
 <p>谢谢你的阅读。如果你读过本文后有任何的思考或疑虑，请务必<a href="mailto:changliu0828@gmail.com">让我知道</a>。</p>

@@ -95,88 +95,88 @@
 
 <h1 id="协程的上下文与切换">协程的上下文与切换</h1>
 <p>那么需要我们手动保存和加载的运行时“上下文”都包含哪些内容呢？以下面的 <code>main</code> 函数调用 <code>sum</code> 函数为例，</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#0aa">int</span> <span style="color:#0a0">sum</span>(<span style="color:#0aa">int</span> x, <span style="color:#0aa">int</span> y) {
-  <span style="color:#0aa">int</span> z = x + y;
-  <span style="color:#00a">return</span> z;
-}
-<span style="color:#0aa">int</span> <span style="color:#0a0">main</span>() {
-  <span style="color:#0aa">int</span> a = <span style="color:#099">1</span>;
-  <span style="color:#0aa">int</span> b = <span style="color:#099">10</span>;
-  <span style="color:#0aa">int</span> c = sum(a, b);
-  <span style="color:#00a">return</span> <span style="color:#099">0</span>;
-}
-</code></pre></td></tr></table>
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#0aa">int</span> <span style="color:#0a0">sum</span>(<span style="color:#0aa">int</span> x, <span style="color:#0aa">int</span> y) {
+</span></span><span style="display:flex;"><span>  <span style="color:#0aa">int</span> z = x + y;
+</span></span><span style="display:flex;"><span>  <span style="color:#00a">return</span> z;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#0aa">int</span> <span style="color:#0a0">main</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#0aa">int</span> a = <span style="color:#099">1</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#0aa">int</span> b = <span style="color:#099">10</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#0aa">int</span> c = sum(a, b);
+</span></span><span style="display:flex;"><span>  <span style="color:#00a">return</span> <span style="color:#099">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>在使用 <code> g++ -m32 -s sum.cpp</code> 编译后，对应的汇编代码如下，</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-nasm" data-lang="nasm">_Z3sumii:
-<span style="color:#0a0">pushl</span>   %<span style="color:#0aa">ebp</span>
-<span style="color:#0a0">movl</span>    %<span style="color:#0aa">esp</span>, %<span style="color:#0aa">ebp</span>
-<span style="color:#0a0">subl</span>    <span style="color:#00a">$</span><span style="color:#099">16</span>, %<span style="color:#0aa">esp</span>         <span style="color:#aaa;font-style:italic">;make space for stack</span>
-<span style="color:#0a0">movl</span>    <span style="color:#099">12</span>(%<span style="color:#0aa">ebp</span>), %<span style="color:#0aa">eax</span>    <span style="color:#aaa;font-style:italic">;%eax = y</span>
-<span style="color:#0a0">movl</span>    <span style="color:#099">8</span>(%<span style="color:#0aa">ebp</span>), %<span style="color:#0aa">edx</span>     <span style="color:#aaa;font-style:italic">;%edx = x</span>
-<span style="color:#0a0">addl</span>    %<span style="color:#0aa">edx</span>, %<span style="color:#0aa">eax</span>        <span style="color:#aaa;font-style:italic">;%eax = %eax + %edx</span>
-<span style="color:#0a0">movl</span>    %<span style="color:#0aa">eax</span>, -<span style="color:#099">4</span>(%<span style="color:#0aa">ebp</span>)    <span style="color:#aaa;font-style:italic">;z = %eax</span>
-<span style="color:#0a0">movl</span>    -<span style="color:#099">4</span>(%<span style="color:#0aa">ebp</span>), %<span style="color:#0aa">eax</span>    <span style="color:#aaa;font-style:italic">;%eax = z</span>
-<span style="color:#0a0">leave</span>                     <span style="color:#aaa;font-style:italic">;%esp = %ebp; pop %ebp</span>
-<span style="color:#0a0">ret</span>                       <span style="color:#aaa;font-style:italic">;pop %eip; jump(%eip)</span>
-
-main:
-<span style="color:#0a0">pushl</span>   %<span style="color:#0aa">ebp</span>
-<span style="color:#0a0">movl</span>    %<span style="color:#0aa">esp</span>, %<span style="color:#0aa">ebp</span>
-<span style="color:#0a0">subl</span>    <span style="color:#00a">$</span><span style="color:#099">24</span>, %<span style="color:#0aa">esp</span>         <span style="color:#aaa;font-style:italic">;make space for stack</span>
-<span style="color:#0a0">movl</span>    <span style="color:#00a">$</span><span style="color:#099">1</span>, -<span style="color:#099">4</span>(%<span style="color:#0aa">ebp</span>)      <span style="color:#aaa;font-style:italic">;int a = 1;</span>
-<span style="color:#0a0">movl</span>    <span style="color:#00a">$</span><span style="color:#099">10</span>, -<span style="color:#099">8</span>(%<span style="color:#0aa">ebp</span>)     <span style="color:#aaa;font-style:italic">;int b = 10;</span>
-<span style="color:#0a0">movl</span>    -<span style="color:#099">8</span>(%<span style="color:#0aa">ebp</span>), %<span style="color:#0aa">eax</span>
-<span style="color:#0a0">movl</span>    %<span style="color:#0aa">eax</span>, <span style="color:#099">4</span>(%<span style="color:#0aa">esp</span>)     <span style="color:#aaa;font-style:italic">;y = b;</span>
-<span style="color:#0a0">movl</span>    -<span style="color:#099">4</span>(%<span style="color:#0aa">ebp</span>), %<span style="color:#0aa">eax</span>
-<span style="color:#0a0">movl</span>    %<span style="color:#0aa">eax</span>, (%<span style="color:#0aa">esp</span>)      <span style="color:#aaa;font-style:italic">;x = a;</span>
-<span style="color:#0a0">call</span>    <span style="color:#a00">_Z3sumii</span>          <span style="color:#aaa;font-style:italic">;push(eip); jump(sum);</span>
-<span style="color:#0a0">movl</span>    %<span style="color:#0aa">eax</span>, -<span style="color:#099">12</span>(%<span style="color:#0aa">ebp</span>)
-<span style="color:#0a0">movl</span>    <span style="color:#00a">$</span><span style="color:#099">0</span>, %<span style="color:#0aa">eax</span>          <span style="color:#aaa;font-style:italic">;return 0;</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-nasm" data-lang="nasm"><span style="display:flex;"><span>_Z3sumii:
+</span></span><span style="display:flex;"><span><span style="color:#0a0">pushl</span>   %<span style="color:#0aa">ebp</span>
+</span></span><span style="display:flex;"><span><span style="color:#0a0">movl</span>    %<span style="color:#0aa">esp</span>, %<span style="color:#0aa">ebp</span>
+</span></span><span style="display:flex;"><span><span style="color:#0a0">subl</span>    <span style="color:#00a">$</span><span style="color:#099">16</span>, %<span style="color:#0aa">esp</span>         <span style="color:#aaa;font-style:italic">;make space for stack</span>
+</span></span><span style="display:flex;"><span><span style="color:#0a0">movl</span>    <span style="color:#099">12</span>(%<span style="color:#0aa">ebp</span>), %<span style="color:#0aa">eax</span>    <span style="color:#aaa;font-style:italic">;%eax = y</span>
+</span></span><span style="display:flex;"><span><span style="color:#0a0">movl</span>    <span style="color:#099">8</span>(%<span style="color:#0aa">ebp</span>), %<span style="color:#0aa">edx</span>     <span style="color:#aaa;font-style:italic">;%edx = x</span>
+</span></span><span style="display:flex;"><span><span style="color:#0a0">addl</span>    %<span style="color:#0aa">edx</span>, %<span style="color:#0aa">eax</span>        <span style="color:#aaa;font-style:italic">;%eax = %eax + %edx</span>
+</span></span><span style="display:flex;"><span><span style="color:#0a0">movl</span>    %<span style="color:#0aa">eax</span>, -<span style="color:#099">4</span>(%<span style="color:#0aa">ebp</span>)    <span style="color:#aaa;font-style:italic">;z = %eax</span>
+</span></span><span style="display:flex;"><span><span style="color:#0a0">movl</span>    -<span style="color:#099">4</span>(%<span style="color:#0aa">ebp</span>), %<span style="color:#0aa">eax</span>    <span style="color:#aaa;font-style:italic">;%eax = z</span>
+</span></span><span style="display:flex;"><span><span style="color:#0a0">leave</span>                     <span style="color:#aaa;font-style:italic">;%esp = %ebp; pop %ebp</span>
+</span></span><span style="display:flex;"><span><span style="color:#0a0">ret</span>                       <span style="color:#aaa;font-style:italic">;pop %eip; jump(%eip)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>main:
+</span></span><span style="display:flex;"><span><span style="color:#0a0">pushl</span>   %<span style="color:#0aa">ebp</span>
+</span></span><span style="display:flex;"><span><span style="color:#0a0">movl</span>    %<span style="color:#0aa">esp</span>, %<span style="color:#0aa">ebp</span>
+</span></span><span style="display:flex;"><span><span style="color:#0a0">subl</span>    <span style="color:#00a">$</span><span style="color:#099">24</span>, %<span style="color:#0aa">esp</span>         <span style="color:#aaa;font-style:italic">;make space for stack</span>
+</span></span><span style="display:flex;"><span><span style="color:#0a0">movl</span>    <span style="color:#00a">$</span><span style="color:#099">1</span>, -<span style="color:#099">4</span>(%<span style="color:#0aa">ebp</span>)      <span style="color:#aaa;font-style:italic">;int a = 1;</span>
+</span></span><span style="display:flex;"><span><span style="color:#0a0">movl</span>    <span style="color:#00a">$</span><span style="color:#099">10</span>, -<span style="color:#099">8</span>(%<span style="color:#0aa">ebp</span>)     <span style="color:#aaa;font-style:italic">;int b = 10;</span>
+</span></span><span style="display:flex;"><span><span style="color:#0a0">movl</span>    -<span style="color:#099">8</span>(%<span style="color:#0aa">ebp</span>), %<span style="color:#0aa">eax</span>
+</span></span><span style="display:flex;"><span><span style="color:#0a0">movl</span>    %<span style="color:#0aa">eax</span>, <span style="color:#099">4</span>(%<span style="color:#0aa">esp</span>)     <span style="color:#aaa;font-style:italic">;y = b;</span>
+</span></span><span style="display:flex;"><span><span style="color:#0a0">movl</span>    -<span style="color:#099">4</span>(%<span style="color:#0aa">ebp</span>), %<span style="color:#0aa">eax</span>
+</span></span><span style="display:flex;"><span><span style="color:#0a0">movl</span>    %<span style="color:#0aa">eax</span>, (%<span style="color:#0aa">esp</span>)      <span style="color:#aaa;font-style:italic">;x = a;</span>
+</span></span><span style="display:flex;"><span><span style="color:#0a0">call</span>    <span style="color:#a00">_Z3sumii</span>          <span style="color:#aaa;font-style:italic">;push(eip); jump(sum);</span>
+</span></span><span style="display:flex;"><span><span style="color:#0a0">movl</span>    %<span style="color:#0aa">eax</span>, -<span style="color:#099">12</span>(%<span style="color:#0aa">ebp</span>)
+</span></span><span style="display:flex;"><span><span style="color:#0a0">movl</span>    <span style="color:#00a">$</span><span style="color:#099">0</span>, %<span style="color:#0aa">eax</span>          <span style="color:#aaa;font-style:italic">;return 0;</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>如下图所示，代码主要发生在黄色与绿色部分所示的两个函数的栈帧上。<code>ebp</code>基指针寄存器与<code>esp</code>栈指针寄存器标识了栈底与栈顶位置。</p>
 <p>$L14$首先将当前<code>ebp</code>压栈，此时由于main函数为进程启动后执行的函数，<code>ebp</code>此时为0。</p>
@@ -202,85 +202,85 @@ main:
 <p>通过上面的分析我们不难发现，对于运行时的函数来讲，<strong>参数、返回值地址、函数栈、寄存器</strong>四个部分组成了运行时的全部信息，通过这些信息我们可以恢复任意函数的执行现场，我们称之为<strong>协程的上下文(context)</strong>。</p>
 <h2 id="coctx_t上下文信息"><code>coctx_t</code>上下文信息</h2>
 <p>在libco中，使用如下定义的结构体<code>coctx_t</code>描述协程上下文，其中<code>ss_sp</code>与<code>ss_size</code>保存了参数、返回值地址、函数栈三部分内容，即图3中的红框部分，<code>regs</code>保存了32位/64位下的寄存器。</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#00a">struct</span> <span style="color:#0a0;text-decoration:underline">coctx_t</span>
-{
-<span style="color:#4c8317">#if defined(__i386__)
-</span><span style="color:#4c8317"></span>  <span style="color:#0aa">void</span> *regs[ <span style="color:#099">8</span> ];    <span style="color:#aaa;font-style:italic">//详见coctx.cpp
-</span><span style="color:#aaa;font-style:italic"></span><span style="color:#4c8317">#else
-</span><span style="color:#4c8317"></span>  <span style="color:#0aa">void</span> *regs[ <span style="color:#099">14</span> ];   <span style="color:#aaa;font-style:italic">//详见coctx.cpp, R10, R11为callee saved register, 由被调用函数保存
-</span><span style="color:#aaa;font-style:italic"></span><span style="color:#4c8317">#endif
-</span><span style="color:#4c8317"></span>  size_t ss_size;     <span style="color:#aaa;font-style:italic">//协程栈剩余大小
-</span><span style="color:#aaa;font-style:italic"></span>  <span style="color:#0aa">char</span> *ss_sp;        <span style="color:#aaa;font-style:italic">//协程栈栈底地址
-</span><span style="color:#aaa;font-style:italic"></span>};
-</code></pre></td></tr></table>
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#00a">struct</span> <span style="color:#0a0;text-decoration:underline">coctx_t</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#4c8317">#if defined(__i386__)
+</span></span></span><span style="display:flex;"><span><span style="color:#4c8317"></span>  <span style="color:#0aa">void</span> *regs[ <span style="color:#099">8</span> ];    <span style="color:#aaa;font-style:italic">//详见coctx.cpp
+</span></span></span><span style="display:flex;"><span><span style="color:#aaa;font-style:italic"></span><span style="color:#4c8317">#else
+</span></span></span><span style="display:flex;"><span><span style="color:#4c8317"></span>  <span style="color:#0aa">void</span> *regs[ <span style="color:#099">14</span> ];   <span style="color:#aaa;font-style:italic">//详见coctx.cpp, R10, R11为callee saved register, 由被调用函数保存
+</span></span></span><span style="display:flex;"><span><span style="color:#aaa;font-style:italic"></span><span style="color:#4c8317">#endif
+</span></span></span><span style="display:flex;"><span><span style="color:#4c8317"></span>  size_t ss_size;     <span style="color:#aaa;font-style:italic">//协程栈剩余大小
+</span></span></span><span style="display:flex;"><span><span style="color:#aaa;font-style:italic"></span>  <span style="color:#0aa">char</span> *ss_sp;        <span style="color:#aaa;font-style:italic">//协程栈栈底地址
+</span></span></span><span style="display:flex;"><span><span style="color:#aaa;font-style:italic"></span>};
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="co_make上下文初始化"><code>co_make</code>上下文初始化</h2>
 <p>在libco中，使用如下的<code>coctx_make</code>在初次调用(<code>co_resume</code>)时，为协程上下文进行初始的内容填充工作，</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#aaa;font-style:italic">/*
-</span><span style="color:#aaa;font-style:italic"> * @param
-</span><span style="color:#aaa;font-style:italic"> * ctx  :指向上下文结构体
-</span><span style="color:#aaa;font-style:italic"> * pfn  :指向调用函数
-</span><span style="color:#aaa;font-style:italic"> * s    :参数
-</span><span style="color:#aaa;font-style:italic"> * s1   :参数
-</span><span style="color:#aaa;font-style:italic"> */</span>
-<span style="color:#0aa">int</span> <span style="color:#0a0">coctx_make</span>(coctx_t* ctx, coctx_pfn_t pfn, <span style="color:#00a">const</span> <span style="color:#0aa">void</span>* s, <span style="color:#00a">const</span> <span style="color:#0aa">void</span>* s1) {
-  <span style="color:#aaa;font-style:italic">// make room for coctx_param
-</span><span style="color:#aaa;font-style:italic"></span>  <span style="color:#0aa">char</span>* sp = ctx-&gt;ss_sp + ctx-&gt;ss_size - <span style="color:#00a">sizeof</span>(coctx_param_t); <span style="color:#aaa;font-style:italic">//ss_sp内存为堆内存，将sp移动到高地址
-</span><span style="color:#aaa;font-style:italic"></span>  sp = (<span style="color:#0aa">char</span>*)((<span style="color:#0aa">unsigned</span> <span style="color:#0aa">long</span>)sp &amp; -<span style="color:#099">16L</span>);                       <span style="color:#aaa;font-style:italic">//i386要求栈起始地址按16字节对齐
-</span><span style="color:#aaa;font-style:italic"></span>
-  coctx_param_t* param = (coctx_param_t*)sp;
-  <span style="color:#0aa">void</span>** ret_addr = (<span style="color:#0aa">void</span>**)(sp - <span style="color:#00a">sizeof</span>(<span style="color:#0aa">void</span>*) * <span style="color:#099">2</span>);           <span style="color:#aaa;font-style:italic">//返回值地址
-</span><span style="color:#aaa;font-style:italic"></span>  *ret_addr = (<span style="color:#0aa">void</span>*)pfn;
-  param-&gt;s1 = s;
-  param-&gt;s2 = s1;
-
-  memset(ctx-&gt;regs, <span style="color:#099">0</span>, <span style="color:#00a">sizeof</span>(ctx-&gt;regs));
-
-  ctx-&gt;regs[kESP] = (<span style="color:#0aa">char</span>*)(sp) - <span style="color:#00a">sizeof</span>(<span style="color:#0aa">void</span>*) * <span style="color:#099">2</span>;
-  <span style="color:#00a">return</span> <span style="color:#099">0</span>;
-}
-</code></pre></td></tr></table>
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#aaa;font-style:italic">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#aaa;font-style:italic"> * @param
+</span></span></span><span style="display:flex;"><span><span style="color:#aaa;font-style:italic"> * ctx  :指向上下文结构体
+</span></span></span><span style="display:flex;"><span><span style="color:#aaa;font-style:italic"> * pfn  :指向调用函数
+</span></span></span><span style="display:flex;"><span><span style="color:#aaa;font-style:italic"> * s    :参数
+</span></span></span><span style="display:flex;"><span><span style="color:#aaa;font-style:italic"> * s1   :参数
+</span></span></span><span style="display:flex;"><span><span style="color:#aaa;font-style:italic"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#0aa">int</span> <span style="color:#0a0">coctx_make</span>(coctx_t* ctx, coctx_pfn_t pfn, <span style="color:#00a">const</span> <span style="color:#0aa">void</span>* s, <span style="color:#00a">const</span> <span style="color:#0aa">void</span>* s1) {
+</span></span><span style="display:flex;"><span>  <span style="color:#aaa;font-style:italic">// make room for coctx_param
+</span></span></span><span style="display:flex;"><span><span style="color:#aaa;font-style:italic"></span>  <span style="color:#0aa">char</span>* sp = ctx-&gt;ss_sp + ctx-&gt;ss_size - <span style="color:#00a">sizeof</span>(coctx_param_t); <span style="color:#aaa;font-style:italic">//ss_sp内存为堆内存，将sp移动到高地址
+</span></span></span><span style="display:flex;"><span><span style="color:#aaa;font-style:italic"></span>  sp = (<span style="color:#0aa">char</span>*)((<span style="color:#0aa">unsigned</span> <span style="color:#0aa">long</span>)sp &amp; -<span style="color:#099">16L</span>);                       <span style="color:#aaa;font-style:italic">//i386要求栈起始地址按16字节对齐
+</span></span></span><span style="display:flex;"><span><span style="color:#aaa;font-style:italic"></span>
+</span></span><span style="display:flex;"><span>  coctx_param_t* param = (coctx_param_t*)sp;
+</span></span><span style="display:flex;"><span>  <span style="color:#0aa">void</span>** ret_addr = (<span style="color:#0aa">void</span>**)(sp - <span style="color:#00a">sizeof</span>(<span style="color:#0aa">void</span>*) * <span style="color:#099">2</span>);           <span style="color:#aaa;font-style:italic">//返回值地址
+</span></span></span><span style="display:flex;"><span><span style="color:#aaa;font-style:italic"></span>  *ret_addr = (<span style="color:#0aa">void</span>*)pfn;
+</span></span><span style="display:flex;"><span>  param-&gt;s1 = s;
+</span></span><span style="display:flex;"><span>  param-&gt;s2 = s1;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  memset(ctx-&gt;regs, <span style="color:#099">0</span>, <span style="color:#00a">sizeof</span>(ctx-&gt;regs));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  ctx-&gt;regs[kESP] = (<span style="color:#0aa">char</span>*)(sp) - <span style="color:#00a">sizeof</span>(<span style="color:#0aa">void</span>*) * <span style="color:#099">2</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#00a">return</span> <span style="color:#099">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>经过<code>co_make</code>填充后的协程栈如下图4所示。其中与我们上文中提到的函数调用栈不同的是，在参数与返回值地址之前，空了4字节(图中NULL)，这为之后的上下文切换做下准备。</p>
 <figure><img src="/image/libco-coroutine/co_make.png"
@@ -290,68 +290,68 @@ main:
 </figure>
 
 <h2 id="coctx_swap上下文切换"><code>coctx_swap</code>上下文切换</h2>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#00a">extern</span> <span style="color:#a50">&#34;C&#34;</span>
-{
-  <span style="color:#00a">extern</span> <span style="color:#0aa">void</span> <span style="color:#0a0">coctx_swap</span>( coctx_t *,coctx_t* ) <span style="color:#00a">asm</span>(<span style="color:#a50">&#34;coctx_swap&#34;</span>);
-};
-</code></pre></td></tr></table>
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#00a">extern</span> <span style="color:#a50">&#34;C&#34;</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#00a">extern</span> <span style="color:#0aa">void</span> <span style="color:#0a0">coctx_swap</span>( coctx_t *,coctx_t* ) <span style="color:#00a">asm</span>(<span style="color:#a50">&#34;coctx_swap&#34;</span>);
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>libco通过<code>coctx_swap</code>函数实现协程的上下文切换，其接收两个<code>coctx_t *</code>作为参数，第一个为保存当前协程所用的上下文指针，第二个则是需要换出的上下文指针。</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-nasm" data-lang="nasm"><span style="color:#0a0">.globl</span> <span style="color:#a00">coctx_swap</span>
-coctx_swap:
-    <span style="color:#0a0">movl</span> <span style="color:#099">4</span>(%<span style="color:#0aa">esp</span>), %<span style="color:#0aa">eax</span>              <span style="color:#aaa;font-style:italic">;eax = *(esp+4) 取第一个参数coctx_t</span>
-    <span style="color:#0a0">movl</span> %<span style="color:#0aa">esp</span>, <span style="color:#099">28</span>(%<span style="color:#0aa">eax</span>)             <span style="color:#aaa;font-style:italic">;coctx_t.regs[7] = esp </span>
-    <span style="color:#0a0">movl</span> %<span style="color:#0aa">ebp</span>, <span style="color:#099">24</span>(%<span style="color:#0aa">eax</span>)             <span style="color:#aaa;font-style:italic">;coctx_t.regs[6] = ebp</span>
-    <span style="color:#0a0">movl</span> %<span style="color:#0aa">esi</span>, <span style="color:#099">20</span>(%<span style="color:#0aa">eax</span>)             <span style="color:#aaa;font-style:italic">;coctx_t.regs[5] = esi</span>
-    <span style="color:#0a0">movl</span> %<span style="color:#0aa">edi</span>, <span style="color:#099">16</span>(%<span style="color:#0aa">eax</span>)             <span style="color:#aaa;font-style:italic">;coctx_t.regs[4] = edi</span>
-    <span style="color:#0a0">movl</span> %<span style="color:#0aa">edx</span>, <span style="color:#099">12</span>(%<span style="color:#0aa">eax</span>)             <span style="color:#aaa;font-style:italic">;coctx_t.regs[3] = edx</span>
-    <span style="color:#0a0">movl</span> %<span style="color:#0aa">ecx</span>, <span style="color:#099">8</span>(%<span style="color:#0aa">eax</span>)              <span style="color:#aaa;font-style:italic">;coctx_t.regs[2] = ecx</span>
-    <span style="color:#0a0">movl</span> %<span style="color:#0aa">ebx</span>, <span style="color:#099">4</span>(%<span style="color:#0aa">eax</span>)              <span style="color:#aaa;font-style:italic">;coctx_t.regs[1] = ebx</span>
-
-    <span style="color:#0a0">movl</span> <span style="color:#099">8</span>(%<span style="color:#0aa">esp</span>), %<span style="color:#0aa">eax</span>              <span style="color:#aaa;font-style:italic">;eax = *(esp+8) 取第二个参数coctx_t</span>
-    <span style="color:#0a0">movl</span> <span style="color:#099">4</span>(%<span style="color:#0aa">eax</span>), %<span style="color:#0aa">ebx</span>              <span style="color:#aaa;font-style:italic">;ebx = coctx_t.regs[1] </span>
-    <span style="color:#0a0">movl</span> <span style="color:#099">8</span>(%<span style="color:#0aa">eax</span>), %<span style="color:#0aa">ecx</span>              <span style="color:#aaa;font-style:italic">;ecx = coctx_t.regs[2] </span>
-    <span style="color:#0a0">movl</span> <span style="color:#099">12</span>(%<span style="color:#0aa">eax</span>), %<span style="color:#0aa">edx</span>             <span style="color:#aaa;font-style:italic">;edx = coctx_t.regs[3]            </span>
-    <span style="color:#0a0">movl</span> <span style="color:#099">16</span>(%<span style="color:#0aa">eax</span>), %<span style="color:#0aa">edi</span>             <span style="color:#aaa;font-style:italic">;edi = coctx_t.regs[4] </span>
-    <span style="color:#0a0">movl</span> <span style="color:#099">20</span>(%<span style="color:#0aa">eax</span>), %<span style="color:#0aa">esi</span>             <span style="color:#aaa;font-style:italic">;esi = coctx_t.regs[5] </span>
-    <span style="color:#0a0">movl</span> <span style="color:#099">24</span>(%<span style="color:#0aa">eax</span>), %<span style="color:#0aa">ebp</span>             <span style="color:#aaa;font-style:italic">;ebp = coctx_t.regs[6] </span>
-    <span style="color:#0a0">movl</span> <span style="color:#099">28</span>(%<span style="color:#0aa">eax</span>), %<span style="color:#0aa">esp</span>             <span style="color:#aaa;font-style:italic">;esp = coctx_t.regs[7] </span>
-
-  <span style="color:#0a0">ret</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-nasm" data-lang="nasm"><span style="display:flex;"><span><span style="color:#0a0">.globl</span> <span style="color:#a00">coctx_swap</span>
+</span></span><span style="display:flex;"><span>coctx_swap:
+</span></span><span style="display:flex;"><span>    <span style="color:#0a0">movl</span> <span style="color:#099">4</span>(%<span style="color:#0aa">esp</span>), %<span style="color:#0aa">eax</span>              <span style="color:#aaa;font-style:italic">;eax = *(esp+4) 取第一个参数coctx_t</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#0a0">movl</span> %<span style="color:#0aa">esp</span>, <span style="color:#099">28</span>(%<span style="color:#0aa">eax</span>)             <span style="color:#aaa;font-style:italic">;coctx_t.regs[7] = esp </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#0a0">movl</span> %<span style="color:#0aa">ebp</span>, <span style="color:#099">24</span>(%<span style="color:#0aa">eax</span>)             <span style="color:#aaa;font-style:italic">;coctx_t.regs[6] = ebp</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#0a0">movl</span> %<span style="color:#0aa">esi</span>, <span style="color:#099">20</span>(%<span style="color:#0aa">eax</span>)             <span style="color:#aaa;font-style:italic">;coctx_t.regs[5] = esi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#0a0">movl</span> %<span style="color:#0aa">edi</span>, <span style="color:#099">16</span>(%<span style="color:#0aa">eax</span>)             <span style="color:#aaa;font-style:italic">;coctx_t.regs[4] = edi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#0a0">movl</span> %<span style="color:#0aa">edx</span>, <span style="color:#099">12</span>(%<span style="color:#0aa">eax</span>)             <span style="color:#aaa;font-style:italic">;coctx_t.regs[3] = edx</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#0a0">movl</span> %<span style="color:#0aa">ecx</span>, <span style="color:#099">8</span>(%<span style="color:#0aa">eax</span>)              <span style="color:#aaa;font-style:italic">;coctx_t.regs[2] = ecx</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#0a0">movl</span> %<span style="color:#0aa">ebx</span>, <span style="color:#099">4</span>(%<span style="color:#0aa">eax</span>)              <span style="color:#aaa;font-style:italic">;coctx_t.regs[1] = ebx</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#0a0">movl</span> <span style="color:#099">8</span>(%<span style="color:#0aa">esp</span>), %<span style="color:#0aa">eax</span>              <span style="color:#aaa;font-style:italic">;eax = *(esp+8) 取第二个参数coctx_t</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#0a0">movl</span> <span style="color:#099">4</span>(%<span style="color:#0aa">eax</span>), %<span style="color:#0aa">ebx</span>              <span style="color:#aaa;font-style:italic">;ebx = coctx_t.regs[1] </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#0a0">movl</span> <span style="color:#099">8</span>(%<span style="color:#0aa">eax</span>), %<span style="color:#0aa">ecx</span>              <span style="color:#aaa;font-style:italic">;ecx = coctx_t.regs[2] </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#0a0">movl</span> <span style="color:#099">12</span>(%<span style="color:#0aa">eax</span>), %<span style="color:#0aa">edx</span>             <span style="color:#aaa;font-style:italic">;edx = coctx_t.regs[3]            </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#0a0">movl</span> <span style="color:#099">16</span>(%<span style="color:#0aa">eax</span>), %<span style="color:#0aa">edi</span>             <span style="color:#aaa;font-style:italic">;edi = coctx_t.regs[4] </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#0a0">movl</span> <span style="color:#099">20</span>(%<span style="color:#0aa">eax</span>), %<span style="color:#0aa">esi</span>             <span style="color:#aaa;font-style:italic">;esi = coctx_t.regs[5] </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#0a0">movl</span> <span style="color:#099">24</span>(%<span style="color:#0aa">eax</span>), %<span style="color:#0aa">ebp</span>             <span style="color:#aaa;font-style:italic">;ebp = coctx_t.regs[6] </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#0a0">movl</span> <span style="color:#099">28</span>(%<span style="color:#0aa">eax</span>), %<span style="color:#0aa">esp</span>             <span style="color:#aaa;font-style:italic">;esp = coctx_t.regs[7] </span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#0a0">ret</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>以下图作为参照，调用<code>coctx_swap</code>前的栈如绿色所示，<code>call</code>指令将返回值地址压栈，</p>
 <p>$L3$时<code>esp</code>为图中位置，进入<code>coctx_swap</code>函数。</p>
