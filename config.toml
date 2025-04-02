@@ -64,8 +64,8 @@ footnotereturnlinkcontents = "↩"
     
 [params.valine]
   enable = true
-  appId = 'zNMMLLQ0MYK2AKAgq6nC93gV-gzGzoHsz'
-  appKey = 'KfJ8vAFRca4uVeQWMNljT07B'
+  appId = '5TFZjpX7GzKp2rmEThsqHoWl-MdYXbMMI'
+  appKey = 'gru4Q0OA2v8U0dL6NSgYVe7s'
   notify = false # mail notifier , https://github.com/xCss/Valine/wiki
   verify = false # Verification code
   avatar = 'mm'
