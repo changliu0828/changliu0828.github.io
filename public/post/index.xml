@@ -6,8 +6,15 @@
     <description>Recent content in Posts on 刘畅的博客</description>
     <generator>Hugo</generator>
     <language>ch</language>
-    <lastBuildDate>Wed, 23 Sep 2020 16:28:30 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 02 Apr 2025 14:47:40 +0900</lastBuildDate>
     <atom:link href="http://localhost:1313/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>东京府中换驾照路线图</title>
+      <link>http://localhost:1313/post/fuchu-drivers-license-guide/</link>
+      <pubDate>Wed, 02 Apr 2025 14:47:40 +0900</pubDate>
+      <guid>http://localhost:1313/post/fuchu-drivers-license-guide/</guid>
+      <description>&lt;p&gt;有很多小伙伴在小红书私信要大图，在这里分享出来，创作不易，支持一下。&lt;/p&gt;</description>
+    </item>
     <item>
       <title>libco源码笔记(3)自动切换</title>
       <link>http://localhost:1313/post/libco-auto/</link>
