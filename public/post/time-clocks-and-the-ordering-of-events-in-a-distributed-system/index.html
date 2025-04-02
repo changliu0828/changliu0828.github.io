@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html lang="ch">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Time, Clocks, and the Ordering of Events in a Distributed System, Lamport, 1978 | 刘畅的博客</title>
@@ -24,8 +24,6 @@
             <li><a href="/categories/">分类</a></li>
           
             <li><a href="/tags/">标签</a></li>
-          
-            <li><a href="/dashboard/">仪表盘</a></li>
           
         </span>
         <span class="change_lang">
@@ -98,8 +96,7 @@
 <p>由上面的例子可见，我们通常使用的时钟读数、时间戳等概念并不能准确地刻画出事件发生的先后顺序。而在分布式系统中，事件发生的先后常常扮演着各种算法的“关键角色”。那么我们如何准确地刻画这种顺序，或是设计我们的时钟，从而准确的刻画这种先后顺序呢？</p>
 <h1 id="2-时间是什么">2. 时间是什么</h1>
 <blockquote>
-<p>The concept of time is fundamental to our way of thinking. It is derived from the more basic concept of the order in which events occur.</p>
-</blockquote>
+<p>The concept of time is fundamental to our way of thinking. It is derived from the more basic concept of the order in which events occur.</p></blockquote>
 <p>时间的定义对于分布式领域关于“事件发生先后”、“并发”等概念的认识至关重要。Lamport在文中指出，时间是由更加基本的概念“事件发生的顺序”衍生出来的。例如我们说某件事在13:00发生，其实是在说这件事发生在我们读到时钟上的读数为13:00之后，13:01之前。在此种定义下，时钟其实是通过读取时刻这一行为，对连续的时间进行了离散化的编号。</p>
 <h1 id="3-分布式系统">3. 分布式系统</h1>
 <p>本文中讨论的分布式系统，是由若干空间上分离的process组成。同一process上的事件顺序串行发生，process之间通过收发消息进行通信。这里的process可以是若干独立的计算机，独立的进程，亦或是一台计算机内独立的硬件模块。在后文中我们我们统称process为“节点”。特别的，我们应当注意各个节点之间的通信延迟，它与单个节点内部事件发生的频率相比是不可忽略的。</p>
@@ -116,15 +113,14 @@
 <p>回顾上面的&quot;happened before&quot;关系, 我们不难在图中找到若干满足条件的事件对，例如 $p_1 \rightarrow r_4$，其由 $ p_1 \rightarrow q_2 \rightarrow q_4 \rightarrow r_3 \rightarrow r_4$ 推导而来。</p>
 <p>图中亦有若干并发的事件，例如 $p_3$ 和 $q_3$，虽然在图中我们能看到 $p_3$ 发生的物理时间(physical time)晚于 $q_3$，但对于系统中的节点来说，他们并不知道谁先谁后。</p>
 <figure><img src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/Fig1.jpg"
-         alt="图1. space-time diagram" width="70%"/><figcaption>
-            <p>图1. space-time diagram</p>
-        </figcaption>
+    alt="图1. space-time diagram" width="70%"><figcaption>
+      <p>图1. space-time diagram</p>
+    </figcaption>
 </figure>
 
 <h1 id="5-逻辑时钟">5. 逻辑时钟</h1>
 <blockquote>
-<p>a clock is just a way of assigning a number to an event.</p>
-</blockquote>
+<p>a clock is just a way of assigning a number to an event.</p></blockquote>
 <p><strong>时钟仅仅是对事件的发生予以编号而已。</strong> 更加准确地讲，对于每一个节点 $P_i$ 我们定义时钟 $C_i$ 为一个函数，它为任意的事件 $a$ 赋值编号为 $C_i \langle a \rangle$。对整个系统时钟来讲，任意事件 $b$ 的发生时间标记为 $  C \langle b \rangle $，如果其发生在节点 $P_j$ 上，则 $ C \langle b \rangle =  C_j \langle b \rangle$。这里的时钟我们看做是系统内部的逻辑时钟，而非物理时钟，其标识与计数方法无需与物理时间一致。为了满足上文的&quot;happened before&quot;偏序关系，我们设计的逻辑时钟需要满足如下的Clock Condition.</p>
 <p><strong>Clock Condition.</strong> 对于系统中的任意事件 $a, b$：如果 $ a \rightarrow b$，则有 $C \langle a \rangle &lt; C \langle b \rangle$。</p>
 <ul>
@@ -134,22 +130,22 @@
 <p><strong>特别的，Clock Condition的逆命题&quot;如果 $C \langle a \rangle &lt; C \langle b \rangle$，则有 $ a \rightarrow b$&ldquo;并不一定成立。</strong> 因为它要求并发的事件必须具有相同的逻辑时间。例如图1中的 $p_2,p_3$ 都与 $q_3$ 为并发关系，但由 C1 有 $C \langle p_2 \rangle &lt; C \langle p_3 \rangle$，则必然有 $C \langle q_3 \rangle \neq C \langle p_2 \rangle$ 或 $C \langle q_3 \rangle \neq C \langle p_3 \rangle$，与并发关系矛盾。</p>
 <p>对于逻辑时钟，我们可以想象单个节点内不断发生着“tick”事件，例如在同一节点 $P_i$ 内连续发生的 $a, b$ 两个事件，有 $C_i \langle a \rangle = 4, C_i \langle b \rangle = 7$，那么在这两个事件之间发生了编号为 $5,6,7$ 的 tick 事件。于是我们可以在时空图中加入类似下图虚线所示的&quot;tick line&rdquo;。根据 C1 我们可以得到，在同一节点内的连续两个事件之间，至少要有一条 tick line。 根据 C2 我们可以得到，每一条消息必须穿过至少一条 tick line。</p>
 <figure><img src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/Fig2.png"
-         alt="图2" width="70%"/><figcaption>
-            <p>图2</p>
-        </figcaption>
+    alt="图2" width="70%"><figcaption>
+      <p>图2</p>
+    </figcaption>
 </figure>
 
 <p>为了更方便理解，我们也可以在保证事件和消息的偏序关系下，将 tick line 绘制成如下图中等价的水平线的形式。</p>
 <figure><img src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/Fig3.png"
-         alt="图3" width="70%"/><figcaption>
-            <p>图3</p>
-        </figcaption>
+    alt="图3" width="70%"><figcaption>
+      <p>图3</p>
+    </figcaption>
 </figure>
 
 <p>对于单个节点上的逻辑时钟算法的实现，我们有如下的实现规则（Implementation Rule）：</p>
 <ul>
 <li>IR1. 每个节点 $P_i$ 在任意连续的两个事件之间都要增加 $C_i$ 。</li>
-<li>IR2. (a) 如果事件 $a$ 表示节点 $P_i$ 发送消息 $m$ ，那么 $m$ 中包含时间戳 $T_m=C_i \langle a \rangle $。(b) 当收到消息 $m$ 时，进程 $P_j$ 设置当前时间 $C_j$ 为 $ C_j'$，使得 $C_j' &gt;= C_j$ 且 $C_j' &gt; Tm$ 。</li>
+<li>IR2. (a) 如果事件 $a$ 表示节点 $P_i$ 发送消息 $m$ ，那么 $m$ 中包含时间戳 $T_m=C_i \langle a \rangle $。(b) 当收到消息 $m$ 时，进程 $P_j$ 设置当前时间 $C_j$ 为 $ C_j&rsquo;$，使得 $C_j&rsquo; &gt;= C_j$ 且 $C_j&rsquo; &gt; Tm$ 。</li>
 </ul>
 <p>在实践中，当我们收到某条消息后，应当先执行 IR2 修改时间，再执行具体事件，从而保证 <strong>Clock Condition</strong>。</p>
 <h1 id="6-全序关系">6. 全序关系</h1>
@@ -157,9 +153,9 @@
 <p>更加严谨的说，我们定义全序关系 $\Rightarrow$。对于发生在节点 $P_i$ 的事件 $a$ 和发生在节点 $P_j$ 的事件 $b$，有 $ a \Rightarrow b $ 当且仅当 (i) $ C_i \langle a \rangle &lt; C_j \langle b \rangle $ 或 (ii) $C_i \langle a \rangle = C_j \langle b \rangle$ 且 $P_i \prec P_j$。</p>
 <p>这里由 <strong>Clock Condition</strong> 我们可以看到，凡是满足偏序关系 $\rightarrow$ 的，一定也满足全序关系 $\Rightarrow$。</p>
 <figure><img src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/partial-total.png"
-         alt="图4. 偏序与全序关系" width="40%"/><figcaption>
-            <p>图4. 偏序与全序关系</p>
-        </figcaption>
+    alt="图4. 偏序与全序关系" width="40%"><figcaption>
+      <p>图4. 偏序与全序关系</p>
+    </figcaption>
 </figure>
 
 <h1 id="7-物理时钟">7. 物理时钟</h1>
@@ -192,17 +188,17 @@
 <p>结合PC2. 有需保证 $ -\epsilon \geq -\mu(1 - k)$，则需有 $\epsilon/(1 - \kappa) \leq \mu$，详细推导见附录8.3。</p>
 <h3 id="721-物理时钟算法">7.2.1 物理时钟算法</h3>
 <p>下面介绍具体的的算法实现，从而保证上面的公式与PC1，PC2成立。</p>
-<p>对于一条发送于物理时间 $t$ ，接收于物理时间 $t'$ 的消息 $m$。我们定义消息的总延迟（total delay） $ v_m = t' - t$。接受消息的节点当然不知道 $v_m$ 的值，但是它可以知道这条消息的最小延迟（minimum delay） $\mu_m$， $\mu_m \geq 0$ 且 $\mu_m \leq v_m$。我们称 $\xi_m = v_m - \mu_m$ 为不可预测延迟（unpredictable delay）。</p>
+<p>对于一条发送于物理时间 $t$ ，接收于物理时间 $t&rsquo;$ 的消息 $m$。我们定义消息的总延迟（total delay） $ v_m = t&rsquo; - t$。接受消息的节点当然不知道 $v_m$ 的值，但是它可以知道这条消息的最小延迟（minimum delay） $\mu_m$， $\mu_m \geq 0$ 且 $\mu_m \leq v_m$。我们称 $\xi_m = v_m - \mu_m$ 为不可预测延迟（unpredictable delay）。</p>
 <p>对于单个节点上的物理时钟算法的实现，我们有如下的实现规则（Implementation Rule）：</p>
 <ul>
-<li>IR1'. 每个节点 $P_i$ 在物理时间 $t$ 没有收到任何消息，那么 $C_i$ 在 $t$ 时刻可微，且 $dC_i(t)/dt &gt; 0$。</li>
-<li>IR2'. (a) 如果 $P_i$ 在物理时间 $t$ 发送消息 $m$ ，那么 $m$ 中包含时间戳 $T_m=C_i(t) $。(b) 当在物理时间 $t'$ 收到消息 $m$ 时，进程 $P_j$ 设置当前时间 $C_j(t') = max(C_j(t' - 0), T_m + \mu_m)$。其中$C_j(t' - 0) = \underset{\delta \rightarrow 0}{ lim }C_j(t'-|\delta|)$。</li>
+<li>IR1&rsquo;. 每个节点 $P_i$ 在物理时间 $t$ 没有收到任何消息，那么 $C_i$ 在 $t$ 时刻可微，且 $dC_i(t)/dt &gt; 0$。</li>
+<li>IR2&rsquo;. (a) 如果 $P_i$ 在物理时间 $t$ 发送消息 $m$ ，那么 $m$ 中包含时间戳 $T_m=C_i(t) $。(b) 当在物理时间 $t&rsquo;$ 收到消息 $m$ 时，进程 $P_j$ 设置当前时间 $C_j(t&rsquo;) = max(C_j(t&rsquo; - 0), T_m + \mu_m)$。其中$C_j(t&rsquo; - 0) = \underset{\delta \rightarrow 0}{ lim }C_j(t&rsquo;-|\delta|)$。</li>
 </ul>
 <h3 id="721-物理时钟算法证明">7.2.1 物理时钟算法证明</h3>
 <p>现在我们证明上述的实现规则可以确保满足PC2。</p>
 <p>将整个系统视为一个有向图，图中的点为各个节点，$P_i$ 到 $P_j$ 的有向边视为其消息链路。</p>
 <p>令 $d$ 为有向图的直径(longest shortest path)。$\tau$ 为两个节点之间的最低通信间隔，即任意时间 $t$ 到 $t + \tau$之间，$P_i$ 至少应该发送一条消息给 $P_j$。下面的定理给出系统启动后，至多多久系统会达成满足PC2的时间同步。</p>
-<p><strong>定理</strong>：假设系统为一个遵循IR1&rsquo;和IR2'，且直径为 $d$ 的强连通图。对于任意的消息 $m$，$\mu_m \leq \mu$，其中$\mu$ 为某个特定常数，且对于所有 $t \geq t_0$。 (a) PC1 总是成立。 (b) 存在常数 $\tau$ 和 $\xi$，在系统中每条边上，每$\tau$秒会转发一条不可预测延迟最大为 $\xi$ 的消息。则PC2 满足于，对于所有的 $t\gtrapprox t_0 + \tau d$，$\epsilon \approx d(2\kappa\tau + \xi)$，$\mu + \xi \ll \tau$。其证明见于附录8.4。</p>
+<p><strong>定理</strong>：假设系统为一个遵循IR1&rsquo;和IR2&rsquo;，且直径为 $d$ 的强连通图。对于任意的消息 $m$，$\mu_m \leq \mu$，其中$\mu$ 为某个特定常数，且对于所有 $t \geq t_0$。 (a) PC1 总是成立。 (b) 存在常数 $\tau$ 和 $\xi$，在系统中每条边上，每$\tau$秒会转发一条不可预测延迟最大为 $\xi$ 的消息。则PC2 满足于，对于所有的 $t\gtrapprox t_0 + \tau d$，$\epsilon \approx d(2\kappa\tau + \xi)$，$\mu + \xi \ll \tau$。其证明见于附录8.4。</p>
 <h1 id="8附录">8.附录</h1>
 <h2 id="81-全序关系的应用互斥访问">8.1 全序关系的应用：互斥访问</h2>
 <ol>
@@ -219,15 +215,15 @@
 <p>故而得，$ \epsilon \leq \mu(1 - k)$。</p>
 <h2 id="84-定理证明">8.4 定理证明</h2>
 <p>对于任意的 $i$ 和 $t$，我们定义 $C_i^t$ 为一时钟，在时刻 $t$ 设定为 $C_i$ 并与 $C_i$ 运行速率相同，且永不被修正(reset)。即，</p>
-<p>$$ C_i^t = C_i(t) + \int_{t}^{t'}[dC_i(t)/dt]dt \tag{1}$$</p>
-<p>对于所有的 $t' \geq t$，我们注意到由于 $C_i$ 会被修正，有</p>
-<p>$$ C_i(t’) \geq C_i^t(t') \tag{2}$$</p>
+<p>$$ C_i^t = C_i(t) + \int_{t}^{t&rsquo;}[dC_i(t)/dt]dt \tag{1}$$</p>
+<p>对于所有的 $t&rsquo; \geq t$，我们注意到由于 $C_i$ 会被修正，有</p>
+<p>$$ C_i(t’) \geq C_i^t(t&rsquo;) \tag{2}$$</p>
 <p>假设 $P_1$ 在时刻 $t_1$ 发送消息给 $P_2$，接收于时刻 $t_2$，不可预测延迟 $\leq \xi$，$ t_0 \leq t_1 \leq t_2$。则对于所有的 $t \geq t_2$，我们有</p>
 <p>$$
 \begin{aligned}
-&amp; C_2^{t_2}(t) \geq C_2^{t_2}(t_2) + (1 - \kappa)(t - t_2) &amp; \qquad [by\ (1)\ and\ PC1] \\<br>
-&amp; \geq C_1(t_1) + \mu_m + (1 - \kappa)(t - t_2) &amp; \qquad [by\ IR2'(b)] \\<br>
-&amp; = C_1(t_1) + (1 - \kappa)(t - t_1) - [(t_2 - t_1) - \mu_m] + \kappa(t_2 - t_1) \\<br>
+&amp; C_2^{t_2}(t) \geq C_2^{t_2}(t_2) + (1 - \kappa)(t - t_2) &amp; \qquad [by\ (1)\ and\ PC1] \\
+&amp; \geq C_1(t_1) + \mu_m + (1 - \kappa)(t - t_2) &amp; \qquad [by\ IR2&rsquo;(b)] \\
+&amp; = C_1(t_1) + (1 - \kappa)(t - t_1) - [(t_2 - t_1) - \mu_m] + \kappa(t_2 - t_1) \\
 &amp; \geq C_1(t_1) + (1 - \kappa)(t - t_1) - \xi
 \end{aligned}
 $$</p>
@@ -235,23 +231,23 @@ $$</p>
 <p>$$
 C_2^{t_2}(t) \geq C_1(t_1) + (1 - \kappa)(t - t_1) - \xi \tag{3}
 $$</p>
-<p>现在假设对于 $i =1,&hellip;,n$，我们有$ t_i \leq t_i' &lt; t_{i+1}, t_0 \leq t_1$。在 $t_i'$时，$P_i$ 发送一条消息给 $P_{i+1}$，该消息接收于 $t_{i+1}$，其不可预测延迟小于 $\xi$。反复应用等式(3)可以得到，对于 $t \geq t_{n+1}$，</p>
+<p>现在假设对于 $i =1,&hellip;,n$，我们有$ t_i \leq t_i&rsquo; &lt; t_{i+1}, t_0 \leq t_1$。在 $t_i&rsquo;$时，$P_i$ 发送一条消息给 $P_{i+1}$，该消息接收于 $t_{i+1}$，其不可预测延迟小于 $\xi$。反复应用等式(3)可以得到，对于 $t \geq t_{n+1}$，</p>
 <p>$$
-C_{n+1}^{t_{n+1}}(t) \geq C_1(t_1') + (1 - \kappa)(t - t_1') - n\xi \tag{4}
+C_{n+1}^{t_{n+1}}(t) \geq C_1(t_1&rsquo;) + (1 - \kappa)(t - t_1&rsquo;) - n\xi \tag{4}
 $$</p>
-<p>通过 PC1, IR1', IR2&rsquo;我们可以推导出，</p>
+<p>通过 PC1, IR1&rsquo;, IR2&rsquo;我们可以推导出，</p>
 <p>$$
-C_1(t_1') \geq C_1(t_1) + (1 - \kappa)(t_1' - t_1)
+C_1(t_1&rsquo;) \geq C_1(t_1) + (1 - \kappa)(t_1&rsquo; - t_1)
 $$</p>
 <p>再结合(4)与(2)，我们可以得到对于 $t \geq t_{n+1}$，有</p>
 <p>$$
 C_{n+1}(t) \geq C_1(t_1) + (1 - \kappa)(t - t_1) - n\xi \tag{5}
 $$</p>
-<p>对于任意的两个节点 $P$ 和 $P'$，我们能找到一个节点序列 $P = P_0, P_1, &hellip;, P_{n+1} = P', n \leq d$。通过假设 (b)，我们能找到时间 $t_i, t_i'$，有 $ t_i' - t_i \leq \tau $ 且 $ t_{i+1} - t_i' \leq v $，其中 $v=\mu + \xi$。因此不等式 (5) 成立于对于任何的$t \geq t_1 + d(\tau + v)$, 有$ n \leq d$。对于任意的$i, j, t, t_1$，其中 $ t_1 \geq t_0 $ 且 $ t \geq t_1 + d(\tau + v) $，我们因此有</p>
+<p>对于任意的两个节点 $P$ 和 $P&rsquo;$，我们能找到一个节点序列 $P = P_0, P_1, &hellip;, P_{n+1} = P&rsquo;, n \leq d$。通过假设 (b)，我们能找到时间 $t_i, t_i&rsquo;$，有 $ t_i&rsquo; - t_i \leq \tau $ 且 $ t_{i+1} - t_i&rsquo; \leq v $，其中 $v=\mu + \xi$。因此不等式 (5) 成立于对于任何的$t \geq t_1 + d(\tau + v)$, 有$ n \leq d$。对于任意的$i, j, t, t_1$，其中 $ t_1 \geq t_0 $ 且 $ t \geq t_1 + d(\tau + v) $，我们因此有</p>
 <p>$$
 C_i(t) \geq C_j(t_1) + (1 - \kappa)(t - t_1) - d\xi \tag{6}
 $$</p>
-<p>令 $m$ 为任意时间戳为 $T_m$ 的消息，其在 $t$ 时刻发送，在 $t'$ 时刻接收。我们假设 $m$ 有一个以一个恒定速率运行的时钟 $C_m$，且有 $C_m(t)=t_m$，$C_m(t') = t_m + \mu_m$。那么由 $ \mu_m \leq t' - t $ 可以推导出 $dC_m/dt \leq 1$。规则 IR2'(b)将 $C_j(t')$ 设置为 $max(C_j(t' - 0), C_m(t'))$。因此，当时钟被重置时，只可能重置与其他某个时钟相等。</p>
+<p>令 $m$ 为任意时间戳为 $T_m$ 的消息，其在 $t$ 时刻发送，在 $t&rsquo;$ 时刻接收。我们假设 $m$ 有一个以一个恒定速率运行的时钟 $C_m$，且有 $C_m(t)=t_m$，$C_m(t&rsquo;) = t_m + \mu_m$。那么由 $ \mu_m \leq t&rsquo; - t $ 可以推导出 $dC_m/dt \leq 1$。规则 IR2&rsquo;(b)将 $C_j(t&rsquo;)$ 设置为 $max(C_j(t&rsquo; - 0), C_m(t&rsquo;))$。因此，当时钟被重置时，只可能重置与其他某个时钟相等。</p>
 <p>对于任意时间 $t_x \geq t_0 + \mu/(1-\kappa)$，令 $C_x$ 为 $t_x$ 时刻具有最大值的时钟。由于所有的时钟以低于 $1+\kappa$ 的速率运行，我们有对于所有的 $i$ 和所有的 $t \geq t_x$：</p>
 <p>$$
 C_i(t) \leq C_x(t_x) + (1 + \kappa)(t - t_x) \tag{7}
@@ -271,11 +267,11 @@ $$</p>
 <p>由于 $t_x \geq t_0 + \mu/(1 - \kappa)$，我们有，</p>
 <p>$$
 \begin{aligned}
-&amp; C_q(t_x - \mu/(1 - \kappa)) \leq C_q(t_x) - \mu &amp; \qquad [by\ PC1] \\<br>
-&amp; \leq C_m(t_x) - \mu &amp; \qquad [by\ choice \ of \ m] \\<br>
-&amp; \leq C_m(t_x) - (t_x - t_1)\mu_m/v_m &amp; \qquad [\mu_m \leq \mu, t_x - t_1 \leq v_m] \\<br>
-&amp; = T_m &amp; \qquad [by\ definition \ of \ C_m] \\<br>
-&amp; = C_q(t_1) &amp; \qquad [by\ IR2'(a)]
+&amp; C_q(t_x - \mu/(1 - \kappa)) \leq C_q(t_x) - \mu &amp; \qquad [by\ PC1] \\
+&amp; \leq C_m(t_x) - \mu &amp; \qquad [by\ choice \ of \ m] \\
+&amp; \leq C_m(t_x) - (t_x - t_1)\mu_m/v_m &amp; \qquad [\mu_m \leq \mu, t_x - t_1 \leq v_m] \\
+&amp; = T_m &amp; \qquad [by\ definition \ of \ C_m] \\
+&amp; = C_q(t_1) &amp; \qquad [by\ IR2&rsquo;(a)]
 \end{aligned}
 $$</p>
 <p>因此，$ C_q(t_x - \mu/(1 - \kappa)) \leq C_q(t_1) $，因此 $ t_x - t_1 \leq \mu(1 - \kappa), t_1 \geq t_0 $。</p>

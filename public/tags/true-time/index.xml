@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>True Time on 刘畅的博客</title>
+    <link>http://localhost:1313/tags/true-time/</link>
+    <description>Recent content in True Time on 刘畅的博客</description>
+    <generator>Hugo</generator>
+    <language>ch</language>
+    <lastBuildDate>Mon, 12 Oct 2020 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/true-time/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Spanner: Google&#39;s Globally Distributed Database, Google, 2012</title>
+      <link>http://localhost:1313/post/spanner-googles-globally-distributed-database/</link>
+      <pubDate>Mon, 12 Oct 2020 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/post/spanner-googles-globally-distributed-database/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://pdos.csail.mit.edu/6.824/papers/spanner.pdf&#34;&gt;Spanner: Google’s Globally-Distributed Database&lt;/a&gt;&lt;/p&gt;&#xA;&lt;h1 id=&#34;特性&#34;&gt;特性&lt;/h1&gt;&#xA;&lt;p&gt;&lt;strong&gt;external consistency:&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;if a transaction $T_1$ commits before another transaction $T_2$ starts, then $T_1$&amp;rsquo;s commit timestamp is smaller than $T_2$&amp;rsquo;s.&lt;/p&gt;&lt;/blockquote&gt;&#xA;&lt;p&gt;如果事务 $T_1$ 的提交先于事务 $T_2$ 的开始，那么 $T_1$ 的提交时间戳应该小于 $T2$ 的提交时间戳。$T_2$ 可以读到所有 $T_1$ 产生的写操作。&lt;/p&gt;&#xA;&lt;h1 id=&#34;架构&#34;&gt;架构&lt;/h1&gt;&#xA;&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/image/Spanner-Googles-Globally-Distributed-Database/Figure1.jpg&#34;&#xA;    alt=&#34;图1.&#34; width=&#34;70%&#34;&gt;&lt;figcaption&gt;&#xA;      &lt;p&gt;图1.&lt;/p&gt;&#xA;    &lt;/figcaption&gt;&#xA;&lt;/figure&gt;&#xA;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;Universe&lt;/strong&gt;：一个完整的Spanner部署，目前只有test/playground，development/production，production-only三个Universe。&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;universemaster&lt;/strong&gt;：提供console做universe内的各个Zone监控，debug等。&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;placement driver&lt;/strong&gt;：定时的检查数据，按需进行数据迁移，满足副本的限制或保证负载均衡。&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Zone&lt;/strong&gt;：对应用户的一个应用级别部署。&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;zonemaster&lt;/strong&gt;：每个zone只有一个，分配数据。&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;location proxy&lt;/strong&gt;：用于定位data所在spanserver&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;span server&lt;/strong&gt;：数据所在服务器。&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/image/Spanner-Googles-Globally-Distributed-Database/Figure2.jpg&#34;&#xA;    alt=&#34;图2.&#34; width=&#34;70%&#34;&gt;&lt;figcaption&gt;&#xA;      &lt;p&gt;图2.&lt;/p&gt;&#xA;    &lt;/figcaption&gt;&#xA;&lt;/figure&gt;&#xA;&#xA;&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/image/Spanner-Googles-Globally-Distributed-Database/hierarchy.png&#34;&#xA;    alt=&#34;图3.&#34; width=&#34;80%&#34;&gt;&lt;figcaption&gt;&#xA;      &lt;p&gt;图3.&lt;/p&gt;&#xA;    &lt;/figcaption&gt;&#xA;&lt;/figure&gt;&#xA;&#xA;&lt;h1 id=&#34;读写事务&#34;&gt;读写事务&lt;/h1&gt;&#xA;&lt;h1 id=&#34;只读事务&#34;&gt;只读事务&lt;/h1&gt;</description>
+    </item>
+  </channel>
+</rss>

@@ -17,29 +17,9 @@
   </url><url>
     <loc>http://changliu0828.github.io/en/tags/clock/</loc>
     <lastmod>2020-10-06T10:02:07+08:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="ch"
-                href="http://changliu0828.github.io/tags/clock/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="http://changliu0828.github.io/en/tags/clock/"
-                />
   </url><url>
     <loc>http://changliu0828.github.io/en/tags/distributed-system/</loc>
     <lastmod>2020-10-06T10:02:07+08:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="ch"
-                href="http://changliu0828.github.io/tags/distributed-system/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="http://changliu0828.github.io/en/tags/distributed-system/"
-                />
   </url><url>
     <loc>http://changliu0828.github.io/en/</loc>
     <lastmod>2020-10-06T10:02:07+08:00</lastmod>
@@ -72,16 +52,6 @@
   </url><url>
     <loc>http://changliu0828.github.io/en/tags/state-machine/</loc>
     <lastmod>2020-10-06T10:02:07+08:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="ch"
-                href="http://changliu0828.github.io/tags/state-machine/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="http://changliu0828.github.io/en/tags/state-machine/"
-                />
   </url><url>
     <loc>http://changliu0828.github.io/en/tags/</loc>
     <lastmod>2020-10-06T10:02:07+08:00</lastmod>
@@ -98,15 +68,5 @@
   </url><url>
     <loc>http://changliu0828.github.io/en/post/time-clocks-and-the-ordering-of-events-in-a-distributed-system/</loc>
     <lastmod>2020-10-06T10:02:07+08:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="ch"
-                href="http://changliu0828.github.io/post/time-clocks-and-the-ordering-of-events-in-a-distributed-system/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="http://changliu0828.github.io/en/post/time-clocks-and-the-ordering-of-events-in-a-distributed-system/"
-                />
   </url>
 </urlset>

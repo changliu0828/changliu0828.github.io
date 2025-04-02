@@ -2,9 +2,32 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Chang Liu&#39;s Blog</title>
-    <link>http://changliu0828.github.io/en/tags/</link>
+    <link>http://localhost:1313/en/tags/</link>
     <description>Recent content in Tags on Chang Liu&#39;s Blog</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en</language><atom:link href="http://changliu0828.github.io/en/tags/index.xml" rel="self" type="application/rss+xml" />
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 06 Oct 2020 10:02:07 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/en/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Clock</title>
+      <link>http://localhost:1313/en/tags/clock/</link>
+      <pubDate>Tue, 06 Oct 2020 10:02:07 +0800</pubDate>
+      <guid>http://localhost:1313/en/tags/clock/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Distributed System</title>
+      <link>http://localhost:1313/en/tags/distributed-system/</link>
+      <pubDate>Tue, 06 Oct 2020 10:02:07 +0800</pubDate>
+      <guid>http://localhost:1313/en/tags/distributed-system/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>State Machine</title>
+      <link>http://localhost:1313/en/tags/state-machine/</link>
+      <pubDate>Tue, 06 Oct 2020 10:02:07 +0800</pubDate>
+      <guid>http://localhost:1313/en/tags/state-machine/</guid>
+      <description></description>
+    </item>
   </channel>
 </rss>

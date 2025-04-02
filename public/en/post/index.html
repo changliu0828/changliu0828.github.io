@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Posts | Chang Liu&#39;s Blog</title>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/fonts.css" />
     <script src="https://kit.fontawesome.com/a0e5d04d0b.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, securityLevel: 'loose', theme: "neutral" });</script>
+
 
 
   </head>
@@ -46,14 +49,15 @@
   <li class="post-list">
     <h3><a href="/en/post/time-clocks-and-the-ordering-of-events-in-a-distributed-system/">Time, Clocks, and the Ordering of Events in a Distributed System, Lamport, 1978</a></h3>
     <div>
-      test
+      <p>In this post, I summarize the study of the paper <a href="https://lamport.azurewebsites.net/pubs/time-clocks.pdf">Time, Clocks, and the Ordering of Events in a Distributed System</a> authored by <a href="https://en.wikipedia.org/wiki/Leslie_Lamport">Leslie Lamport</a> published on <em>Communications of the ACM</em> in 1978.
+The paper dives into the fundamental topics &ldquo;time and clock&rdquo; in the distributed system, and proposed several important concepts such as <a href="https://en.wikipedia.org/wiki/Happened-before">Happened-Before</a>, Logical Clocks, Physical Clocks and <a href="https://en.wikipedia.org/wiki/State_machine_replication">State Machine Replication</a>. It is definetely one of the &ldquo;Must-Read&rdquo; classic paper in distributed system area.</p>
     </div>
     <i class="far fa-calendar-check"></i><span class="date">2020/10/06</span>
     <span class="categories">
       
       
       
-      <i class="far fa-folder"></i><a href = '/categories/paper-note/'>Paper Note</a>
+      <i class="far fa-folder"></i><a href = '/categories/paper-notes/'>Paper Notes</a>
       
       
     </span>
@@ -116,9 +120,10 @@ code.has-jax {
 
 <script async src="//yihui.name/js/center-img.js"></script>
 
+
   
   <hr/>
-  © <a href="www.changliu.me">Chang Liu</a> 2020 | <a href="mailto:changliu0828@gmail.com">Contact</a>
+  © <a href="www.changliu.me">Chang Liu</a> 2021 | <a href="mailto:changliu0828@gmail.com">Contact</a>
   
   </footer>
   </body>

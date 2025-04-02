@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ch">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Spanner: Google&#39;s Globally Distributed Database, Google, 2012 | 刘畅的博客</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <script src="https://kit.fontawesome.com/a0e5d04d0b.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, securityLevel: 'loose', theme: "neutral" });</script>
+
+
+
+  </head>
+
+  <body>
+    <nav>
+      <ul class="menu">
+        <span class="menu_li">
+          
+            <li><a href="/">主页</a></li>
+          
+            <li><a href="/categories/">分类</a></li>
+          
+            <li><a href="/tags/">标签</a></li>
+          
+        </span>
+        <span class="change_lang">
+          
+            <li><i class="fas fa-globe-asia"></i><a href="/en">中/EN</a></li>
+          
+        </span>
+      </ul>
+      <hr/>
+    </nav>
+
+<div class="article-meta">
+<h2><span class="title">Spanner: Google&rsquo;s Globally Distributed Database, Google, 2012</span></h2>
+
+<h3 class="date">2020/10/12</h3>
+</div>
+
+
+
+
+<main>
+<p><a href="https://pdos.csail.mit.edu/6.824/papers/spanner.pdf">Spanner: Google’s Globally-Distributed Database</a></p>
+<h1 id="特性">特性</h1>
+<p><strong>external consistency:</strong></p>
+<blockquote>
+<p>if a transaction $T_1$ commits before another transaction $T_2$ starts, then $T_1$&rsquo;s commit timestamp is smaller than $T_2$&rsquo;s.</p></blockquote>
+<p>如果事务 $T_1$ 的提交先于事务 $T_2$ 的开始，那么 $T_1$ 的提交时间戳应该小于 $T2$ 的提交时间戳。$T_2$ 可以读到所有 $T_1$ 产生的写操作。</p>
+<h1 id="架构">架构</h1>
+<figure><img src="/image/Spanner-Googles-Globally-Distributed-Database/Figure1.jpg"
+    alt="图1." width="70%"><figcaption>
+      <p>图1.</p>
+    </figcaption>
+</figure>
+
+<ul>
+<li><strong>Universe</strong>：一个完整的Spanner部署，目前只有test/playground，development/production，production-only三个Universe。
+<ul>
+<li><strong>universemaster</strong>：提供console做universe内的各个Zone监控，debug等。</li>
+<li><strong>placement driver</strong>：定时的检查数据，按需进行数据迁移，满足副本的限制或保证负载均衡。</li>
+<li><strong>Zone</strong>：对应用户的一个应用级别部署。
+<ul>
+<li><strong>zonemaster</strong>：每个zone只有一个，分配数据。</li>
+<li><strong>location proxy</strong>：用于定位data所在spanserver</li>
+<li><strong>span server</strong>：数据所在服务器。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure><img src="/image/Spanner-Googles-Globally-Distributed-Database/Figure2.jpg"
+    alt="图2." width="70%"><figcaption>
+      <p>图2.</p>
+    </figcaption>
+</figure>
+
+<figure><img src="/image/Spanner-Googles-Globally-Distributed-Database/hierarchy.png"
+    alt="图3." width="80%"><figcaption>
+      <p>图3.</p>
+    </figcaption>
+</figure>
+
+<h1 id="读写事务">读写事务</h1>
+<h1 id="只读事务">只读事务</h1>
+</main>
+
+<div class="post-comment">
+    
+<div id="vcomments"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+<script type="text/javascript">
+  new Valine({
+    el: '#vcomments' ,
+    appId: 'zNMMLLQ0MYK2AKAgq6nC93gV-gzGzoHsz',
+    appKey: 'KfJ8vAFRca4uVeQWMNljT07B',
+    notify: 'false', 
+    verify: 'false', 
+    avatar:'mm', 
+    placeholder: '...',
+    visitor: 'true',
+    lang: 'en'
+  });
+</script>
+
+</div>
+
+  <footer>
+  <script src="//yihui.name/js/math-code.js"></script>
+<script type="text/javascript"
+        async
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+<script async src="//yihui.name/js/center-img.js"></script>
+
+
+  
+  <hr/>
+  © <a href="www.changliu.me">Chang Liu</a> 2021 | <a href="mailto:changliu0828@gmail.com">Contact</a>
+  
+  </footer>
+  </body>
+</html>
+

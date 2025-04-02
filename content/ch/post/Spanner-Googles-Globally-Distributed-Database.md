@@ -12,6 +12,8 @@ tags:
 
 [Spanner: Google’s Globally-Distributed Database](https://pdos.csail.mit.edu/6.824/papers/spanner.pdf)
 
+<!--more-->
+
 # 特性
 
 **external consistency:** 
@@ -19,6 +21,8 @@ tags:
 > if a transaction $T_1$ commits before another transaction $T_2$ starts, then $T_1$'s commit timestamp is smaller than $T_2$'s.
 
 如果事务 $T_1$ 的提交先于事务 $T_2$ 的开始，那么 $T_1$ 的提交时间戳应该小于 $T2$ 的提交时间戳。$T_2$ 可以读到所有 $T_1$ 产生的写操作。
+
+
 
 # 架构
 

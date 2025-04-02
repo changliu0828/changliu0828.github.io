@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html lang="ch">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>A New Solution of Dijkstra&#39;s Concurrent Programming Problem, Lamport, 1974 | 刘畅的博客</title>
@@ -24,8 +24,6 @@
             <li><a href="/categories/">分类</a></li>
           
             <li><a href="/tags/">标签</a></li>
-          
-            <li><a href="/dashboard/">仪表盘</a></li>
           
         </span>
         <span class="change_lang">
@@ -59,39 +57,39 @@
 <li>代码中 <code>maximum</code> 函数读到各个变量的值的顺序没有要求。</li>
 <li>代码 <code>L3</code> 中的比较运算 <code>(a,b)&lt;(c,d)</code> 可以视为 <code>if a &lt; c or if a = c and b &lt; d</code>。</li>
 </ul>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">begin integer j;
-  L1: choosing[i] := 1;
-      number[i] := 1 + maximum(number[1], ... , number[N]);
-      choosing[i] := 0;
-      for j = 1 step 1 until N do
-        begin
-          L2: if choosing[j] != 0 then goto L2;
-          L3: if number[j] != 0 and (number[j], j) &lt; (number[i], i) then goto L3;
-        end;
-      critical section;
-      number[i] := 0;
-      noncritical section;
-      goto L1;
-end
-</code></pre></td></tr></table>
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>begin integer j;
+</span></span><span style="display:flex;"><span>  L1: choosing[i] := 1;
+</span></span><span style="display:flex;"><span>      number[i] := 1 + maximum(number[1], ... , number[N]);
+</span></span><span style="display:flex;"><span>      choosing[i] := 0;
+</span></span><span style="display:flex;"><span>      for j = 1 step 1 until N do
+</span></span><span style="display:flex;"><span>        begin
+</span></span><span style="display:flex;"><span>          L2: if choosing[j] != 0 then goto L2;
+</span></span><span style="display:flex;"><span>          L3: if number[j] != 0 and (number[j], j) &lt; (number[i], i) then goto L3;
+</span></span><span style="display:flex;"><span>        end;
+</span></span><span style="display:flex;"><span>      critical section;
+</span></span><span style="display:flex;"><span>      number[i] := 0;
+</span></span><span style="display:flex;"><span>      noncritical section;
+</span></span><span style="display:flex;"><span>      goto L1;
+</span></span><span style="display:flex;"><span>end
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h1 id="证明">证明</h1>
 <p>对于节点 <code>i</code> ，在第2行将 <code>choosing[i]</code> 设置为1后，称其进入“门廊(doorway)”。在第4行将 <code>choosing[i]</code> 设置为0后，直至其失效(fail)或完成第11行离开临界区前，我们称其进入“面包店(bakery)”内。我们有如下断言，</p>

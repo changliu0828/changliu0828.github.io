@@ -2,37 +2,25 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on 刘畅的博客</title>
-    <link>http://changliu0828.github.io/categories/</link>
+    <link>http://localhost:1313/categories/</link>
     <description>Recent content in Categories on 刘畅的博客</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en</language>
-    <lastBuildDate>Tue, 06 Oct 2020 10:02:07 +0800</lastBuildDate><atom:link href="http://changliu0828.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>论文笔记</title>
-      <link>http://changliu0828.github.io/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/</link>
-      <pubDate>Tue, 06 Oct 2020 10:02:07 +0800</pubDate>
-      
-      <guid>http://changliu0828.github.io/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/</guid>
-      <description></description>
-    </item>
-    
+    <generator>Hugo</generator>
+    <language>ch</language>
+    <lastBuildDate>Wed, 23 Sep 2020 16:28:30 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>源码笔记</title>
-      <link>http://changliu0828.github.io/categories/%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0/</link>
+      <link>http://localhost:1313/categories/%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0/</link>
       <pubDate>Wed, 23 Sep 2020 16:28:30 +0800</pubDate>
-      
-      <guid>http://changliu0828.github.io/categories/%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0/</guid>
+      <guid>http://localhost:1313/categories/%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>总结</title>
-      <link>http://changliu0828.github.io/categories/%E6%80%BB%E7%BB%93/</link>
+      <link>http://localhost:1313/categories/%E6%80%BB%E7%BB%93/</link>
       <pubDate>Fri, 28 Aug 2020 00:00:00 +0000</pubDate>
-      
-      <guid>http://changliu0828.github.io/categories/%E6%80%BB%E7%BB%93/</guid>
+      <guid>http://localhost:1313/categories/%E6%80%BB%E7%BB%93/</guid>
       <description></description>
     </item>
-    
   </channel>
 </rss>

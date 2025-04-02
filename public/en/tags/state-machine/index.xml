@@ -2,23 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>State Machine on Chang Liu&#39;s Blog</title>
-    <link>http://changliu0828.github.io/en/tags/state-machine/</link>
+    <link>http://localhost:1313/en/tags/state-machine/</link>
     <description>Recent content in State Machine on Chang Liu&#39;s Blog</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
     <language>en</language>
     <lastBuildDate>Tue, 06 Oct 2020 10:02:07 +0800</lastBuildDate>
-    
-	<atom:link href="http://changliu0828.github.io/en/tags/state-machine/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <atom:link href="http://localhost:1313/en/tags/state-machine/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Time, Clocks, and the Ordering of Events in a Distributed System, Lamport, 1978</title>
-      <link>http://changliu0828.github.io/en/post/time-clocks-and-the-ordering-of-events-in-a-distributed-system/</link>
+      <link>http://localhost:1313/en/post/time-clocks-and-the-ordering-of-events-in-a-distributed-system/</link>
       <pubDate>Tue, 06 Oct 2020 10:02:07 +0800</pubDate>
-      
-      <guid>http://changliu0828.github.io/en/post/time-clocks-and-the-ordering-of-events-in-a-distributed-system/</guid>
-      <description>test</description>
+      <guid>http://localhost:1313/en/post/time-clocks-and-the-ordering-of-events-in-a-distributed-system/</guid>
+      <description>&lt;p&gt;In this post, I summarize the study of the paper &lt;a href=&#34;https://lamport.azurewebsites.net/pubs/time-clocks.pdf&#34;&gt;Time, Clocks, and the Ordering of Events in a Distributed System&lt;/a&gt; authored by &lt;a href=&#34;https://en.wikipedia.org/wiki/Leslie_Lamport&#34;&gt;Leslie Lamport&lt;/a&gt; published on &lt;em&gt;Communications of the ACM&lt;/em&gt; in 1978.&#xA;The paper dives into the fundamental topics &amp;ldquo;time and clock&amp;rdquo; in the distributed system, and proposed several important concepts such as &lt;a href=&#34;https://en.wikipedia.org/wiki/Happened-before&#34;&gt;Happened-Before&lt;/a&gt;, Logical Clocks, Physical Clocks and &lt;a href=&#34;https://en.wikipedia.org/wiki/State_machine_replication&#34;&gt;State Machine Replication&lt;/a&gt;. It is definetely one of the &amp;ldquo;Must-Read&amp;rdquo; classic paper in distributed system area.&lt;/p&gt;</description>
     </item>
-    
   </channel>
 </rss>

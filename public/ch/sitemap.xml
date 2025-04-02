@@ -2,102 +2,83 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://changliu0828.github.io/</loc>
-    <lastmod>2021-10-30T11:54:16+08:00</lastmod>
+    <loc>http://localhost:1313/</loc>
+    <lastmod>2021-02-02T10:50:36+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://changliu0828.github.io/en/"
+                href="http://localhost:1313/en/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="ch"
-                href="http://changliu0828.github.io/"
+                href="http://localhost:1313/"
                 />
   </url><url>
-    <loc>http://changliu0828.github.io/post/</loc>
-    <lastmod>2021-10-30T11:54:16+08:00</lastmod>
-  </url><url>
-    <loc>http://changliu0828.github.io/post/japanese-learning-note/</loc>
-    <lastmod>2021-10-30T11:54:16+08:00</lastmod>
-  </url><url>
-    <loc>http://changliu0828.github.io/categories/</loc>
-    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
+    <loc>http://localhost:1313/post/</loc>
+    <lastmod>2021-02-02T10:50:36+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://changliu0828.github.io/en/categories/"
+                href="http://localhost:1313/en/post/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="ch"
-                href="http://changliu0828.github.io/categories/"
+                href="http://localhost:1313/post/"
                 />
   </url><url>
-    <loc>http://changliu0828.github.io/tags/clock/</loc>
-    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
-  </url><url>
-    <loc>http://changliu0828.github.io/tags/distributed-system/</loc>
-    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
-  </url><url>
-    <loc>http://changliu0828.github.io/tags/state-machine/</loc>
-    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
-  </url><url>
-    <loc>http://changliu0828.github.io/tags/</loc>
-    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
+    <loc>http://localhost:1313/categories/</loc>
+    <lastmod>2020-09-23T16:28:30+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://changliu0828.github.io/en/tags/"
+                href="http://localhost:1313/en/categories/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="ch"
-                href="http://changliu0828.github.io/tags/"
+                href="http://localhost:1313/categories/"
                 />
   </url><url>
-    <loc>http://changliu0828.github.io/post/time-clocks-and-the-ordering-of-events-in-a-distributed-system/</loc>
-    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
-  </url><url>
-    <loc>http://changliu0828.github.io/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/</loc>
-    <lastmod>2020-10-06T10:02:07+08:00</lastmod>
-  </url><url>
-    <loc>http://changliu0828.github.io/tags/libco/</loc>
+    <loc>http://localhost:1313/tags/libco/</loc>
     <lastmod>2020-09-23T16:28:30+08:00</lastmod>
   </url><url>
-    <loc>http://changliu0828.github.io/post/libco-auto/</loc>
+    <loc>http://localhost:1313/post/libco-auto/</loc>
     <lastmod>2020-09-23T16:28:30+08:00</lastmod>
   </url><url>
-    <loc>http://changliu0828.github.io/categories/%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0/</loc>
+    <loc>http://localhost:1313/tags/</loc>
+    <lastmod>2020-09-23T16:28:30+08:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="http://localhost:1313/en/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ch"
+                href="http://localhost:1313/tags/"
+                />
+  </url><url>
+    <loc>http://localhost:1313/categories/%E6%BA%90%E7%A0%81%E7%AC%94%E8%AE%B0/</loc>
     <lastmod>2020-09-23T16:28:30+08:00</lastmod>
   </url><url>
-    <loc>http://changliu0828.github.io/post/libco-manual/</loc>
+    <loc>http://localhost:1313/post/libco-manual/</loc>
     <lastmod>2020-09-22T16:18:17+08:00</lastmod>
   </url><url>
-    <loc>http://changliu0828.github.io/post/libco-coroutine/</loc>
+    <loc>http://localhost:1313/post/libco-coroutine/</loc>
     <lastmod>2020-09-11T15:08:21+08:00</lastmod>
   </url><url>
-    <loc>http://changliu0828.github.io/post/a-new-solution-of-dijkstras-concurrent-programming-problem/</loc>
-    <lastmod>2020-09-05T18:40:23+08:00</lastmod>
-  </url><url>
-    <loc>http://changliu0828.github.io/tags/bakery-algorithm/</loc>
-    <lastmod>2020-09-05T18:40:23+08:00</lastmod>
-  </url><url>
-    <loc>http://changliu0828.github.io/post/solution-of-a-problem-in-concurrent-programming-control/</loc>
-    <lastmod>2020-09-03T19:48:34+08:00</lastmod>
-  </url><url>
-    <loc>http://changliu0828.github.io/tags/c&#43;&#43;/</loc>
+    <loc>http://localhost:1313/tags/c&#43;&#43;/</loc>
     <lastmod>2020-08-28T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://changliu0828.github.io/post/cpp11-features/</loc>
+    <loc>http://localhost:1313/post/cpp11-features/</loc>
     <lastmod>2020-08-28T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://changliu0828.github.io/categories/%E6%80%BB%E7%BB%93/</loc>
+    <loc>http://localhost:1313/categories/%E6%80%BB%E7%BB%93/</loc>
     <lastmod>2020-08-28T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://changliu0828.github.io/post/friend-recommendation/</loc>
+    <loc>http://localhost:1313/post/friend-recommendation/</loc>
     <lastmod>2019-02-14T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://changliu0828.github.io/dashboard/</loc>
   </url>
 </urlset>

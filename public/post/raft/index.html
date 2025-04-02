@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ch">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MIT6.824课程笔记: Lab2 Raft | 刘畅的博客</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <script src="https://kit.fontawesome.com/a0e5d04d0b.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, securityLevel: 'loose', theme: "neutral" });</script>
+
+
+
+  </head>
+
+  <body>
+    <nav>
+      <ul class="menu">
+        <span class="menu_li">
+          
+            <li><a href="/">主页</a></li>
+          
+            <li><a href="/categories/">分类</a></li>
+          
+            <li><a href="/tags/">标签</a></li>
+          
+        </span>
+        <span class="change_lang">
+          
+            <li><i class="fas fa-globe-asia"></i><a href="/en">中/EN</a></li>
+          
+        </span>
+      </ul>
+      <hr/>
+    </nav>
+
+<div class="article-meta">
+<h2><span class="title">MIT6.824课程笔记: Lab2 Raft</span></h2>
+
+<h3 class="date">2021/02/02</h3>
+</div>
+
+
+<aside class="toc">
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#part-2a">Part 2A</a>
+      <ul>
+        <li><a href="#main-loop">Main Loop</a></li>
+        <li><a href="#requestvote-rpc">RequestVote RPC</a></li>
+        <li><a href="#sendrequestvote">SendRequestVote</a></li>
+      </ul>
+    </li>
+    <li><a href="#part-2b">Part 2B</a></li>
+    <li><a href="#part-2c">Part 2C</a></li>
+  </ul>
+</nav>
+</aside>
+
+
+
+<main>
+<h1 id="part-2a">Part 2A</h1>
+<blockquote>
+<p>Implement Raft leader election and heartbeats (AppendEntries RPCs with no log entries). The goal for Part 2A is for a single leader to be elected, for the leader to remain the leader if there are no failures, and for a new leader to take over if the old leader fails or if packets to/from the old leader are lost.</p></blockquote>
+<p>在Part 2A中，我们需要实现初步的选举算法。</p>
+<h2 id="main-loop">Main Loop</h2>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#00a">func</span> (rf *Raft) <span style="color:#0a0">loop</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#00a">for</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#00a">if</span> rf.<span style="color:#0a0">killed</span>() {
+</span></span><span style="display:flex;"><span>            <span style="color:#00a">return</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#00a">switch</span> atomic.<span style="color:#0a0">LoadInt32</span>(&amp;rf.state) {
+</span></span><span style="display:flex;"><span>        <span style="color:#00a">case</span> FOLLOWER:
+</span></span><span style="display:flex;"><span>            <span style="color:#00a">if</span> <span style="color:#0a0">NowUnixMS</span>() &gt; atomic.<span style="color:#0a0">LoadInt64</span>(&amp;rf.electionTimeout) { <span style="color:#aaa;font-style:italic">//超时触发选举</span>
+</span></span><span style="display:flex;"><span>                rf.<span style="color:#0a0">SendRequestVote</span>()                                         
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            time.<span style="color:#0a0">Sleep</span>(<span style="color:#099">10</span> * time.Millisecond)
+</span></span><span style="display:flex;"><span>        <span style="color:#00a">case</span> CANDIDATE:
+</span></span><span style="display:flex;"><span>            time.<span style="color:#0a0">Sleep</span>(<span style="color:#099">10</span> * time.Millisecond)
+</span></span><span style="display:flex;"><span>        <span style="color:#00a">case</span> LEADER:
+</span></span><span style="display:flex;"><span>            rf.<span style="color:#0a0">SendAppendEntries</span>() <span style="color:#aaa;font-style:italic">//心跳</span>
+</span></span><span style="display:flex;"><span>            time.<span style="color:#0a0">Sleep</span>(time.<span style="color:#0a0">Duration</span>(HEARTBEAT_PERIOD_MS) * time.Millisecond)
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="requestvote-rpc">RequestVote RPC</h2>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#00a">type</span> RequestVoteArgs <span style="color:#00a">struct</span> {
+</span></span><span style="display:flex;"><span>    Term         <span style="color:#0aa">int</span> <span style="color:#aaa;font-style:italic">//候选人当前Term</span>
+</span></span><span style="display:flex;"><span>    CanditateId  <span style="color:#0aa">int</span> <span style="color:#aaa;font-style:italic">//候选人ID</span>
+</span></span><span style="display:flex;"><span>    LastLogIndex <span style="color:#0aa">int</span> <span style="color:#aaa;font-style:italic">//候选人最新LogEntry的Index</span>
+</span></span><span style="display:flex;"><span>    LastLogTerm  <span style="color:#0aa">int</span> <span style="color:#aaa;font-style:italic">//候选人最新LogEntry的Term</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#00a">type</span> RequestVoteReply <span style="color:#00a">struct</span> {
+</span></span><span style="display:flex;"><span>    Term        <span style="color:#0aa">int</span>  <span style="color:#aaa;font-style:italic">//当前Term，用于候选人更新自身Term</span>
+</span></span><span style="display:flex;"><span>    VoteGranted <span style="color:#0aa">bool</span> <span style="color:#aaa;font-style:italic">//是否投票</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="sendrequestvote">SendRequestVote</h2>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#00a">func</span> (rf *Raft) <span style="color:#0a0">RequestVote</span>(args *RequestVoteArgs, reply *RequestVoteReply) {
+</span></span><span style="display:flex;"><span>	rf.mu.<span style="color:#0a0">Lock</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#00a">defer</span> rf.mu.<span style="color:#0a0">Unlock</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#00a">if</span> args.Term &lt; rf.currentTerm {
+</span></span><span style="display:flex;"><span>		reply.VoteGranted = <span style="color:#00a">false</span>
+</span></span><span style="display:flex;"><span>	} <span style="color:#00a">else</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#00a">if</span> args.Term &gt; rf.currentTerm {
+</span></span><span style="display:flex;"><span>			rf.state = FOLLOWER
+</span></span><span style="display:flex;"><span>			rf.currentTerm = args.Term
+</span></span><span style="display:flex;"><span>			rf.votedFor = -<span style="color:#099">1</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		rf.electionTimeout = <span style="color:#0a0">RandElectionTimeout</span>()
+</span></span><span style="display:flex;"><span>		reply.VoteGranted = (rf.votedFor == -<span style="color:#099">1</span> || rf.votedFor == args.CanditateId) &amp;&amp; <span style="color:#0a0">UpToDate</span>(args.LastLogTerm, args.LastLogIndex, rf.<span style="color:#0a0">getLastLogTerm</span>(), rf.<span style="color:#0a0">getLastLogIndex</span>())
+</span></span><span style="display:flex;"><span>		<span style="color:#00a">if</span> reply.VoteGranted {
+</span></span><span style="display:flex;"><span>			rf.votedFor = args.CanditateId
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		rf.<span style="color:#0a0">persist</span>()
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	reply.Term = rf.currentTerm
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#00a">func</span> (rf *Raft) <span style="color:#0a0">SendRequestVote</span>() {
+</span></span><span style="display:flex;"><span>    rf.mu.<span style="color:#0a0">Lock</span>()
+</span></span><span style="display:flex;"><span>    rf.currentTerm++ <span style="color:#aaa;font-style:italic">//Term自增</span>
+</span></span><span style="display:flex;"><span>    rf.state = CANDIDATE <span style="color:#aaa;font-style:italic">//设置身份为候选人</span>
+</span></span><span style="display:flex;"><span>    rf.votedFor = rf.me <span style="color:#aaa;font-style:italic">//投给自己</span>
+</span></span><span style="display:flex;"><span>    rf.electionTimeout = <span style="color:#0a0">RandElectionTimeout</span>() <span style="color:#aaa;font-style:italic">//随机选举超时时间, 超过后发起下一轮选举</span>
+</span></span><span style="display:flex;"><span>    rf.mu.<span style="color:#0a0">Unlock</span>()
+</span></span><span style="display:flex;"><span>    args := RequestVoteArgs{Term: rf.currentTerm, CanditateId: rf.me, LastLogIndex: <span style="color:#099">0</span>, LastLogTerm: <span style="color:#099">0</span>}
+</span></span><span style="display:flex;"><span>    <span style="color:#00a">var</span> mu sync.Mutex
+</span></span><span style="display:flex;"><span>    cond := sync.<span style="color:#0a0">NewCond</span>(&amp;mu)   <span style="color:#aaa;font-style:italic">//条件变量</span>
+</span></span><span style="display:flex;"><span>    grantedCnt := <span style="color:#099">0</span> <span style="color:#aaa;font-style:italic">//已获得投票数</span>
+</span></span><span style="display:flex;"><span>    finishedCnt := <span style="color:#099">1</span> <span style="color:#aaa;font-style:italic">//已投给自己</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#00a">for</span> server, _ := <span style="color:#00a">range</span> rf.peers {
+</span></span><span style="display:flex;"><span>        <span style="color:#00a">if</span> server == rf.me {
+</span></span><span style="display:flex;"><span>            <span style="color:#00a">continue</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#00a">go</span> <span style="color:#00a">func</span>(server <span style="color:#0aa">int</span>) {
+</span></span><span style="display:flex;"><span>            reply := RequestVoteReply{}
+</span></span><span style="display:flex;"><span>            rf.peers[server].<span style="color:#0a0">Call</span>(<span style="color:#a50">&#34;Raft.RequestVote&#34;</span>, &amp;args, &amp;reply)
+</span></span><span style="display:flex;"><span>            mu.<span style="color:#0a0">Lock</span>()
+</span></span><span style="display:flex;"><span>            <span style="color:#00a">defer</span> mu.<span style="color:#0a0">Unlock</span>()
+</span></span><span style="display:flex;"><span>            finishedCnt++
+</span></span><span style="display:flex;"><span>            <span style="color:#00a">if</span> reply.VoteGranted {
+</span></span><span style="display:flex;"><span>                grantedCnt++
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            cond.<span style="color:#0a0">Broadcast</span>()
+</span></span><span style="display:flex;"><span>        }(server)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    mu.<span style="color:#0a0">Lock</span>()
+</span></span><span style="display:flex;"><span>    <span style="color:#00a">defer</span> mu.<span style="color:#0a0">Unlock</span>()
+</span></span><span style="display:flex;"><span>    <span style="color:#00a">for</span> grantedCnt &lt; <span style="color:#0aa">int</span>(math.<span style="color:#0a0">Ceil</span>(<span style="color:#0aa">float64</span>(<span style="color:#0aa">len</span>(rf.peers)/<span style="color:#099">2</span>))) &amp;&amp; finishedCnt &lt; <span style="color:#0aa">len</span>(rf.peers) {
+</span></span><span style="display:flex;"><span>        cond.<span style="color:#0a0">Wait</span>()
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#00a">if</span> grantedCnt &gt;= <span style="color:#0aa">int</span>(math.<span style="color:#0a0">Ceil</span>(<span style="color:#0aa">float64</span>(<span style="color:#0aa">len</span>(rf.peers)/<span style="color:#099">2</span>))) {
+</span></span><span style="display:flex;"><span>        rf.mu.<span style="color:#0a0">Lock</span>()
+</span></span><span style="display:flex;"><span>        rf.state = LEADER
+</span></span><span style="display:flex;"><span>        rf.mu.<span style="color:#0a0">Unlock</span>()
+</span></span><span style="display:flex;"><span>        rf.<span style="color:#0a0">SendAppendEntries</span>()
+</span></span><span style="display:flex;"><span>    } <span style="color:#00a">else</span> {
+</span></span><span style="display:flex;"><span>        rf.mu.<span style="color:#0a0">Lock</span>()
+</span></span><span style="display:flex;"><span>        rf.state = FOLLOWER
+</span></span><span style="display:flex;"><span>        rf.mu.<span style="color:#0a0">Unlock</span>()
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="part-2b">Part 2B</h1>
+<h1 id="part-2c">Part 2C</h1>
+</main>
+
+<div class="post-comment">
+    
+</div>
+
+  <footer>
+  <script src="//yihui.name/js/math-code.js"></script>
+<script type="text/javascript"
+        async
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+<script async src="//yihui.name/js/center-img.js"></script>
+
+
+  
+  <hr/>
+  © <a href="www.changliu.me">Chang Liu</a> 2021 | <a href="mailto:changliu0828@gmail.com">Contact</a>
+  
+  </footer>
+  </body>
+</html>
+

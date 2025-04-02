@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Time, Clocks, and the Ordering of Events in a Distributed System, Lamport, 1978 | Chang Liu&#39;s Blog</title>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/fonts.css" />
     <script src="https://kit.fontawesome.com/a0e5d04d0b.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, securityLevel: 'loose', theme: "neutral" });</script>
+
 
 
   </head>
@@ -40,14 +43,277 @@
 
 
 <aside class="toc">
-<nav id="TableOfContents"></nav>
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-problem">1. Problem</a></li>
+    <li><a href="#2-what-is-time">2. What is time</a></li>
+    <li><a href="#3-the-definition-of-distributed-system">3. The definition of distributed system</a></li>
+    <li><a href="#4-happened-before">4. Happened Before</a></li>
+    <li><a href="#5-logical-clocks">5. Logical Clocks</a></li>
+    <li><a href="#6-total-ordering">6. Total Ordering</a></li>
+    <li><a href="#7-physical-clocks">7. Physical Clocks</a>
+      <ul>
+        <li><a href="#71-out-of-the-system">7.1 Out of the system</a></li>
+        <li><a href="#72-physical-clocks-implimentation">7.2 Physical Clocks Implimentation</a>
+          <ul>
+            <li><a href="#721-physical-clocks-algorithm">7.2.1 Physical Clocks Algorithm</a></li>
+            <li><a href="#721-physical-clocks-algorithm-proof">7.2.1 Physical Clocks Algorithm Proof</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#8appendix">8.Appendix</a>
+      <ul>
+        <li><a href="#81-total-ordering-application-mutual-exclusion-problem">8.1 Total Ordering Application: Mutual Exclusion Problem</a></li>
+        <li><a href="#82-pc1-proof">8.2 PC1 Proof</a></li>
+        <li><a href="#83-pc2-proof">8.3 PC2 Proof</a></li>
+        <li><a href="#84-定理证明">8.4 定理证明</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
 </aside>
 
 
 
 <main>
-<p>test</p>
+<p>In this post, I summarize the study of the paper <a href="https://lamport.azurewebsites.net/pubs/time-clocks.pdf">Time, Clocks, and the Ordering of Events in a Distributed System</a> authored by <a href="https://en.wikipedia.org/wiki/Leslie_Lamport">Leslie Lamport</a> published on <em>Communications of the ACM</em> in 1978.
+The paper dives into the fundamental topics &ldquo;time and clock&rdquo; in the distributed system, and proposed several important concepts such as <a href="https://en.wikipedia.org/wiki/Happened-before">Happened-Before</a>, Logical Clocks, Physical Clocks and <a href="https://en.wikipedia.org/wiki/State_machine_replication">State Machine Replication</a>. It is definetely one of the &ldquo;Must-Read&rdquo; classic paper in distributed system area.</p>
+<h1 id="1-problem">1. Problem</h1>
+<figure><img src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/cafe.jpeg" width="100%">
+</figure>
 
+<p>Before we jump into the discussion, let&rsquo;s consider the following scenario:</p>
+<p>We have two persons A and B. They are having coffee wearing their own watches.</p>
+<ul>
+<li>A read the time by his watch after finishing his coffee, and he said: &ldquo;I finished my coffee at 13:00&rdquo;.</li>
+<li>B read the time by his watch after finishing his coffee. and he said: &ldquo;I finished my coffee at 13:05&rdquo;.</li>
+</ul>
+<p>Suppose they are both honest, <strong>can we say that &ldquo;A finished his coffee before B&rdquo;?</strong></p>
+<p>The answer is no. Since we have no idea whether their watches are &ldquo;accurate&rdquo; or not. We can&rsquo;t have the conclusion of &ldquo;who finished first&rdquo;, even though they both announced their reading of the watch honestly. Then what about this:</p>
+<ul>
+<li>A read the time by his watch after finishing his coffee, and he said: &ldquo;I finished my coffee at 13:00&rdquo;.</li>
+<li>A made a phone call to B after coffee.</li>
+<li>B answered the call, then finished his coffee and read the time by his watch. He said: &ldquo;I finished my coffee at 13:05&rdquo;.</li>
+</ul>
+<p>In this scenario, we can have A finished the coffee before the call, and B finished after that. So A&rsquo;s coffee must be finished before B. <strong>This phone call made up a deterministic &ldquo;happened-before&rdquo; relationship between two indipendent time system.</strong></p>
+<p>By the above example, we know that the common concept/method such as &ldquo;reading of clock&rdquo;, &ldquo;timestamp&rdquo; can not correctly describe the order of event occurs. However, in the distributed system, this order plays critical role in different algorithims. So, how could we build our &ldquo;clock&rdquo; to presisly describe this order? This paper gives us the answer.</p>
+<h1 id="2-what-is-time">2. What is time</h1>
+<blockquote>
+<p>The concept of time is fundamental to our way of thinking. It is derived from the more basic concept of the order in which events occur.</p></blockquote>
+<p>For example, if we say some event occurs at 13:00. The critical statements should be: It occurred after we read 13:00 at the clock and before 13:01. By this definition, we know that “time” is a behavior that discrete the continuous-time by the number read on the clock.</p>
+<h1 id="3-the-definition-of-distributed-system">3. The definition of distributed system</h1>
+<p>The so-called distributed system in this paper comprises several spatially separated Nodes. Events in the single node happened sequentially. Different nodes communicate by messaging. We can understand the node as independent computers, processes of operating systems, or different hardware modules in a computer. Especially, we should care about communication latency. It should not be ignored compared to the frequency of events happening in a single node.</p>
+<h1 id="4-happened-before">4. Happened Before</h1>
+<p>We define the &ldquo;happened before&rdquo; relation on the events in a distributed system, and denote it by &ldquo;$\rightarrow$&rdquo;. It satisfied,</p>
+<ul>
+<li>If $a$ and $b$ are the events in the same node, if $a$ comes before $b$, then $a \rightarrow b$.</li>
+<li>If $a$ is the sending of a message by one node and $b$ is the receipt of the same message by another node, then $a \rightarrow b$.</li>
+<li>If $a \rightarrow b$ and $b \rightarrow c$, then $a \rightarrow c$.</li>
+</ul>
+<p>If and only if $a \nrightarrow b$ and $b \nrightarrow a$, we say these two events are &ldquo;concurrent&rdquo;.</p>
+<p>Besides, we define the $\rightarrow$ is a <a href="https://en.wikipedia.org/wiki/Reflexive_relation">irreflexive relation</a>, which is $a \nrightarrow a$. Obviously, a event which happened before itself does not make any sense.</p>
+<p>To intuitively describe the relation, Lamport imported the below &ldquo;space-time Diagram&rdquo;. In terms of terminology, the &ldquo;process&rdquo; in the diagram is the same as the &ldquo;node&rdquo; we discussed before. Black dots are the events that occurred on different nodes. The events on a single vertical line(node/process) happened from top to bottom, and the wave arrow between different nodes describes the messaging.</p>
+<p>Recall the &ldquo;happened before&rdquo; relation. It is not hard to find some satisfying event pairs. Such as $p_1 \rightarrow r_4$, deducted by $ p_1 \rightarrow q_2 \rightarrow q_4 \rightarrow r_3 \rightarrow r_4$.</p>
+<p>And there are several concurrent events as well, such as $p_3$ and $q_3$. Even though we can see $p_3$ is above of $q_3$, but for the nodes , they do not aware of this kind of order.</p>
+<figure><img src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/Fig1.jpg"
+    alt="Fig1. space-time diagram" width="70%"><figcaption>
+      <p>Fig1. space-time diagram</p>
+    </figcaption>
+</figure>
+
+<h1 id="5-logical-clocks">5. Logical Clocks</h1>
+<blockquote>
+<p>a clock is just a way of assigning a number to an event.</p></blockquote>
+<p>More precisely, for each node $P_i$, we define clock $C_i$ as a function. It numbers an arbitrary event $a$ of $C_i \langle a \rangle$. For the whole system, denote the happened time of an arbitrary event $b$ as $C \langle b \rangle$. If $b$ happened on node $P_j$, then $ C \langle b \rangle =  C_j \langle b \rangle$. Here, the clock $C$ is not the real clock we use in daily life. That is a logical clock simply assign integers to each event to present the order of happening. To follow the &ldquo;happened before&rdquo; relation, the clock should satisfied the following Clock Condition.</p>
+<blockquote>
+<p><strong>Clock Condition.</strong> For any events $a, b$: if $a \rightarrow b$, then $C \langle a \rangle &lt; C \langle b \rangle$.<br>
+<strong>C1</strong>. If $a$ and $b$ are events in node $P_i$, and $a$ comes before $b$, then $C_i \langle a \rangle &lt; C_i \langle b \rangle$.<br>
+<strong>C2</strong>. If $a$ is the sending of a message by node $P_i$, and $b$ is the receipt of that message by node $P_j$, then $ C_i \langle a \rangle &lt; C_j \langle b \rangle $.</p></blockquote>
+<p><strong>In particular, the the converse proposition of Clock Condition &ldquo;If $C \langle a \rangle &lt; C \langle b \rangle$, then $a \rightarrow b$&rdquo; does not necessarily hold.</strong>. For example, in Fig1, $(p_2, q_3), (p_3, q_3)$ are concurrent. By $C1$, we have $C \langle p_2 \rangle &lt; C \langle p_3 \rangle$, then we have either $C \langle q_3 \rangle \neq C \langle p_2 \rangle$ or $C \langle q_3 \rangle \neq C \langle p_3 \rangle$, which is confict with concurrent relation.</p>
+<p>For the logical clock, we can imagine that the &ldquo;tick&rdquo; evens keep occurring in a single node. For example, two evens $a, b$ continuous happened in a node $P_i$, and we have $C_i \langle a \rangle = 4, C_i \langle b \rangle = 7$, then we should have three &ldquo;tick&rdquo; evens happened between them which numbered $5,6,7$. Therefore, we can add &ldquo;tick line&rdquo; to our space-time diagram as Fig.2. By $C1$, we can know that for two evens continuous happened in the same node, there should have at least tick line between them. By $C2$, we can have that every message should go across at least one tick line.</p>
+<figure><img src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/Fig2.png"
+    alt="Fig2. space-time diagram with tick line" width="70%"><figcaption>
+      <p>Fig2. space-time diagram with tick line</p>
+    </figcaption>
+</figure>
+
+<p>For easy understanding, as Fig3, we can make horizontal the tick line with the same partial order of events and messages.</p>
+<figure><img src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/Fig3.png"
+    alt="Fig.3 horizontal the tick line" width="70%"><figcaption>
+      <p>Fig.3 horizontal the tick line</p>
+    </figcaption>
+</figure>
+
+<p>On a single node $P_i$, our implmentation of logical clock follows(Implementation Rule):</p>
+<ul>
+<li>IR1. $C_i$ increased between any consecutive happened events.</li>
+<li>IR2.
+<ul>
+<li>(a) If event $a$ is the sending of a message $m$, and $m$ contains the timestamp $T_m=C_i \langle a \rangle $. (b)</li>
+<li>(b) When another node $P_j$ receive the message $m$, set $C_j$ as $C_j&rsquo;$, which $C_j&rsquo; &gt;= C_j$ and $C_j&rsquo; &gt; Tm$.</li>
+</ul>
+</li>
+</ul>
+<h1 id="6-total-ordering">6. Total Ordering</h1>
+<p>Using the logical clock, we can sort the who events in the distributed system in total order. Firstly, we sort events by logical clocks. For the events have the same logical clock value, we sort them by the pre-defined priority rules $\prec$. e.g. alphabet order.</p>
+<p>More precisely, we define the total order $\Rightarrow$. For event $a$ on $P_i$ and $b$ on $P_j$,<br>
+we have $ a \Rightarrow b $ if and only if (i) or (ii).</p>
+<ul>
+<li>(i) $C_i \langle a \rangle &lt; C_j \langle b \rangle$.</li>
+<li>(ii) $C_i \langle a \rangle = C_j \langle b \rangle$ and $P_i \prec P_j$.</li>
+</ul>
+<p>By the definition of <strong>Clock Condition</strong>, we can know that if events satisfied $\rightarrow$, then they must satisfied $\Rightarrow$.</p>
+<figure><img src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/partial-total.png"
+    alt="Fig4. Total order and partial order" width="40%"><figcaption>
+      <p>Fig4. Total order and partial order</p>
+    </figcaption>
+</figure>
+
+<h1 id="7-physical-clocks">7. Physical Clocks</h1>
+<h2 id="71-out-of-the-system">7.1 Out of the system</h2>
+<p>To build a physical clock that followed clock condition, we should take care of some &ldquo;Out of the system&rdquo; events.</p>
+<p>For example, some engineer triggered event $a$ on a node, having a cup of coffee, and triggered event $b$ on another node. The system did&rsquo;t aware about &ldquo;coffee&rdquo;, so we may have $B \Rightarrow A$.</p>
+<p>We define the events inside of  the system as $\varphi$. Union of events for inside and outside of the system as $\underline{\varphi}$. $\underline{\rightarrow}$ is the happened relation on $\underline{\varphi}$. In the example above, we have  $A \underline{\rightarrow} B$, but $A \nrightarrow B$.</p>
+<p>Obviously, without the outside infomation, there is no way to have $\underline{\rightarrow}$ only by $\varphi$. Therefore, we have two ways to have $A \rightarrow B$,</p>
+<ol>
+<li>Explicitly importing the ouside information. etc. Event $A$ happened at logical time $T_A$. After taking the phone call, tell the system $T_B$ should greater than $T_A$ explicitly.</li>
+<li>Build a system with the <strong>Strong Clock Condition</strong>.</li>
+</ol>
+<blockquote>
+<p><strong>Strong Clock Condition.</strong> For any events $a, b$ in $\varphi$: if $ a \underline{\rightarrow} b$ then $C \langle a \rangle &lt; C \langle b \rangle$.</p></blockquote>
+<p>Obviously, <strong>Strong Clock Condition.</strong> is the solution we want. The following describe how to implmente a physical clock that safisfies the <strong>Strong Clock Condition</strong>.</p>
+<h2 id="72-physical-clocks-implimentation">7.2 Physical Clocks Implimentation</h2>
+<p>Let $C_i(t)$ be the reading of $C_i$ at physical time $t$. For mathematical convenience, let&rsquo;s say $C_i$ to be continuously differentiable for $t$, $dC_i(t)/dt$ describe the &ldquo;speed&rdquo; of the clock at time $t$.</p>
+<p>To make the speed of $C_i$ is close the real time, for all $t$, we must make $dC_i(t)/dt \approx 1$. More precisely, we need to satisfy the following conditions,</p>
+<blockquote>
+<p>PC1. There exists a constant $\kappa \ll 1$ such that for all $i$: $| dC_i(t)/dt - 1 | &lt; \kappa$.<br>
+For typical crystal controlled clocks, $\kappa \leq 10^{-6}$.</p></blockquote>
+<p>We also need to keep syncyonize between different clocks, which means for all $i,j,t$, we have $C_i(t) \approx C_j(t)$. So we have,</p>
+<blockquote>
+<p>PC2. For all $i, j$:$|C_i(t) - C_j(t)| &lt; \epsilon$.</p></blockquote>
+<p>Intuitively speaking, the height difference of a single tick line in Fig.2 should not be too large.</p>
+<p>Due to the existence of accumulated error, two clock system that run independently will lead to increasing difference. Therefore, we need a way to syncyonize the clock.</p>
+<p>首先我们假设我们的时钟满足<strong>Clock Condition.</strong>，这样我们只需考虑在 $\underline{\varphi}$ 中 $a \nrightarrow b$ 的情况。不难发现，此时 $a$ 与 $b$ 必然发生在不同的节点上。</p>
+<p>令 $\mu$ 小于节点间的最小通信时延。即事件 $a$ 发生于物理时间 $t$，事件 $b$ 发生于另一节点，若 $ a\underline{\rightarrow} b$，则 $b$ 最早发生于 $t + \mu$。通常我们可以设定 $\mu$ 为节点间的最小距离除以光速。</p>
+<p>为了避免上文中的反常情况，我们必须保证对于任意的 $i, j$ 和 $t$ ，有 $C_i(t + \mu) - C_j(t) &gt; 0$。</p>
+<p>结合PC1. 有 $C_i(t + \mu) - C_i(t) &gt; (1- \kappa)\mu$，详细推导见附录8.2。</p>
+<p>结合PC2. 有需保证 $ -\epsilon \geq -\mu(1 - k)$，则需有 $\epsilon/(1 - \kappa) \leq \mu$，详细推导见附录8.3。</p>
+<h3 id="721-physical-clocks-algorithm">7.2.1 Physical Clocks Algorithm</h3>
+<p>下面介绍具体的的算法实现，从而保证上面的公式与PC1，PC2成立。</p>
+<p>对于一条发送于物理时间 $t$ ，接收于物理时间 $t&rsquo;$ 的消息 $m$。我们定义消息的总延迟（total delay） $ v_m = t&rsquo; - t$。接受消息的节点当然不知道 $v_m$ 的值，但是它可以知道这条消息的最小延迟（minimum delay） $\mu_m$， $\mu_m \geq 0$ 且 $\mu_m \leq v_m$。我们称 $\xi_m = v_m - \mu_m$ 为不可预测延迟（unpredictable delay）。</p>
+<p>对于单个节点上的物理时钟算法的实现，我们有如下的实现规则（Implementation Rule）：</p>
+<ul>
+<li>IR1&rsquo;. 每个节点 $P_i$ 在物理时间 $t$ 没有收到任何消息，那么 $C_i$ 在 $t$ 时刻可微，且 $dC_i(t)/dt &gt; 0$。</li>
+<li>IR2&rsquo;. (a) 如果 $P_i$ 在物理时间 $t$ 发送消息 $m$ ，那么 $m$ 中包含时间戳 $T_m=C_i(t) $。(b) 当在物理时间 $t&rsquo;$ 收到消息 $m$ 时，进程 $P_j$ 设置当前时间 $C_j(t&rsquo;) = max(C_j(t&rsquo; - 0), T_m + \mu_m)$。其中$C_j(t&rsquo; - 0) = \underset{\delta \rightarrow 0}{ lim }C_j(t&rsquo;-|\delta|)$。</li>
+</ul>
+<h3 id="721-physical-clocks-algorithm-proof">7.2.1 Physical Clocks Algorithm Proof</h3>
+<p>现在我们证明上述的实现规则可以确保满足PC2。</p>
+<p>将整个系统视为一个有向图，图中的点为各个节点，$P_i$ 到 $P_j$ 的有向边视为其消息链路。</p>
+<p>令 $d$ 为有向图的直径(longest shortest path)。$\tau$ 为两个节点之间的最低通信间隔，即任意时间 $t$ 到 $t + \tau$之间，$P_i$ 至少应该发送一条消息给 $P_j$。下面的定理给出系统启动后，至多多久系统会达成满足PC2的时间同步。</p>
+<p><strong>定理</strong>：假设系统为一个遵循IR1&rsquo;和IR2&rsquo;，且直径为 $d$ 的强连通图。对于任意的消息 $m$，$\mu_m \leq \mu$，其中$\mu$ 为某个特定常数，且对于所有 $t \geq t_0$。 (a) PC1 总是成立。 (b) 存在常数 $\tau$ 和 $\xi$，在系统中每条边上，每$\tau$秒会转发一条不可预测延迟最大为 $\xi$ 的消息。则PC2 满足于，对于所有的 $t\gtrapprox t_0 + \tau d$，$\epsilon \approx d(2\kappa\tau + \xi)$，$\mu + \xi \ll \tau$。其证明见于附录8.4。</p>
+<h1 id="8appendix">8.Appendix</h1>
+<h2 id="81-total-ordering-application-mutual-exclusion-problem">8.1 Total Ordering Application: Mutual Exclusion Problem</h2>
+<ol>
+<li>资源必须要在正在访问它的节点释放后，才可以分配给其他节点访问。</li>
+<li>按节点请求的顺序访问资源，先到先得。</li>
+<li>如果每个访问资源的节点最终都会释放资源，那么所有请求访问的节点最终都可以成功访问。</li>
+</ol>
+<h2 id="82-pc1-proof">8.2 PC1 Proof</h2>
+<p>由PC1有 $\left | \frac{C_i(t+\mu) - C_i(t)}{\mu}  &lt; \kappa \right |$，则有 $(1 - \kappa)\mu &lt; C_i(t+\mu) - C_i(t) &lt; (1 + \kappa)\mu$ 。</p>
+<h2 id="83-pc2-proof">8.3 PC2 Proof</h2>
+<p>继8.2有，$C_i(t) + \mu(1-k) &lt; C_i(t+\mu)$。</p>
+<p>故要使得 $C_i(t + \mu) - C_j(t) &gt; 0$，则需有 $C_i(t) - C_j(t) &gt; -\mu(1 - k)$。</p>
+<p>由PC2有，$C_i(t) - C_j(t) &lt; -\epsilon$。</p>
+<p>故而得，$ \epsilon \leq \mu(1 - k)$。</p>
+<h2 id="84-定理证明">8.4 定理证明</h2>
+<p>对于任意的 $i$ 和 $t$，我们定义 $C_i^t$ 为一时钟，在时刻 $t$ 设定为 $C_i$ 并与 $C_i$ 运行速率相同，且永不被修正(reset)。即，</p>
+<p>$$ C_i^t = C_i(t) + \int_{t}^{t&rsquo;}[dC_i(t)/dt]dt \tag{1}$$</p>
+<p>对于所有的 $t&rsquo; \geq t$，我们注意到由于 $C_i$ 会被修正，有</p>
+<p>$$ C_i(t’) \geq C_i^t(t&rsquo;) \tag{2}$$</p>
+<p>假设 $P_1$ 在时刻 $t_1$ 发送消息给 $P_2$，接收于时刻 $t_2$，不可预测延迟 $\leq \xi$，$ t_0 \leq t_1 \leq t_2$。则对于所有的 $t \geq t_2$，我们有</p>
+<p>$$
+\begin{aligned}
+&amp; C_2^{t_2}(t) \geq C_2^{t_2}(t_2) + (1 - \kappa)(t - t_2) &amp; \qquad [by\ (1)\ and\ PC1] \\
+&amp; \geq C_1(t_1) + \mu_m + (1 - \kappa)(t - t_2) &amp; \qquad [by\ IR2&rsquo;(b)] \\
+&amp; = C_1(t_1) + (1 - \kappa)(t - t_1) - [(t_2 - t_1) - \mu_m] + \kappa(t_2 - t_1) \\
+&amp; \geq C_1(t_1) + (1 - \kappa)(t - t_1) - \xi
+\end{aligned}
+$$</p>
+<p>因此，利用这些假设，我们可以得到，对于所有的$t \geq t2$，有</p>
+<p>$$
+C_2^{t_2}(t) \geq C_1(t_1) + (1 - \kappa)(t - t_1) - \xi \tag{3}
+$$</p>
+<p>现在假设对于 $i =1,&hellip;,n$，我们有$ t_i \leq t_i&rsquo; &lt; t_{i+1}, t_0 \leq t_1$。在 $t_i&rsquo;$时，$P_i$ 发送一条消息给 $P_{i+1}$，该消息接收于 $t_{i+1}$，其不可预测延迟小于 $\xi$。反复应用等式(3)可以得到，对于 $t \geq t_{n+1}$，</p>
+<p>$$
+C_{n+1}^{t_{n+1}}(t) \geq C_1(t_1&rsquo;) + (1 - \kappa)(t - t_1&rsquo;) - n\xi \tag{4}
+$$</p>
+<p>通过 PC1, IR1&rsquo;, IR2&rsquo;我们可以推导出，</p>
+<p>$$
+C_1(t_1&rsquo;) \geq C_1(t_1) + (1 - \kappa)(t_1&rsquo; - t_1)
+$$</p>
+<p>再结合(4)与(2)，我们可以得到对于 $t \geq t_{n+1}$，有</p>
+<p>$$
+C_{n+1}(t) \geq C_1(t_1) + (1 - \kappa)(t - t_1) - n\xi \tag{5}
+$$</p>
+<p>对于任意的两个节点 $P$ 和 $P&rsquo;$，我们能找到一个节点序列 $P = P_0, P_1, &hellip;, P_{n+1} = P&rsquo;, n \leq d$。通过假设 (b)，我们能找到时间 $t_i, t_i&rsquo;$，有 $ t_i&rsquo; - t_i \leq \tau $ 且 $ t_{i+1} - t_i&rsquo; \leq v $，其中 $v=\mu + \xi$。因此不等式 (5) 成立于对于任何的$t \geq t_1 + d(\tau + v)$, 有$ n \leq d$。对于任意的$i, j, t, t_1$，其中 $ t_1 \geq t_0 $ 且 $ t \geq t_1 + d(\tau + v) $，我们因此有</p>
+<p>$$
+C_i(t) \geq C_j(t_1) + (1 - \kappa)(t - t_1) - d\xi \tag{6}
+$$</p>
+<p>令 $m$ 为任意时间戳为 $T_m$ 的消息，其在 $t$ 时刻发送，在 $t&rsquo;$ 时刻接收。我们假设 $m$ 有一个以一个恒定速率运行的时钟 $C_m$，且有 $C_m(t)=t_m$，$C_m(t&rsquo;) = t_m + \mu_m$。那么由 $ \mu_m \leq t&rsquo; - t $ 可以推导出 $dC_m/dt \leq 1$。规则 IR2&rsquo;(b)将 $C_j(t&rsquo;)$ 设置为 $max(C_j(t&rsquo; - 0), C_m(t&rsquo;))$。因此，当时钟被重置时，只可能重置与其他某个时钟相等。</p>
+<p>对于任意时间 $t_x \geq t_0 + \mu/(1-\kappa)$，令 $C_x$ 为 $t_x$ 时刻具有最大值的时钟。由于所有的时钟以低于 $1+\kappa$ 的速率运行，我们有对于所有的 $i$ 和所有的 $t \geq t_x$：</p>
+<p>$$
+C_i(t) \leq C_x(t_x) + (1 + \kappa)(t - t_x) \tag{7}
+$$</p>
+<p>现在我们考虑如下两种情况：（i）$C_x$ 为节点 $P_q$ 的时钟 $C_q$。（ii）$C_x$ 为节点 $P_q$ 在 $t_1$ 时刻发送于消息 $m$ 的时钟。在情况（i）中，(7)简单的成为，</p>
+<p>$$
+C_i(t) \leq C_q(t_x) + (1 + \kappa)(t - t_x) \tag{8i}
+$$</p>
+<p>在情况（ii）中，由于 $C_m(t_1)=C_q(t_1)$，且 $dC_m/dt \leq 1$，我们有，</p>
+<p>$$
+C_x(t_x) \leq C_q(t_1) + (t_x - t_1)
+$$</p>
+<p>因此，由(7)有，</p>
+<p>$$
+C_i(t) \leq C_q(t_1) + (1 - \kappa)(t - t_1) \tag{8ii}
+$$</p>
+<p>由于 $t_x \geq t_0 + \mu/(1 - \kappa)$，我们有，</p>
+<p>$$
+\begin{aligned}
+&amp; C_q(t_x - \mu/(1 - \kappa)) \leq C_q(t_x) - \mu &amp; \qquad [by\ PC1] \\
+&amp; \leq C_m(t_x) - \mu &amp; \qquad [by\ choice \ of \ m] \\
+&amp; \leq C_m(t_x) - (t_x - t_1)\mu_m/v_m &amp; \qquad [\mu_m \leq \mu, t_x - t_1 \leq v_m] \\
+&amp; = T_m &amp; \qquad [by\ definition \ of \ C_m] \\
+&amp; = C_q(t_1) &amp; \qquad [by\ IR2&rsquo;(a)]
+\end{aligned}
+$$</p>
+<p>因此，$ C_q(t_x - \mu/(1 - \kappa)) \leq C_q(t_1) $，因此 $ t_x - t_1 \leq \mu(1 - \kappa), t_1 \geq t_0 $。</p>
+<p>令 $ t_1 = t_x $，对于情况(i)，我们结合(8i)和(8ii)可以推出对于任意的 $t，t_x$，且$t \geq t_x \geq t_0 + \mu/(1 - \kappa)$，存在一个节点 $P_q$ 和一个时间 $t_1$，$t_x - \mu/(1 - \kappa)\leq t_1 \leq t_x$，对于所有的 $ i $，</p>
+<p>$$
+C_i(t) \leq C_q(t_1) + (1 + \kappa)(t - t_1) \tag{9}
+$$</p>
+<p>若我们选择的 $t$ 和 $t_x$ 满足 $t \geq t_x + d(\tau + v)$，我们可以结合（6）和（9）得到存在一个时间 $t_1$ 和一个节点 $P_q$，对于所有的 $i$，</p>
+<p>$$
+C_q(t_1) + (1 - \kappa)(t - t_1) - d\xi \leq C_i(t) \leq C_q(t_1) + (1 - \kappa)(t - t_1) \tag{10}
+$$</p>
+<p>令 $t = t_x + d(\tau + v)$，我们有,</p>
+<p>$$
+d(\tau + v) \leq t - t_1 \leq d(\tau + v) + \mu(1 - \kappa)
+$$</p>
+<p>结合（10），我们有，</p>
+<p>$$
+C_q(t_1) + (t - t_1) - \kappa d(\tau + v) - d\xi \leq C_i(t) \leq C_q(t_1) + (t - t_1) + \kappa[d(\tau + v) + \mu/(1 - \kappa)] \tag{11}
+$$</p>
+<p>结合假设 $\kappa \ll 1$ 以及 $\mu \leq v \ll \tau$，我们可以重写（11）为，</p>
+<p>$$
+C_q(t_1) + (t - t_1) - d(\kappa\tau + \xi) \lessapprox C_i(t) \lessapprox C_q(t_1) + (t - t_1) + d\kappa\tau \tag{12}
+$$</p>
+<p>由于上式对于所有的 $i$ 成立，我们有，</p>
+<p>$$
+|C_i(t) - C_j(t)| \lessapprox d(2\kappa\tau + \xi)
+$$</p>
+<p>上式对于所有的 $t \gtrapprox t_0 + d\tau $ 均成立。</p>
+<p>证毕。</p>
 </main>
 
 <div class="post-comment">
@@ -112,9 +378,10 @@ code.has-jax {
 
 <script async src="//yihui.name/js/center-img.js"></script>
 
+
   
   <hr/>
-  © <a href="www.changliu.me">Chang Liu</a> 2020 | <a href="mailto:changliu0828@gmail.com">Contact</a>
+  © <a href="www.changliu.me">Chang Liu</a> 2021 | <a href="mailto:changliu0828@gmail.com">Contact</a>
   
   </footer>
   </body>

@@ -2,19 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Clock on 刘畅的博客</title>
-    <link>http://changliu0828.github.io/tags/clock/</link>
+    <link>http://localhost:1313/tags/clock/</link>
     <description>Recent content in Clock on 刘畅的博客</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en</language>
-    <lastBuildDate>Tue, 06 Oct 2020 10:02:07 +0800</lastBuildDate><atom:link href="http://changliu0828.github.io/tags/clock/index.xml" rel="self" type="application/rss+xml" />
+    <generator>Hugo</generator>
+    <language>ch</language>
+    <lastBuildDate>Tue, 06 Oct 2020 10:02:07 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/clock/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Time, Clocks, and the Ordering of Events in a Distributed System, Lamport, 1978</title>
-      <link>http://changliu0828.github.io/post/time-clocks-and-the-ordering-of-events-in-a-distributed-system/</link>
+      <link>http://localhost:1313/post/time-clocks-and-the-ordering-of-events-in-a-distributed-system/</link>
       <pubDate>Tue, 06 Oct 2020 10:02:07 +0800</pubDate>
-      
-      <guid>http://changliu0828.github.io/post/time-clocks-and-the-ordering-of-events-in-a-distributed-system/</guid>
+      <guid>http://localhost:1313/post/time-clocks-and-the-ordering-of-events-in-a-distributed-system/</guid>
       <description>&lt;p&gt;本篇总结学习了1978年&lt;a href=&#34;https://en.wikipedia.org/wiki/Leslie_Lamport&#34;&gt;Leslie Lamport&lt;/a&gt;发表在 &lt;em&gt;Communications of the ACM&lt;/em&gt; 上的论文 &lt;a href=&#34;https://lamport.azurewebsites.net/pubs/time-clocks.pdf&#34;&gt;Time, Clocks, and the Ordering of Events in a Distributed System&lt;/a&gt;。论文对分布式系统中的时间，时钟等概念做了深入的讨论，提出了“Happened Before”，“逻辑时钟”，“物理时钟”，“State Machine”等重要概念与算法，是分布式领域不能不读的经典论文。&lt;/p&gt;</description>
     </item>
-    
   </channel>
 </rss>

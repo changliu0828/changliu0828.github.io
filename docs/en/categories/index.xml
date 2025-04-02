@@ -4,17 +4,16 @@
     <title>Categories on Chang Liu&#39;s Blog</title>
     <link>http://changliu0828.github.io/en/categories/</link>
     <description>Recent content in Categories on Chang Liu&#39;s Blog</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 06 Oct 2020 10:02:07 +0800</lastBuildDate><atom:link href="http://changliu0828.github.io/en/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 06 Oct 2020 10:02:07 +0800</lastBuildDate>
+    <atom:link href="http://changliu0828.github.io/en/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Paper Notes</title>
       <link>http://changliu0828.github.io/en/categories/paper-notes/</link>
       <pubDate>Tue, 06 Oct 2020 10:02:07 +0800</pubDate>
-      
       <guid>http://changliu0828.github.io/en/categories/paper-notes/</guid>
       <description></description>
     </item>
-    
   </channel>
 </rss>

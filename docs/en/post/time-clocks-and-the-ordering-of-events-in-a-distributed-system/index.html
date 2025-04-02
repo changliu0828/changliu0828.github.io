@@ -80,7 +80,7 @@
 <p>In this post, I summarize the study of the paper <a href="https://lamport.azurewebsites.net/pubs/time-clocks.pdf">Time, Clocks, and the Ordering of Events in a Distributed System</a> authored by <a href="https://en.wikipedia.org/wiki/Leslie_Lamport">Leslie Lamport</a> published on <em>Communications of the ACM</em> in 1978.
 The paper dives into the fundamental topics &ldquo;time and clock&rdquo; in the distributed system, and proposed several important concepts such as <a href="https://en.wikipedia.org/wiki/Happened-before">Happened-Before</a>, Logical Clocks, Physical Clocks and <a href="https://en.wikipedia.org/wiki/State_machine_replication">State Machine Replication</a>. It is definetely one of the &ldquo;Must-Read&rdquo; classic paper in distributed system area.</p>
 <h1 id="1-problem">1. Problem</h1>
-<figure><img src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/cafe.jpeg" width="100%"/>
+<figure><img src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/cafe.jpeg" width="100%">
 </figure>
 
 <p>Before we jump into the discussion, let&rsquo;s consider the following scenario:</p>
@@ -100,8 +100,7 @@ The paper dives into the fundamental topics &ldquo;time and clock&rdquo; in the 
 <p>By the above example, we know that the common concept/method such as &ldquo;reading of clock&rdquo;, &ldquo;timestamp&rdquo; can not correctly describe the order of event occurs. However, in the distributed system, this order plays critical role in different algorithims. So, how could we build our &ldquo;clock&rdquo; to presisly describe this order? This paper gives us the answer.</p>
 <h1 id="2-what-is-time">2. What is time</h1>
 <blockquote>
-<p>The concept of time is fundamental to our way of thinking. It is derived from the more basic concept of the order in which events occur.</p>
-</blockquote>
+<p>The concept of time is fundamental to our way of thinking. It is derived from the more basic concept of the order in which events occur.</p></blockquote>
 <p>For example, if we say some event occurs at 13:00. The critical statements should be: It occurred after we read 13:00 at the clock and before 13:01. By this definition, we know that “time” is a behavior that discrete the continuous-time by the number read on the clock.</p>
 <h1 id="3-the-definition-of-distributed-system">3. The definition of distributed system</h1>
 <p>The so-called distributed system in this paper comprises several spatially separated Nodes. Events in the single node happened sequentially. Different nodes communicate by messaging. We can understand the node as independent computers, processes of operating systems, or different hardware modules in a computer. Especially, we should care about communication latency. It should not be ignored compared to the frequency of events happening in a single node.</p>
@@ -118,34 +117,32 @@ The paper dives into the fundamental topics &ldquo;time and clock&rdquo; in the 
 <p>Recall the &ldquo;happened before&rdquo; relation. It is not hard to find some satisfying event pairs. Such as $p_1 \rightarrow r_4$, deducted by $ p_1 \rightarrow q_2 \rightarrow q_4 \rightarrow r_3 \rightarrow r_4$.</p>
 <p>And there are several concurrent events as well, such as $p_3$ and $q_3$. Even though we can see $p_3$ is above of $q_3$, but for the nodes , they do not aware of this kind of order.</p>
 <figure><img src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/Fig1.jpg"
-         alt="Fig1. space-time diagram" width="70%"/><figcaption>
-            <p>Fig1. space-time diagram</p>
-        </figcaption>
+    alt="Fig1. space-time diagram" width="70%"><figcaption>
+      <p>Fig1. space-time diagram</p>
+    </figcaption>
 </figure>
 
 <h1 id="5-logical-clocks">5. Logical Clocks</h1>
 <blockquote>
-<p>a clock is just a way of assigning a number to an event.</p>
-</blockquote>
+<p>a clock is just a way of assigning a number to an event.</p></blockquote>
 <p>More precisely, for each node $P_i$, we define clock $C_i$ as a function. It numbers an arbitrary event $a$ of $C_i \langle a \rangle$. For the whole system, denote the happened time of an arbitrary event $b$ as $C \langle b \rangle$. If $b$ happened on node $P_j$, then $ C \langle b \rangle =  C_j \langle b \rangle$. Here, the clock $C$ is not the real clock we use in daily life. That is a logical clock simply assign integers to each event to present the order of happening. To follow the &ldquo;happened before&rdquo; relation, the clock should satisfied the following Clock Condition.</p>
 <blockquote>
 <p><strong>Clock Condition.</strong> For any events $a, b$: if $a \rightarrow b$, then $C \langle a \rangle &lt; C \langle b \rangle$.<br>
 <strong>C1</strong>. If $a$ and $b$ are events in node $P_i$, and $a$ comes before $b$, then $C_i \langle a \rangle &lt; C_i \langle b \rangle$.<br>
-<strong>C2</strong>. If $a$ is the sending of a message by node $P_i$, and $b$ is the receipt of that message by node $P_j$, then $ C_i \langle a \rangle &lt; C_j \langle b \rangle $.</p>
-</blockquote>
+<strong>C2</strong>. If $a$ is the sending of a message by node $P_i$, and $b$ is the receipt of that message by node $P_j$, then $ C_i \langle a \rangle &lt; C_j \langle b \rangle $.</p></blockquote>
 <p><strong>In particular, the the converse proposition of Clock Condition &ldquo;If $C \langle a \rangle &lt; C \langle b \rangle$, then $a \rightarrow b$&rdquo; does not necessarily hold.</strong>. For example, in Fig1, $(p_2, q_3), (p_3, q_3)$ are concurrent. By $C1$, we have $C \langle p_2 \rangle &lt; C \langle p_3 \rangle$, then we have either $C \langle q_3 \rangle \neq C \langle p_2 \rangle$ or $C \langle q_3 \rangle \neq C \langle p_3 \rangle$, which is confict with concurrent relation.</p>
 <p>For the logical clock, we can imagine that the &ldquo;tick&rdquo; evens keep occurring in a single node. For example, two evens $a, b$ continuous happened in a node $P_i$, and we have $C_i \langle a \rangle = 4, C_i \langle b \rangle = 7$, then we should have three &ldquo;tick&rdquo; evens happened between them which numbered $5,6,7$. Therefore, we can add &ldquo;tick line&rdquo; to our space-time diagram as Fig.2. By $C1$, we can know that for two evens continuous happened in the same node, there should have at least tick line between them. By $C2$, we can have that every message should go across at least one tick line.</p>
 <figure><img src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/Fig2.png"
-         alt="Fig2. space-time diagram with tick line" width="70%"/><figcaption>
-            <p>Fig2. space-time diagram with tick line</p>
-        </figcaption>
+    alt="Fig2. space-time diagram with tick line" width="70%"><figcaption>
+      <p>Fig2. space-time diagram with tick line</p>
+    </figcaption>
 </figure>
 
 <p>For easy understanding, as Fig3, we can make horizontal the tick line with the same partial order of events and messages.</p>
 <figure><img src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/Fig3.png"
-         alt="Fig.3 horizontal the tick line" width="70%"/><figcaption>
-            <p>Fig.3 horizontal the tick line</p>
-        </figcaption>
+    alt="Fig.3 horizontal the tick line" width="70%"><figcaption>
+      <p>Fig.3 horizontal the tick line</p>
+    </figcaption>
 </figure>
 
 <p>On a single node $P_i$, our implmentation of logical clock follows(Implementation Rule):</p>
@@ -168,9 +165,9 @@ we have $ a \Rightarrow b $ if and only if (i) or (ii).</p>
 </ul>
 <p>By the definition of <strong>Clock Condition</strong>, we can know that if events satisfied $\rightarrow$, then they must satisfied $\Rightarrow$.</p>
 <figure><img src="/image/Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System/partial-total.png"
-         alt="Fig4. Total order and partial order" width="40%"/><figcaption>
-            <p>Fig4. Total order and partial order</p>
-        </figcaption>
+    alt="Fig4. Total order and partial order" width="40%"><figcaption>
+      <p>Fig4. Total order and partial order</p>
+    </figcaption>
 </figure>
 
 <h1 id="7-physical-clocks">7. Physical Clocks</h1>
@@ -184,20 +181,17 @@ we have $ a \Rightarrow b $ if and only if (i) or (ii).</p>
 <li>Build a system with the <strong>Strong Clock Condition</strong>.</li>
 </ol>
 <blockquote>
-<p><strong>Strong Clock Condition.</strong> For any events $a, b$ in $\varphi$: if $ a \underline{\rightarrow} b$ then $C \langle a \rangle &lt; C \langle b \rangle$.</p>
-</blockquote>
+<p><strong>Strong Clock Condition.</strong> For any events $a, b$ in $\varphi$: if $ a \underline{\rightarrow} b$ then $C \langle a \rangle &lt; C \langle b \rangle$.</p></blockquote>
 <p>Obviously, <strong>Strong Clock Condition.</strong> is the solution we want. The following describe how to implmente a physical clock that safisfies the <strong>Strong Clock Condition</strong>.</p>
 <h2 id="72-physical-clocks-implimentation">7.2 Physical Clocks Implimentation</h2>
 <p>Let $C_i(t)$ be the reading of $C_i$ at physical time $t$. For mathematical convenience, let&rsquo;s say $C_i$ to be continuously differentiable for $t$, $dC_i(t)/dt$ describe the &ldquo;speed&rdquo; of the clock at time $t$.</p>
 <p>To make the speed of $C_i$ is close the real time, for all $t$, we must make $dC_i(t)/dt \approx 1$. More precisely, we need to satisfy the following conditions,</p>
 <blockquote>
 <p>PC1. There exists a constant $\kappa \ll 1$ such that for all $i$: $| dC_i(t)/dt - 1 | &lt; \kappa$.<br>
-For typical crystal controlled clocks, $\kappa \leq 10^{-6}$.</p>
-</blockquote>
+For typical crystal controlled clocks, $\kappa \leq 10^{-6}$.</p></blockquote>
 <p>We also need to keep syncyonize between different clocks, which means for all $i,j,t$, we have $C_i(t) \approx C_j(t)$. So we have,</p>
 <blockquote>
-<p>PC2. For all $i, j$:$|C_i(t) - C_j(t)| &lt; \epsilon$.</p>
-</blockquote>
+<p>PC2. For all $i, j$:$|C_i(t) - C_j(t)| &lt; \epsilon$.</p></blockquote>
 <p>Intuitively speaking, the height difference of a single tick line in Fig.2 should not be too large.</p>
 <p>Due to the existence of accumulated error, two clock system that run independently will lead to increasing difference. Therefore, we need a way to syncyonize the clock.</p>
 <p>首先我们假设我们的时钟满足<strong>Clock Condition.</strong>，这样我们只需考虑在 $\underline{\varphi}$ 中 $a \nrightarrow b$ 的情况。不难发现，此时 $a$ 与 $b$ 必然发生在不同的节点上。</p>
