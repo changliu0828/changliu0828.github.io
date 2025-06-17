@@ -29,7 +29,7 @@ url: "https://changliu.me"
 github_username:  changliu0828
 
 # Build settings
-theme: jekyll-theme-console
+remote_theme: b2a3e8/jekyll-theme-console
 style: light
 header_pages:
   - index.md
