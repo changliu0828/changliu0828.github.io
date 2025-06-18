@@ -222,7 +222,7 @@ window.addEventListener('load', function() {
     // Draw visual range for first boid
     if (index === 0) {
       // Find the maximum active radius
-      let maxRadius = 10;
+      let maxRadius = 0;
       
       if (maxRadius > 0) {
         ctx.fillStyle = 'rgba(255, 0, 0, 0.1)'; // Shallow red with 10% opacity
@@ -236,7 +236,7 @@ window.addEventListener('load', function() {
     if (index === 0) {
       ctx.fillStyle = '#ff0000'; // Red for first boid
     } else {
-      ctx.fillStyle = '#000000'; // Black for other boids
+      ctx.fillStyle = '#aaaaaa'; // Black for other boids
     }
     
     ctx.beginPath();
