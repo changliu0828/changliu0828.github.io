@@ -2,7 +2,7 @@ window.addEventListener('load', function() {
   // Get canvas element and 2D context
   const canvas = document.getElementById('demo-canvas');
   const ctx = canvas.getContext('2d');
-  
+
   // Get canvas display dimensions
   const rect = canvas.getBoundingClientRect();
   const containerWidth = rect.width;
@@ -43,7 +43,7 @@ window.addEventListener('load', function() {
 
   // Color
   const highlightColor = 'rgba(255, 0, 0, 1)';
-  const normalColor = 'rgba(170, 170, 170, 1)';
+  const normalColor = 'rgba(0, 0, 0, 1)';
 
   // Max speed
   const maxSpeed = 2;
