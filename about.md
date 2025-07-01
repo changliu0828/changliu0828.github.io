@@ -12,8 +12,6 @@ permalink: /about/
 Email: changliu0828@gmail.com
 
 # License
-本网站的内容受版权保护，禁止未经授权的复制。
-
 本博客内容使用 [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) 授权。
 本博客使用的代码使用 [MIT License](https://opensource.org/licenses/MIT) 授权。
 
