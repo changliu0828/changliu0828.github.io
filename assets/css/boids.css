@@ -87,7 +87,7 @@
 
 .play {
   grid-column: 9 / 13;
-  grid-row: 10 / 12;
+  grid-row: 11 / 13;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -112,5 +112,16 @@
 
 .play-button:active {
   transform: translateY(1px);
+}
+
+.control-input.checkbox {
+  width: 1em;
+  height: 1em;
+  cursor: pointer;
+  background-color: #fff;
+  border: 1px solid #000;
+  accent-color: #000;
+  -webkit-appearance: auto;
+  appearance: auto;
 }
 
