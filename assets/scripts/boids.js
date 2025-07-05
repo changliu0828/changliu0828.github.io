@@ -3,7 +3,6 @@ window.addEventListener('load', function() {
   const canvas = document.getElementById('demo-canvas');
   const ctx = canvas.getContext('2d');
 
-
   // Get canvas display dimensions
   const rect = canvas.getBoundingClientRect();
   const containerWidth = rect.width;
@@ -25,19 +24,13 @@ window.addEventListener('load', function() {
   let separationValue = 0;
   let cohesionValue = 0;
   let alignmentValue = 0;
-  let perceptionValue = 0;
-  let separationValue = 0;
-  let cohesionValue = 0;
-  let alignmentValue = 0;
 
   // Get input elements
   const boidsCountInput = document.getElementById('boids-count');
   const perceptionInput = document.getElementById('perception');
-  const perceptionInput = document.getElementById('perception');
   const separationInput = document.getElementById('separation');
   const cohesionInput = document.getElementById('cohesion');
   const alignmentInput = document.getElementById('alignment');
-  const highlightInput = document.getElementById('highlight');
   const highlightInput = document.getElementById('highlight');
   const playButton = document.querySelector('.play-button');
   
@@ -98,10 +91,6 @@ window.addEventListener('load', function() {
       y: random(0, containerHeight),
       vx: random(-maxSpeed, maxSpeed),
       vy: random(-maxSpeed, maxSpeed),
-      x: random(0, containerWidth),
-      y: random(0, containerHeight),
-      vx: random(-maxSpeed, maxSpeed),
-      vy: random(-maxSpeed, maxSpeed),
     };
   }
 
@@ -152,7 +141,6 @@ window.addEventListener('load', function() {
       
       // If close enough and not the same boid
       if (distance > 0 && distance < perceptionValue) {
-      if (distance > 0 && distance < perceptionValue) {
         // Calculate vector pointing away from neighbor
         let diff = {
           x: boid.x - other.x,
@@ -162,7 +150,6 @@ window.addEventListener('load', function() {
         // Normalize by distance (closer = stronger force)
         diff.x /= distance;
         diff.y /= distance;
-
 
         steer.x += diff.x;
         steer.y += diff.y;
@@ -176,8 +163,6 @@ window.addEventListener('load', function() {
       steer.y /= count;
       
       // Scale the force
-      steer.x *= separationWeight * separationValue / maxSeparationValue;
-      steer.y *= separationWeight * separationValue / maxSeparationValue;
       steer.x *= separationWeight * separationValue / maxSeparationValue;
       steer.y *= separationWeight * separationValue / maxSeparationValue;
     }
@@ -200,7 +185,6 @@ window.addEventListener('load', function() {
       
       // If close enough and not the same boid
       if (distance > 0 && distance < perceptionValue) {
-      if (distance > 0 && distance < perceptionValue) {
         steer.x += other.vx;
         steer.y += other.vy;
         count++;
@@ -213,8 +197,6 @@ window.addEventListener('load', function() {
       steer.y /= count;
       
       // Scale the force
-      steer.x *= alignmentWeight * alignmentValue / maxAlignmentValue;
-      steer.y *= alignmentWeight * alignmentValue / maxAlignmentValue;
       steer.x *= alignmentWeight * alignmentValue / maxAlignmentValue;
       steer.y *= alignmentWeight * alignmentValue / maxAlignmentValue;
     }
@@ -237,7 +219,6 @@ window.addEventListener('load', function() {
       
       // If close enough and not the same boid
       if (distance > 0 && distance < perceptionValue) {
-      if (distance > 0 && distance < perceptionValue) {
         steer.x += other.x;
         steer.y += other.y;
         count++;
@@ -255,8 +236,6 @@ window.addEventListener('load', function() {
       steer.y = steer.y - boid.y;
       
       // Scale the force
-      steer.x *= cohesionWeight * cohesionValue / maxCohesionValue;
-      steer.y *= cohesionWeight * cohesionValue / maxCohesionValue;
       steer.x *= cohesionWeight * cohesionValue / maxCohesionValue;
       steer.y *= cohesionWeight * cohesionValue / maxCohesionValue;
     }
@@ -310,19 +289,12 @@ window.addEventListener('load', function() {
    */
   function updateBoidPositions() {
     boids.forEach((boid, index) => {
-    boids.forEach((boid, index) => {
       // Apply separation if enabled
-      const sep = separate(boid);
-      boid.vx += sep.x;
-      boid.vy += sep.y;
       const sep = separate(boid);
       boid.vx += sep.x;
       boid.vy += sep.y;
       
       // Apply alignment if enabled
-      const ali = align(boid);
-      boid.vx += ali.x;
-      boid.vy += ali.y;
       const ali = align(boid);
       boid.vx += ali.x;
       boid.vy += ali.y;
@@ -335,15 +307,7 @@ window.addEventListener('load', function() {
       // Keep within bounds with smooth turning
       keepWithinBounds(boid);
 
-      const coh = cohesion(boid);
-      boid.vx += coh.x;
-      boid.vy += coh.y;
-      
-      // Keep within bounds with smooth turning
-      keepWithinBounds(boid);
-
       // Limit speed
-      limitSpeed(boid);
       limitSpeed(boid);
       
       // Update position
@@ -440,12 +404,6 @@ window.addEventListener('load', function() {
     ctx.beginPath();
     ctx.arc(boid.x, boid.y, perceptionValue, 0, Math.PI * 2);
     ctx.fill();
-
-    // Draw perception range
-    ctx.fillStyle = 'rgba(255, 0, 0, 0.1)'; // Shallow red with 10% opacity
-    ctx.beginPath();
-    ctx.arc(boid.x, boid.y, perceptionValue, 0, Math.PI * 2);
-    ctx.fill();
   }
 
   /**
@@ -496,7 +454,6 @@ window.addEventListener('load', function() {
       adjustBoidsCount(count);
       drawBoids();
       numberDisplayed.textContent = count;
-      numberDisplayed.textContent = count;
     }
   }
 
@@ -529,14 +486,7 @@ window.addEventListener('load', function() {
     perceptionDisplayed.textContent = perceptionValue;
   });
 
-  perceptionInput.addEventListener('input', function() {
-    perceptionValue = parseFloat(this.value);
-    perceptionDisplayed.textContent = perceptionValue;
-  });
-
   separationInput.addEventListener('input', function() {
-    separationValue = parseFloat(this.value);
-    separationDisplayed.textContent = separationValue;
     separationValue = parseFloat(this.value);
     separationDisplayed.textContent = separationValue;
   });
@@ -544,18 +494,9 @@ window.addEventListener('load', function() {
   cohesionInput.addEventListener('input', function() {
     cohesionValue = parseFloat(this.value);
     cohesionDisplayed.textContent = cohesionValue;
-    cohesionValue = parseFloat(this.value);
-    cohesionDisplayed.textContent = cohesionValue;
   });
 
   alignmentInput.addEventListener('input', function() {
-    alignmentValue = parseFloat(this.value);
-    alignmentDisplayed.textContent = alignmentValue;
-  });
-
-  // Highlight checkbox event listener
-  highlightInput.addEventListener('change', function() {
-    drawBoids();
     alignmentValue = parseFloat(this.value);
     alignmentDisplayed.textContent = alignmentValue;
   });
