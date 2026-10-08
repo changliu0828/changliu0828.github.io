@@ -3,14 +3,16 @@ title: "libco源码笔记(3)自动切换"
 layout: post
 permalink: /post/libco-auto/
 ---
+# libco源码笔记(3)自动切换
+
 在之前的文章libco源码笔记(2)显式切换中，我们介绍了libco提供的显式协程切换接口，并讨论了协程池的使用。本文讨论libco提供的自动切换相关函数接口。建议配合我自己的[注释版本](https://github.com/changliu0828/libco)阅读本文。
 
 
-# 自动切换的背景
+## 自动切换的背景
 
 李方源的libco分享$^{[2]}$中讲到，使用libco之前，微信大多数的网络通信使用同步IO接口。为了快速改造现有业务代码，libco以hook系统调用的形式，提供了协程基础上的`poll`，`read`，`write`等原语。利用协程的特性，原来阻塞的系统调用可以达到非阻塞的效果。
 
-# 超时管理
+## 超时管理
 
 libco为了统一管理网络IO、条件变量等需要超时管理的事件，实现了基于时间轮(timing wheel)的超时管理器。在介绍其对系统调用的hook前，让我们先铺垫一些关于这个超时管理器的实现。
 
@@ -44,7 +46,7 @@ inline void TakeAllTimeout( stTimeout_t *apTimeout,unsigned long long allNow,stT
 ![图1. 超时管理](/assets/images/libco-auto/timing-wheel.png){: width="100%" }
 *图1. 超时管理*
 
-# 事件循环
+## 事件循环
 
 libco通过epoll管理IO事件，通过`co_eventloop`触发IO事件，并切换至对应协程执行。我们回顾之前提到过的、表示协程运行环境的线程私有全局变量`stCoRoutineEnv_t`，其中持有epoll的结构体句柄`pEpoll`。
 
@@ -169,7 +171,7 @@ void co_eventloop( stCoEpoll_t *ctx,pfn_co_eventloop_t pfn,void *arg )
 }
 ```
 
-# hook后的`poll`
+## hook后的`poll`
 
 ```cpp
 struct pollfd {
@@ -326,12 +328,12 @@ void OnPollProcessEvent( stTimeoutItem_t * ap )
 *图2. poll相关结构*
 
 
-# 最后
+## 最后
 
 至此，我们介绍了libco源码中自动切换的部分代码。感谢你的阅读。如果你有任何疑问和感想，或发现本文有任何错误，请一定[让我知道](mailto:changliu0828@gmail.com)。
 
 
-# 参考
+## 参考
 
 1. [libco源码分析，csdn](https://blog.csdn.net/weixin_43705457/article/details/106863859)
 2. [libco分享，李方源](http://purecpp.org/purecpp/static/64a819e99584452aab70a7f9c307717f.pdf)

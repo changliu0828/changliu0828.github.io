@@ -3,10 +3,12 @@ title: "libco源码笔记(1)协程与上下文切换"
 layout: post
 permalink: /post/libco-coroutine/
 ---
+# libco源码笔记(1)协程与上下文切换
+
 本文结合微信高性能开源协程库[libco](https://github.com/Tencent/libco)，总结了协程相关的问题与解决方案。libco源码注释不多，这里附上我自己的[注释版本](https://github.com/changliu0828/libco)，建议配合阅读。此外，文中的代码及解释均运行于x86-32位下，64位下的情况略有不同，篇幅有限不再赘述。
 
 
-# 回调地狱
+## 回调地狱
 
 在正式开始探讨正题之前，让我们简单回顾一下协程产生的原因。
 
@@ -22,14 +24,14 @@ permalink: /post/libco-coroutine/
 ![图2. 同步与异步编程下的代码片段](/assets/images/libco-coroutine/callback-hell.png){: width="50%" }
 *图2. 同步与异步编程下的代码片段*
 
-# 何为协程
+## 何为协程
 
 那么如何解决回调地狱，在保持异步执行的情况下，将支离破碎的代码段恢复成我们所熟悉的顺序执行呢？我们知道C/C++的程序执行时，运行现场的几乎全部信息都是通过栈帧(stack frame)和寄存器保存的，如果我们在远程调用阻塞时，人为地将程序执行时的上下文保存，让出CPU，并在远程调用返回后加载上下文，就可以在一个函数栈中完成异步过程。我们称这种机制为**协程(coroutine)**。与熟悉的进程/线程切换类似，协程是用户自发的上下文切换和管理机制，所以也常被称为“用户态线程”。
 
 ![图3. 协程库的职责](/assets/images/libco-coroutine/co-lib.png){: width="90%" }
 *图3. 协程库的职责*
 
-# 协程的上下文与切换
+## 协程的上下文与切换
 
 那么需要我们手动保存和加载的运行时“上下文”都包含哪些内容呢？以下面的 `main` 函数调用 `sum` 函数为例，
 
@@ -111,7 +113,7 @@ $L25$行将返回值`0`赋值给`eax`，完成整个过程。
 
 通过上面的分析我们不难发现，对于运行时的函数来讲，**参数、返回值地址、函数栈、寄存器**四个部分组成了运行时的全部信息，通过这些信息我们可以恢复任意函数的执行现场，我们称之为**协程的上下文(context)**。
 
-## `coctx_t`上下文信息
+### `coctx_t`上下文信息
 
 在libco中，使用如下定义的结构体`coctx_t`描述协程上下文，其中`ss_sp`与`ss_size`保存了参数、返回值地址、函数栈三部分内容，即图4中的红框部分，`regs`保存了32位/64位下的寄存器。
 
@@ -128,7 +130,7 @@ struct coctx_t
 };
 ```
 
-## `co_make`上下文初始化
+### `co_make`上下文初始化
 
 在libco中，使用如下的`coctx_make`在初次调用(`co_resume`)时，为协程上下文进行初始的内容填充工作，
 
@@ -163,7 +165,7 @@ int coctx_make(coctx_t* ctx, coctx_pfn_t pfn, const void* s, const void* s1) {
 ![图5. co_make初始化协程栈](/assets/images/libco-coroutine/co_make.png){: width="60%" }
 *图5. co_make初始化协程栈*
 
-## `coctx_swap`上下文切换
+### `coctx_swap`上下文切换
 
 ```cpp
 extern "C"
@@ -211,7 +213,7 @@ $L21$的`ret`指令将`eip`，即函数`pfn`入口出栈，并跳转至`pfn`执�
 ![图6. coctx_swap上下文切换](/assets/images/libco-coroutine/coctx_swap.png){: width="90%" }
 *图6. coctx_swap上下文切换*
 
-# 对称与非对称协程
+## 对称与非对称协程
 
 上文我们了解了两个协程是如何进行上下文切换的。对于各个协程的调度方式，如下图所示，主要分为对称协程(symmetric)与非对称协程(asymmetric)两种方式。
 
@@ -224,17 +226,17 @@ $L21$的`ret`指令将`eip`，即函数`pfn`入口出栈，并跳转至`pfn`执�
 ![图7. 对称/非对称协程](/assets/images/libco-coroutine/symmetric-asymmetric-co.png){: width="100%" }
 *图7. 对称/非对称协程*
 
-# 私有栈与共享栈
+## 私有栈与共享栈
 
 阅读上文中`coctx_make`代码不难发现，libco中协程栈的大小约为`ss_size`。默认情况下，在libco中调用`co_create`创建一个新的协程时，会自动在堆区分配`ss_size`为128K的空间，并将`ss_sp`指向这里。这种做法使得每个协程拥有独立的栈空间，称为“私有栈”模式，也称为stackful模式。私有栈模式下，协程的上下文切换只需要保存和加载寄存器即可完成，开销很低。但由于每个协程的栈大小固定，会造成栈空间的大量浪费。
 
 与私有栈相对的，libco提供了共享栈模式，也称为stackless模式。共享栈指的是各个协程共用一块固定大小的栈空间（libco中默认128K），在协程切出时，根据当前使用的栈大小用`malloc`申请一块合适大小的内存，并将共享栈的内容拷贝出去。这种做法更合理地使用了内存空间，但随之带来的是更大的上下文切换开销。
 
-# 最后
+## 最后
 
 至此，我们结合libco源码介绍了协程中最核心的上下文切换部分。感谢你的阅读。如果你有任何疑问和感想，或发现本文有任何错误，请一定[让我知道](mailto:changliu0828@gmail.com)。
 
-# 参考
+## 参考
 
 1. [libco源码分析，csdn](https://blog.csdn.net/weixin_43705457/article/details/106863859)
 2. [libco分享，李方源](http://purecpp.org/purecpp/static/64a819e99584452aab70a7f9c307717f.pdf)

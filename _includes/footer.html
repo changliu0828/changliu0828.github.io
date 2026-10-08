@@ -1,3 +1,8 @@
 <footer>
   {%- if page.lang == 'zh' -%}{{ site.footer_zh }}{%- else -%}{{ site.footer }}{%- endif -%}
 </footer>
+{%- if page.math -%}
+<script src="{{ "/assets/vendor/katex/katex.min.js" | relative_url }}"></script>
+<script src="{{ "/assets/vendor/katex/auto-render.min.js" | relative_url }}"></script>
+<script src="{{ "/assets/scripts/math.js" | relative_url }}"></script>
+{%- endif -%}
