@@ -1,6 +1,7 @@
 ---
 title: 东京府中换驾照路线图
 layout: post
+permalink: /2025/04/02/fuchu-drivers-license-guide.html
 ---
 
 # 东京府中换驾照路线图
