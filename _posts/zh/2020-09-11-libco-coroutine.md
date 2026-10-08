@@ -2,6 +2,7 @@
 title: "libco源码笔记(1)协程与上下文切换"
 layout: post
 permalink: /post/libco-coroutine/
+ref: libco-coroutine
 ---
 # libco源码笔记(1)协程与上下文切换
 

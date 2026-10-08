@@ -2,6 +2,7 @@
 title: "libco源码笔记(3)自动切换"
 layout: post
 permalink: /post/libco-auto/
+ref: libco-auto
 ---
 # libco源码笔记(3)自动切换
 

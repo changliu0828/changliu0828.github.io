@@ -2,6 +2,7 @@
 title: "Time, Clocks, and the Ordering of Events in a Distributed System, Lamport, 1978"
 layout: post
 permalink: /post/time-clocks-and-the-ordering-of-events-in-a-distributed-system/
+ref: lamport-time-clocks
 math: true
 ---
 # Time, Clocks, and the Ordering of Events in a Distributed System, Lamport, 1978
