@@ -44,6 +44,7 @@ defaults:
       path: ""
     values:
       lang: en
+      image: /assets/images/social-card.png
   - scope:
       path: "zh"
     values:
@@ -62,6 +63,8 @@ tracking:
 
 plugins:
   - jekyll-admin
+  - jekyll-feed
+  - jekyll-sitemap
 
 # Exclude from processing.
 # The following items will not be processed, by default.
