@@ -49,3 +49,9 @@
   content: none;
   margin: 0;
 }
+
+html[lang="zh"] body {
+  font-family: "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  text-autospace: ideograph-alpha ideograph-numeric;
+}
