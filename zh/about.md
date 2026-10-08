@@ -10,7 +10,7 @@ ref: about
 我在这里记录代码、生活，以及一些想法。
 
 # Contact
-Email: changliu0828@gmail.com
+[Email](mailto:changliu0828@gmail.com) | [LinkedIn](https://www.linkedin.com/in/chang-liu-664b4110b/)
 
 # License
 本博客内容使用 [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) 授权。
