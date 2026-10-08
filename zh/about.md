@@ -13,7 +13,7 @@ ref: about
 [Email](mailto:changliu0828@gmail.com) | [LinkedIn](https://www.linkedin.com/in/chang-liu-664b4110b/)
 
 # License
-本博客内容使用 [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) 授权。
+本博客内容使用 [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/) 授权。
 本博客使用的代码使用 [MIT License](https://opensource.org/licenses/MIT) 授权。
 
 

@@ -34,8 +34,8 @@ header_pages:
 header_pages_zh:
   - zh/index.md
   - zh/about.md
-footer: '&copy;2026 Chang Liu. All rights reserved.'
-footer_zh: '&copy;2026 Chang Liu. 保留所有权利。'
+footer: '&copy;2020–2026 Chang Liu. <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a>'
+footer_zh: '&copy;2020–2026 Chang Liu. <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a>'
 
 permalink: /:year/:month/:day/:title.html
 
