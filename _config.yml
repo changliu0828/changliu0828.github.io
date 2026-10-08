@@ -55,6 +55,11 @@ defaults:
       permalink: /zh/:year/:month/:day/:title.html
 
 
+tracking:
+  script_src:
+    - https://www.googletagmanager.com/gtag/js?id=G-3VR9KTM0WS
+    - /assets/scripts/ga.js
+
 plugins:
   - jekyll-admin
 
