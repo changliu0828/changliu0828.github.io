@@ -1,0 +1,43 @@
+<link rel="stylesheet" type="text/css" href="{{ "/assets/css/lang.css" | relative_url }}">
+{%- assign default_paths = site.html_pages | map: 'path' -%}
+{%- assign page_paths = site.header_pages | default: default_paths -%}
+{%- assign en_url = '/' -%}
+{%- assign zh_url = '/zh/' -%}
+{%- assign other_lang = 'zh' -%}
+{%- assign current_label = 'English' -%}
+{%- if page.lang == 'zh' -%}
+  {%- assign page_paths = site.header_pages_zh -%}
+  {%- assign other_lang = 'en' -%}
+  {%- assign current_label = '中文' -%}
+{%- endif -%}
+{%- if page.ref -%}
+  {%- assign pool = site.pages | concat: site.posts -%}
+  {%- assign match = pool | where: 'ref', page.ref | where: 'lang', other_lang | first -%}
+  {%- if match -%}
+    {%- if other_lang == 'zh' -%}{%- assign zh_url = match.url -%}{%- else -%}{%- assign en_url = match.url -%}{%- endif -%}
+  {%- endif -%}
+{%- endif -%}
+{%- if page.lang == 'zh' -%}{%- assign zh_url = page.url -%}{%- else -%}{%- assign en_url = page.url -%}{%- endif -%}
+<header>
+  <div class="menu">
+    <ul>
+      {%- for path in page_paths -%}
+        {%- assign my_page = site.pages | where: "path", path | first -%}
+        {%- if my_page.title -%}
+        <li>
+          <a href="{{ my_page.url | relative_url }}"{% if page.url == my_page.url %} aria-current="page"{% endif %}>{{ my_page.title | escape }}</a>
+        </li>
+        {%- endif -%}
+      {%- endfor -%}
+      <li>
+        <details class="lang">
+          <summary>{{ current_label }}</summary>
+          <ul>
+            <li><a href="{{ en_url | relative_url }}" lang="en"{% if page.lang != 'zh' %} aria-current="true"{% endif %}>English</a></li>
+            <li><a href="{{ zh_url | relative_url }}" lang="zh"{% if page.lang == 'zh' %} aria-current="true"{% endif %}>中文</a></li>
+          </ul>
+        </details>
+      </li>
+    </ul>
+  </div>
+</header>
